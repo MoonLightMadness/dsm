@@ -13,7 +13,7 @@ import java.util.List;
  * @ClassName : dsm.flow.impl.StandardComponent
  * @Description :
  * @Date 2021-05-07 20:48:07
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class StandardComponent implements ModuleComponent {
 

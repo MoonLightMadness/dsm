@@ -21,7 +21,7 @@ import java.util.Base64;
  * @ClassName : utils.high.security.impl.AESEncoder
  * @Description :
  * @Date 2021-04-03 17:16:09
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class AESEncoder implements Encoder {
     private LogSystem log;

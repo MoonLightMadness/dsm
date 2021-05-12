@@ -13,7 +13,7 @@ import java.util.Random;
  * @ClassName : test.fun.behaviortree.test.StandardTreeTest
  * @Description :
  * @Date 2021-05-07 16:47:01
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class StandardTreeTest {
     @Test

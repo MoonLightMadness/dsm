@@ -6,7 +6,7 @@ import dsm.flow.ComponentMethod;
  * @ClassName : dsm.flow.sample.DoorMaker
  * @Description :
  * @Date 2021-05-08 22:24:31
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class DoorMaker extends ComponentMethod {
     @Override

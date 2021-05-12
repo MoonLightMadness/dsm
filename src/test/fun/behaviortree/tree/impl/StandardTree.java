@@ -9,7 +9,7 @@ import java.util.Queue;
  * @ClassName : test.fun.behaviortree.tree.impl.StandardTree
  * @Description :
  * @Date 2021-05-07 14:50:20
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class StandardTree implements Tree {
 

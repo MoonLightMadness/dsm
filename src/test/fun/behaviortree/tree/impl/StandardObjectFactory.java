@@ -4,7 +4,7 @@ package test.fun.behaviortree.tree.impl;
  * @ClassName : test.fun.behaviortree.tree.impl.StandardObjectFactory
  * @Description :
  * @Date 2021-05-07 16:14:37
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class StandardObjectFactory {
     public static StandardObject getOne(int important){

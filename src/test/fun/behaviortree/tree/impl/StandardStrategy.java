@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
  * @ClassName : test.fun.behaviortree.tree.impl.StandardStrategy
  * @Description :
  * @Date 2021-05-07 14:50:44
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class StandardStrategy implements Strategy {
 

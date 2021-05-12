@@ -16,7 +16,7 @@ import java.util.Base64;
  * @ClassName : utils.high.security.impl.AESDecoder
  * @Description :
  * @Date 2021-04-03 17:22:14
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class AESDecoder implements Decoder {
     private LogSystem log;

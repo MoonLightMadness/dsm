@@ -6,7 +6,7 @@ import dsm.flow.ComponentMethod;
  * @ClassName : dsm.flow.sample.WheelMaker
  * @Description :
  * @Date 2021-05-08 22:24:41
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class WheelMaker extends ComponentMethod {
     @Override

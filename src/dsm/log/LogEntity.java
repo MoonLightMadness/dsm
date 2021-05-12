@@ -9,7 +9,7 @@ import dsm.utils.SimpleUtils;
  * @ClassName : utils.middle.entity.LogEntity
  * @Description :日志POJO
  * @Date 2021-03-31 19:26:41
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class LogEntity<T>  {
     private  String timestamp=null;

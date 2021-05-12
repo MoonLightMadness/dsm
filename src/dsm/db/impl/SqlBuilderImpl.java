@@ -7,7 +7,7 @@ import dsm.utils.SimpleUtils;
  * @ClassName : dsm.db.impl.SqlBuilderImpl
  * @Description :
  * @Date 2021-05-10 17:03:53
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class SqlBuilderImpl implements SqlBuilder {
 

@@ -4,7 +4,7 @@ package dsm.log;
  * @ClassName : dsm.log.LogSystemFactory
  * @Description :
  * @Date 2021-04-29 22:33:03
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class LogSystemFactory {
 

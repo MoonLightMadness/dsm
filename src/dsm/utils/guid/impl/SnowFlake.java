@@ -7,7 +7,7 @@ import dsm.utils.guid.GuidGenerator;
  * @ClassName : utils.high.guid.impl.SnowFlake
  * @Description :
  * @Date 2021-04-04 08:46:11
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class SnowFlake implements GuidGenerator {
     /**============================================================

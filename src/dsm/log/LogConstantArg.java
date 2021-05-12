@@ -5,7 +5,7 @@ package dsm.log;
  * @ClassName : utils.high.logsystem.LogConstantArg
  * @Description :
  * @Date 2021-04-14 14:17:48
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class LogConstantArg {
     /**

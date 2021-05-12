@@ -15,7 +15,7 @@ import java.util.Queue;
  * @ClassName : test.fun.behaviortree.tree.impl.StandardTreeShaper
  * @Description :
  * @Date 2021-05-07 15:50:10
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class StandardTreeShaper implements TreeShaper {
     @Override

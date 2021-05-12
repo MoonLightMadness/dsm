@@ -14,7 +14,7 @@ import java.util.Locale;
  * @ClassName : dsm.config.impl.DatabaseConfigReader
  * @Description :
  * @Date 2021-05-04 14:17:58
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class DatabaseConfigReader implements ConfigReader {
     private static final String path="./config.txt";

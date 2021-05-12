@@ -6,7 +6,7 @@ import test.fun.behaviortree.tree.Attachment;
  * @ClassName : test.fun.behaviortree.tree.impl.StandardAttachment
  * @Description :
  * @Date 2021-05-07 14:50:55
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class StandardAttachment implements Attachment {
 

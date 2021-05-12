@@ -10,7 +10,7 @@ import java.util.List;
  * @ClassName : test.fun.behaviortree.tree.impl.StandardNode
  * @Description :
  * @Date 2021-05-07 14:50:33
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class StandardNode implements Node {
 

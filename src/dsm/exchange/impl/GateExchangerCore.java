@@ -36,7 +36,7 @@ import java.util.List;
  * @ClassName : dsm.exchange.impl.GateExchangerCore
  * @Description :
  * @Date 2021-05-01 21:14:05
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class GateExchangerCore implements ExchangerCore, Runnable {
     private ServerSocketChannel serverSocketChannel;

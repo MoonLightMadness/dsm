@@ -25,7 +25,7 @@ import java.lang.reflect.Field;
  * @ClassName : dsm.security.impl.EntitySecurityServiceImpl
  * @Description :
  * @Date 2021-05-06 16:53:05
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class EntitySecurityServiceImpl implements EntitySecurityService {
     private Encoder encoder;

@@ -6,7 +6,7 @@ package dsm.log;
  * @ClassName : utils.high.logger.Logger
  * @Description :日志系统--日志类
  * @Date 2021-03-31 19:25:59
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class Logger {
 

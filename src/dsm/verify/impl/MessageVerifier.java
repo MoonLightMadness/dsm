@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
  * @ClassName : dsm.verify.impl.MessageVerifier
  * @Description :
  * @Date 2021-04-29 19:26:47
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class MessageVerifier implements Verifier {
     /**

@@ -9,7 +9,7 @@ import dsm.security.SecurityConstant;
  * @ClassName : dsm.utils.special.DBUtils
  * @Description :
  * @Date 2021-05-06 17:23:44
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class DBUtils {
     public static String getSK(String accessKey){

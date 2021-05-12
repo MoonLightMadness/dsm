@@ -10,7 +10,7 @@ import dsm.security.excp.EncodeException;
  * @ClassName : utils.high.security.SecurityService
  * @Description :
  * @Date 2021-04-03 17:05:40
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public interface SecurityService {
     /**

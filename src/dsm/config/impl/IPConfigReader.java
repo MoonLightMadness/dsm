@@ -15,7 +15,7 @@ import java.util.Locale;
  * @ClassName : dsm.config.impl.IPConfigReader
  * @Description :
  * @Date 2021-05-01 20:51:05
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class IPConfigReader implements ConfigReader {
     private static final String path="./config.txt";

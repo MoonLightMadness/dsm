@@ -7,7 +7,7 @@ import dsm.utils.SimpleUtils;
  * @ClassName : utils.middle.wrapper.LogEntityWrapper
  * @Description :LogEntity包装器
  * @Date 2021-03-31 19:56:12
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class LogEntityWrapper {
 

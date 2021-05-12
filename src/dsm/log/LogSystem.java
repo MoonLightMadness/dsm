@@ -15,7 +15,7 @@ import java.util.List;
  * @ClassName : utils.high.logsystem.LogSystem
  * @Description :日志系统--系统类
  * @Date 2021-03-31 20:43:24
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class LogSystem {
     private List<LogEntity<String>> list;

@@ -14,7 +14,7 @@ import java.util.List;
  * @ClassName : dsm.db.impl.SqliteImpl
  * @Description :
  * @Date 2021-05-04 14:16:02
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class SqliteImpl<T> implements DataBase<T> {
     private ConfigReader configReader;

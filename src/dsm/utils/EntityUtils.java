@@ -10,7 +10,7 @@ import java.util.Base64;
  * @ClassName : dsm.utils.EntityUtils
  * @Description :
  * @Date 2021-05-06 20:07:17
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class EntityUtils {
 

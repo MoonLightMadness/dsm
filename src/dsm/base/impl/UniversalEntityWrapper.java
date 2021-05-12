@@ -8,7 +8,7 @@ import dsm.utils.guid.impl.SnowFlake;
  * @ClassName : dsm.base.impl.UniversalEntityWrapper
  * @Description :
  * @Date 2021-05-01 15:55:27
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class UniversalEntityWrapper {
 

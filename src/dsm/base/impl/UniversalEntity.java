@@ -9,7 +9,7 @@ import java.util.Base64;
  * @ClassName : utils.base.entity.impl.UniversalEntity
  * @Description :
  * @Date 2021-04-03 16:56:58
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class UniversalEntity implements BaseEntity {
     private String guid=null;

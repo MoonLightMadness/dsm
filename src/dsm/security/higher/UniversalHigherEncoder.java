@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
  * @ClassName : dsm.security.higher.UniversalHigherEncoder
  * @Description :
  * @Date 2021-05-05 17:24:41
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class UniversalHigherEncoder {
     public static BaseEntity entityEncode(Encoder encoder, BaseEntity entity,String key){

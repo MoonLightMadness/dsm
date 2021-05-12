@@ -13,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
  * @ClassName : utils.high.security.impl.Sha1Encoder
  * @Description :
  * @Date 2021-04-03 17:09:09
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class Sha1Encoder implements Encoder {
     private LogSystem log;

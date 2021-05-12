@@ -4,7 +4,7 @@ package test.fun.behaviortree.tree.impl;
  * @ClassName : test.fun.behaviortree.tree.impl.StandardObject
  * @Description :
  * @Date 2021-05-07 16:13:36
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class StandardObject {
     private int important;

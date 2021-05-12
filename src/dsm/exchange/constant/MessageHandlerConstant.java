@@ -4,7 +4,7 @@ package dsm.exchange.constant;
  * @ClassName : dsm.exchange.constant.MessageHandlerConstant
  * @Description :
  * @Date 2021-05-07 09:56:22
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class MessageHandlerConstant {
 

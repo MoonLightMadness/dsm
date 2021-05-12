@@ -20,7 +20,7 @@ import java.util.Iterator;
  * @ClassName : dsm.exchange.impl.MessageSender
  * @Description :
  * @Date 2021-05-01 20:34:08
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class MessageSender implements Sender {
 

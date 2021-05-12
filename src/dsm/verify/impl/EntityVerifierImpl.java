@@ -13,7 +13,7 @@ import java.util.Base64;
  * @ClassName : dsm.verify.impl.EntityVerifierImpl
  * @Description :
  * @Date 2021-05-06 19:40:54
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class EntityVerifierImpl implements EntityVerifier {
 

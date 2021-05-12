@@ -8,7 +8,7 @@ import java.util.*;
  * @ClassName : dsm.container.impl.UniversalContainerImpl
  * @Description :
  * @Date 2021-05-04 17:23:29
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public class UniversalContainerImpl<T> implements Container<T> {
     private HashMap<String,T> dictionary;

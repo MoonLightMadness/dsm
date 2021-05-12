@@ -5,7 +5,7 @@ package dsm.config;
  * @ClassName : dsm.config.ConfigReader
  * @Description :
  * @Date 2021-05-01 20:49:35
- * @Author 张怀栏
+ * @Author ZhangHL
  */
 public interface ConfigReader {
     /**
