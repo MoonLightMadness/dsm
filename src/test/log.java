@@ -1,0 +1,20 @@
+package test;
+
+import dsm.log.LogSystem;
+import dsm.log.LogSystemFactory;
+import org.junit.Test;
+
+/**
+ * @ClassName : test.log
+ * @Description :
+ * @Date 2021-05-01 21:06:45
+ * @Author 张怀栏
+ */
+public class log {
+    @Test
+    public void logTest1(){
+        LogSystem log= LogSystemFactory.getLogSystem();
+        log.immediatelySaveMode(true);
+        log.info(this.getClass().getName(),"this is a test");
+    }
+}

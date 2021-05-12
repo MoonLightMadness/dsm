@@ -1,0 +1,8 @@
+test_car_make:
+  stage1:
+    sub1: dsm.flow.sample.BodyMaker
+    sub2: dsm.flow.sample.AdvancedBodyMaker
+  stage2:
+    sub1: dsm.flow.sample.DoorMaker
+  stage3:
+    sub1: dsm.flow.sample.WheelMaker

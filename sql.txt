@@ -1,0 +1,8 @@
+#测试
+insert = insert into test1 values({},{})
+
+get = select name_ from test1 where id={}
+
+get_sk = select sk from security_key_info where ak={}
+
+get_name_by_ak = select name_ from security_key_info where ak={}
