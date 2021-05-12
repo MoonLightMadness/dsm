@@ -3,6 +3,10 @@ package test;
 import dsm.base.impl.UniversalEntity;
 import dsm.base.impl.UniversalEntityWrapper;
 import dsm.config.impl.IPConfigReader;
+import dsm.exchange.FileReceiver;
+import dsm.exchange.FileSender;
+import dsm.exchange.impl.FileReceiverImpl;
+import dsm.exchange.impl.FileSenderImpl;
 import dsm.exchange.impl.GateExchangerCore;
 import dsm.security.SecurityService;
 import dsm.security.excp.DecodeException;
@@ -17,8 +21,12 @@ import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -165,6 +173,38 @@ public class exchanger {
         } catch (IOException | EncodeException | InterruptedException e) {
             e.printStackTrace();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void fileChangerTest() throws IOException {
+        String path = "C:\\Users\\Administrator\\Pictures\\logo.png";
+        FileSender sender = new FileSenderImpl();
+        FileReceiver receiver = new FileReceiverImpl();
+        ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+        serverSocketChannel.configureBlocking(false);
+        serverSocketChannel.bind(
+                new InetSocketAddress(InetAddress.getLocalHost(),8999));
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                    SocketChannel channel = serverSocketChannel.accept();
+                    channel.configureBlocking(false);
+                    receiver.receive(channel,"./recv.png");
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+        SocketChannel channel = SocketChannel.open(new InetSocketAddress(InetAddress.getLocalHost().getHostAddress(),8999));
+        channel.configureBlocking(false);
+        sender.sendFile(path,channel);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
