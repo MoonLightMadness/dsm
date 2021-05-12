@@ -51,9 +51,21 @@ public class MessageHandler implements Handler {
     }
     @Override
     public void handle() {
-        try {
-            //服务注册
-            if(MessageHandlerConstant.SERVICE.equals(entity.getAuthLevel().toLowerCase(Locale.ROOT))){
+        switch (entity.getAuthLevel().toLowerCase(Locale.ROOT)){
+            case MessageHandlerConstant.SERVICE:
+                registerService();
+                break;
+            case MessageHandlerConstant.GET_LIST:
+                getServiceList();
+                break;
+            default:
+                returnError();
+        }
+    }
+
+    private void registerService(){
+        if(entity.getSrc().equals(DBUtils.getServiceNameByAK(entity.getCompressCode()))){
+            try {
                 if(entity.getSrc().equals(DBUtils.getServiceNameByAK(entity.getCompressCode()))){
                     log.info(this.getClass().getName(),"消息解析为[服务注册]");
                     container.reName(((SocketChannel)sk.channel()).getRemoteAddress().toString(),entity.getSrc());
@@ -61,20 +73,25 @@ public class MessageHandler implements Handler {
                     log.info(this.getClass().getName(),"返回成功消息");
                     ExchangerUtils.Send(((SocketChannel) sk.channel()),entity.getCompressCode(),ok,securityService);
                 }
-            }else if(MessageHandlerConstant.GET_LIST.equals(entity.getAuthLevel().toLowerCase(Locale.ROOT))){
-                log.info(this.getClass().getName(),"消息解析为[获取服务列表]");
-                String services=container.getNames();
-                UniversalEntity ok= UniversalEntityWrapper.getOKEntity(entity.getCompressCode());
-                ok.setMessage(services);
-                ExchangerUtils.Send(((SocketChannel) sk.channel()),entity.getCompressCode(),ok,securityService);
-            }else {
-                log.info(this.getClass().getName(),"无法解析该消息,返回错误");
-                UniversalEntity error= UniversalEntityWrapper.getErrorEntity();
-                ExchangerUtils.Send(((SocketChannel) sk.channel()),entity.getCompressCode(),error,securityService);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        }else {
+            returnError();
         }
+    }
 
+    private void getServiceList(){
+        log.info(this.getClass().getName(),"消息解析为[获取服务列表]");
+        String services=container.getNames();
+        UniversalEntity ok= UniversalEntityWrapper.getOKEntity(entity.getCompressCode());
+        ok.setMessage(services);
+        ExchangerUtils.Send(((SocketChannel) sk.channel()),entity.getCompressCode(),ok,securityService);
+    }
+
+    private void returnError(){
+        log.info(this.getClass().getName(),"无法解析该消息,返回错误");
+        UniversalEntity error= UniversalEntityWrapper.getErrorEntity();
+        ExchangerUtils.Send(((SocketChannel) sk.channel()),entity.getCompressCode(),error,securityService);
     }
 }

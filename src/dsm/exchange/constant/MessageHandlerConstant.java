@@ -8,6 +8,8 @@ package dsm.exchange.constant;
  */
 public class MessageHandlerConstant {
 
+    public static final String REGISTER="register";
+
     public static final String SERVICE="service";
 
     public static final String GET_LIST="get_list";

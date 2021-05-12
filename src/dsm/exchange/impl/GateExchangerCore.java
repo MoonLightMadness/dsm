@@ -165,12 +165,13 @@ public class GateExchangerCore implements ExchangerCore, Runnable {
             entity= (UniversalEntity) securityService.decode(entity,entity.getCompressCode());
             log.info(this.getClass().getName(), "接收到的消息为--{}", entity.toString());
             if(securityService.verify(entity,new Sha1Encoder())){
+                log.info(this.getClass().getName(),"验证通过");
                 /**
                  * 调用处理机处理信息
                  */
                 ((MessageHandler) handler).init(sk, entity,securityService,container);
                 handler.handle();
-                log.info(this.getClass().getName(),"验证通过");
+
             }
         } catch (IOException | ClassNotFoundException | DecodeException e) {
             log.error(this.getClass().getCanonicalName(), "发生错误--{}", e.toString());

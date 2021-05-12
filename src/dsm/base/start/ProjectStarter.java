@@ -54,6 +54,8 @@ public class ProjectStarter {
             Connection connection= DriverManager.getConnection("jdbc:sqlite:"+path+separator+"dsm.db");
             Statement statement =connection.createStatement();
             statement.executeUpdate( "create table sys_table(name varchar(20), version varchaar(20));" );
+            //关闭数据库连接
+            connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         } catch (ClassNotFoundException e) {
