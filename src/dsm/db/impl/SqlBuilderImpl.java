@@ -113,29 +113,59 @@ public class SqlBuilderImpl implements SqlBuilder {
 
     @Override
     public String toString() {
-        builder.append(operation).append(" ");
-        if ("Delete".equals(operation)) {
-            builder.append("From").append(" ");
-            builder.append(tableName).append(" ");
-            builder.append("Where").append(" ");
-            builder.append(whereBuilder.subSequence(0, whereBuilder.length() - 1)).append(" ");
-        } else if("Select".equals(operation)){
-            builder.append(selectBuilder.subSequence(0, selectBuilder.length() - 1)).append(" ");
-            builder.append("From").append(" ").append(tableName).append(" ");
-            builder.append("Where").append(" ");
-            builder.append(whereBuilder.subSequence(0, whereBuilder.length() - 1)).append(" ");
-        }else if("Update".equals(operation)){
-            builder.append(tableName).append(" ");
-            builder.append("Set").append(" ");
-            builder.append(selectBuilder.subSequence(0, selectBuilder.length() - 1)).append(" ");
-            builder.append("Where").append(" ");
-            builder.append(whereBuilder.subSequence(0, whereBuilder.length() - 1)).append(" ");
-        }else if("Insert".equals(operation)){
-            builder.append("into").append(" ");
-            builder.append(tableName);
-            builder.append("(").append(selectBuilder.subSequence(0,selectBuilder.length()-1)).append(")").append(" ");
-            builder.append("Values(").append(whereBuilder.subSequence(0,whereBuilder.length()-1)).append(")");
+        String res = null;
+        switch (operation){
+            case "Select":
+                res = generateSelectString();
+                break;
+            case "Delete":
+                res = generateDeleteString();
+                break;
+            case "Update":
+                res = generateUpdateString();
+                break;
+            case "Insert":
+                res = generateInsertString();
+                break;
         }
+        reset();
+        return res;
+    }
+
+    private String generateSelectString(){
+        builder.append(operation).append(" ");
+        builder.append(selectBuilder.subSequence(0, selectBuilder.length() - 1)).append(" ");
+        builder.append("From").append(" ").append(tableName).append(" ");
+        builder.append("Where").append(" ");
+        builder.append(whereBuilder.subSequence(0, whereBuilder.length() - 1)).append(" ");
+        return builder.toString();
+    }
+
+    private String generateDeleteString(){
+        builder.append(operation).append(" ");
+        builder.append("From").append(" ");
+        builder.append(tableName).append(" ");
+        builder.append("Where").append(" ");
+        builder.append(whereBuilder.subSequence(0, whereBuilder.length() - 1)).append(" ");
+        return builder.toString();
+    }
+
+    private String generateUpdateString(){
+        builder.append(operation).append(" ");
+        builder.append(tableName).append(" ");
+        builder.append("Set").append(" ");
+        builder.append(selectBuilder.subSequence(0, selectBuilder.length() - 1)).append(" ");
+        builder.append("Where").append(" ");
+        builder.append(whereBuilder.subSequence(0, whereBuilder.length() - 1)).append(" ");
+        return builder.toString();
+    }
+
+    private String generateInsertString(){
+        builder.append(operation).append(" ");
+        builder.append("into").append(" ");
+        builder.append(tableName);
+        builder.append("(").append(selectBuilder.subSequence(0,selectBuilder.length()-1)).append(")").append(" ");
+        builder.append("Values(").append(whereBuilder.subSequence(0,whereBuilder.length()-1)).append(")");
         return builder.toString();
     }
 }
