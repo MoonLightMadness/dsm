@@ -26,10 +26,13 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -178,7 +181,7 @@ public class exchanger {
     }
     @Test
     public void fileChangerTest() throws IOException {
-        String path = "C:\\Users\\Administrator\\Pictures\\logo.png";
+        String path = "C:\\Users\\Administrator\\Pictures\\1.jpg";
         FileSender sender = new FileSenderImpl();
         FileReceiver receiver = new FileReceiverImpl();
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
@@ -189,11 +192,25 @@ public class exchanger {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(100);
-                    SocketChannel channel = serverSocketChannel.accept();
-                    channel.configureBlocking(false);
-                    receiver.receive(channel,"./recv.png");
-                } catch (IOException | InterruptedException e) {
+                    Selector selector = Selector.open();
+                    serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+                    while (true){
+                        int num = selector.select();
+                        Iterator iterator = selector.selectedKeys().iterator();
+                        while (iterator.hasNext()){
+                            SelectionKey sk = (SelectionKey) iterator.next();
+                            if(sk.isAcceptable()){
+                                SocketChannel channel = serverSocketChannel.accept();
+                                channel.configureBlocking(false);
+                                channel.register(selector,SelectionKey.OP_READ);
+                            }
+                            if(sk.isReadable()){
+                                receiver.receive((SocketChannel) sk.channel(),"./recv.jpg");
+                            }
+                            iterator.remove();
+                        }
+                    }
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -203,9 +220,10 @@ public class exchanger {
         channel.configureBlocking(false);
         sender.sendFile(path,channel);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 }

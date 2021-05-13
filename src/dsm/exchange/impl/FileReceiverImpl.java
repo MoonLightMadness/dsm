@@ -10,8 +10,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -22,59 +25,73 @@ import java.util.List;
  */
 public class FileReceiverImpl implements FileReceiver {
 
-    private LogSystem log;
+    private List<ByteBuffer> buffers = new ArrayList<>();
 
+    private List<Integer> counts = new ArrayList<>();
+
+    private int count=0,size=0;
     /**
      * 接收文件并保存，返回文件字节数组
      *
-     * @param socketChannel 套接字通道
+     * @param channel 套接字通道
      * @param name          的名字
      * @return {@link byte[]}
      */
     @Override
-    public byte[] receive(SocketChannel socketChannel,String name) {
-        log = LogSystemFactory.getLogSystem();
-        List<byte[]> recv = new ArrayList<>();
-        ByteBuffer buffer = ByteBuffer.allocate(1024);
-        int size = 0;
-        int count = 0;
-        byte[] temp;
-        while (true) {
-            buffer.clear();
-            try {
-                size = socketChannel.read(buffer);
-                count += size;
-            } catch (Exception e) {
-                log.info(this.getClass().getName(), "发生错误--{}", e.toString());
-                try {
-                    socketChannel.close();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                break;
-            }
-            if (size <= 0) {
-                break;
-            }
-            buffer.flip();
-            temp = new byte[size];
-            System.arraycopy(buffer.array(), 0, temp, 0, size);
-            recv.add(temp);
-        }
-        /**
-         * 预处理接收到的信息，并做后续处理
-         */
-        byte[] data = SimpleUtils.mergeByteList(recv,count);
-        File f = new File(name);
+    public byte[] receive(SocketChannel channel,String name){
+        int pointer = 0,nullcount=0;
         try {
-            FileOutputStream fos = new FileOutputStream(f);
-            fos.write(data);
-            fos.flush();
-            fos.close();
+            Selector selector = Selector.open();
+            channel.configureBlocking(false);
+            channel.register(selector, SelectionKey.OP_READ);
+            while (nullcount<30){
+                int num = selector.select(100);
+                if(num==0){
+                    nullcount++;
+                }else {
+                    Iterator iterator = selector.selectedKeys().iterator();
+                    while (iterator.hasNext()){
+                        SelectionKey sk = (SelectionKey) iterator.next();
+                        if(sk.isReadable()){
+                            ByteBuffer buffer = ByteBuffer.allocate(1024*100);
+                            count=((SocketChannel)sk.channel()).read(buffer);
+                            counts.add(count);
+                            size+=count;
+                            buffer.flip();
+                            buffers.add(buffer);
+                        }
+                        iterator.remove();
+                    }
+                }
+            }
+            byte[] data = convert();
+            File f = new File(name);
+            try {
+                FileOutputStream fos = new FileOutputStream(f);
+                fos.write(data);
+                fos.flush();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return data;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
+    }
 
+    private byte[] convert(){
+        byte[] data = new byte[size];
+        int p=0,index=0;
+        for(ByteBuffer buffer:buffers){
+            byte[] temp = buffer.array();
+            System.arraycopy(temp,0,data,p,counts.get(index));
+            p+= counts.get(index);
+            index++;
+        }
         return data;
     }
 }
