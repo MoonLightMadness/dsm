@@ -17,6 +17,6 @@ public interface FileReceiver {
      * @param name          的名字
      * @return {@link byte[]}
      */
-    public byte[] receive(SocketChannel channel,String name);
+    byte[] receive(SocketChannel channel, String name);
 
 }

@@ -25,9 +25,9 @@ import java.util.List;
  */
 public class FileReceiverImpl implements FileReceiver {
 
-    private List<ByteBuffer> buffers = new ArrayList<>();
+    private final List<ByteBuffer> buffers = new ArrayList<>();
 
-    private List<Integer> counts = new ArrayList<>();
+    private final List<Integer> counts = new ArrayList<>();
 
     private int count=0,size=0;
     /**

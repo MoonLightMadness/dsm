@@ -24,9 +24,9 @@ import java.util.List;
  */
 public class FileSenderImpl implements FileSender {
 
-    private List<ByteBuffer> buffers = new ArrayList<>();
+    private final List<ByteBuffer> buffers = new ArrayList<>();
 
-    private int buffersize=1024*100;
+    private final int buffersize=1024*100;
 
     private int pointer = 0;
     @Override

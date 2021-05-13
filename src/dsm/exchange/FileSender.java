@@ -17,6 +17,6 @@ public interface FileSender {
      * @param path          文件
      * @param socketChannel 套接字通道
      */
-    public void sendFile(String path, SocketChannel socketChannel);
+    void sendFile(String path, SocketChannel socketChannel);
 
 }

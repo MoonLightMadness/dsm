@@ -46,13 +46,13 @@ public class db {
         SqlBuilder builder = new SqlBuilderImpl();
         long time = System.currentTimeMillis();
         builder.setTable("test_1").select("id").where("name","zhl").and().where("id",1);
-        System.out.println(builder.toString());
+        System.out.println(builder);
         builder.reset().setTable("test__2").update("name","aaa").where("id",1);
-        System.out.println(builder.toString());
+        System.out.println(builder);
         builder.reset().setTable("test_3").delete("testColumn","aaa").where("name","zhl");
-        System.out.println(builder.toString());
+        System.out.println(builder);
         builder.reset().setTable("test_4").insert("id",123).insert("name","zhl");
-        System.out.println(builder.toString());
+        System.out.println(builder);
         time = System.currentTimeMillis() -time;
     }
 }
