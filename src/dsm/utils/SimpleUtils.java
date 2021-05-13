@@ -4,14 +4,13 @@ package dsm.utils;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * 简单工具类
@@ -308,6 +307,41 @@ public class SimpleUtils {
             pointer += b.length;
         }
         return res;
+    }
+
+    public static byte[] receiveDataInNIO(SocketChannel socketChannel){
+        List<byte[]> recv=new ArrayList<>();
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        int size = 0;
+        int count = 0;
+        byte[] temp;
+        while (true) {
+            buffer.clear();
+            try {
+                size = socketChannel.read(buffer);
+                count += size;
+            } catch (Exception e) {
+                try {
+                    socketChannel.close();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+                break;
+            }
+            if (size <= 0) {
+                break;
+            }
+            buffer.flip();
+            temp = new byte[size];
+            System.arraycopy(buffer.array(), 0, temp, 0, size);
+            recv.add(temp);
+        }
+        /**
+         * 预处理接收到的信息，并做后续处理
+         */
+        byte[] data = SimpleUtils.mergeByteList(recv,count);
+        recv.clear();
+        return data;
     }
 
 }

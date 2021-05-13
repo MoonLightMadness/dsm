@@ -1,3 +1,5 @@
 port=8999
 
 database=test.db
+
+mq.port=9000
