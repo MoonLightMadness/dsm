@@ -65,4 +65,9 @@ public class simpleUtils {
         res = SimpleUtils.call("notepad C:\\Users\\Administrator\\Desktop\\work\\DSM\\config.txt");
         System.out.println(res);
     }
+    @Test
+    public void test7(){
+        String res =  SimpleUtils.callShell("PWDGenerator 20000 type-A 1","c",true);
+        System.out.println(res);
+    }
 }

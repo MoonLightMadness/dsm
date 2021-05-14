@@ -84,4 +84,27 @@ public class UniversalEntityWrapper {
         return universalEntity;
     }
 
+    /**
+     * 得到服务注册实体
+     *
+     * @param name 服务名字
+     * @param code ak
+     * @return {@link UniversalEntity}
+     */
+    public static UniversalEntity getServiceRegisterEntity(String name,String code){
+        UniversalEntity universalEntity=new UniversalEntity();
+        universalEntity.setGuid(null);
+        universalEntity.setAuthLevel("service");
+        universalEntity.setSrc(name);
+        universalEntity.setTo(null);
+        universalEntity.setLevel(null);
+        universalEntity.setMessage(null);
+        universalEntity.setMessageType(null);
+        universalEntity.setCompressCode(code);
+        universalEntity.setTimestamp(SimpleUtils.getTimeStamp());
+        Sha1Encoder encoder=new Sha1Encoder();
+        universalEntity.setHashCode(SimpleUtils.string2Base64Str(encoder.encode(universalEntity.toString(),null)));
+        return universalEntity;
+    }
+
 }

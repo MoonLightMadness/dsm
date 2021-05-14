@@ -1,5 +1,6 @@
 package test;
 
+import dsm.utils.SimpleUtils;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class system {
     public void cmd(){
         Process p;
         try {
-            p = Runtime.getRuntime().exec(new String[]{"cmd", "/c", "notepad"});
+            p = Runtime.getRuntime().exec(new String[]{"cmd", "/c", "pg"});
             //p.waitFor();
         } catch (IOException e) {
             e.printStackTrace();
