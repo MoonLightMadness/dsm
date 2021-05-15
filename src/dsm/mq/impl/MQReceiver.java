@@ -59,7 +59,7 @@ public class MQReceiver implements Runnable {
                             msg.add(entity);
                         }
                         if("db_get".equals(((UniversalEntity) entity).getMessageType())){
-                            //todo 此处增加处理逻辑
+                            Send2DB.send(((SocketChannel) sk.channel()), (UniversalEntity) entity);
                         }
                     }
                     iterator.remove();
