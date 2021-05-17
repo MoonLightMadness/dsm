@@ -29,7 +29,7 @@ public class compress {
 @Test
     public void testFileEncode(){
         Compressor compressor = new LZSS();
-        String test = readFile("C:\\Users\\Administrator\\AppData\\Local\\kingsoft\\WPS Cloud Files\\userdata\\qing\\filecache\\张怀栏的云文档\\log\\Log.md");
+        String test = readFile("./.idea/workspace.xml");
         long time = System.currentTimeMillis();
         System.out.println("原文长度:"+test.length());
         String res = compressor.encode(test);

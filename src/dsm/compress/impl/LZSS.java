@@ -103,7 +103,7 @@ public class LZSS implements Compressor {
         //前项缓冲区指针
         int bufferPointer = pointer + 5;
         //前项缓冲最大容量
-        int maxBufferPointer=32;
+        int maxBufferPointer=buffer;
         if (bufferPointer > buffer) {
             return res;
         }
