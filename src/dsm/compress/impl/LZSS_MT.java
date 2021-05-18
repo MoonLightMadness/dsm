@@ -93,7 +93,7 @@ public class LZSS_MT implements Runnable{
             }
             //match()方法返回-1代表无匹配，否则代表匹配下标
             int match = matchMethod.match(text.substring(window, pointer), text.substring(pointer, bufferPointer));
-            if (match != -1 && calLen(pointer, bufferPointer) >= 3) {
+            if (match != -1 && calLen(pointer, bufferPointer) >= 5) {
                 res[0] = match;
                 res[1] = calLen(pointer, bufferPointer);
             }
