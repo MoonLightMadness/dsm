@@ -18,5 +18,5 @@ public interface Compressor {
      */
     public String decode(String text);
 
-    public void save();
+    public void save(String encode);
 }

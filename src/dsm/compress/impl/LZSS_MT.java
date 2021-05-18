@@ -1,32 +1,29 @@
 package dsm.compress.impl;
 
-import dsm.compress.Compressor;
 import dsm.compress.MatchMethod;
-import dsm.utils.SimpleUtils;
-import org.omg.PortableServer.POA;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
 
 /**
- * @ClassName : dsm.compress.impl.LZSS
+ * @ClassName : dsm.compress.impl.LZSS_MT
  * @Description :
- * @Date 2021-05-17 10:35:41
+ * @Date 2021-05-18 08:50:11
  * @Author ZhangHL
  */
-public class LZSS implements Compressor {
+public class LZSS_MT implements Runnable{
 
-    private String encoded;
+    StringBuilder sb ;
 
-    private String decoded;
+    String text;
 
-    private MatchMethod matchMethod;
+    MatchMethod matchMethod;
+
+    public void init(String text,StringBuilder sb){
+        this.text=text;
+        this.sb=sb;
+        matchMethod=new KMP();
+    }
 
     @Override
-    public String encode(String text) {
+    public void run() {
         //初始化检查
         initCheck(text);
         //一些常数
@@ -35,7 +32,6 @@ public class LZSS implements Compressor {
         //初始化滑动窗口、前项缓冲区、指针长度
         int window = 0, buffer = text.length() - 1, pointer = 0;
         int[] res;
-        StringBuilder sb = new StringBuilder();
         while (pointer <= buffer) {
             //找到最长匹配字符串
             res = findLongestMatchString(text, window, buffer, pointer);
@@ -54,50 +50,13 @@ public class LZSS implements Compressor {
                 pointer++;
             }
         }
-        encoded = sb.toString();
-        return encoded;
+//        encoded = sb.toString();
+//        return encoded;
     }
 
-    @Override
-    public String decode(String text) {
-        char[] c_text = text.toCharArray();
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < c_text.length; i++) {
-            if (c_text[i] == '\0') {
-                int index = c_text[i + 1];
-                int offset = c_text[i + 2];
-                sb.append(sb.subSequence(index, index + offset - 1));
-                i+=2;
-            } else {
-                sb.append(c_text[i]);
-            }
-        }
-        return sb.toString();
+    public StringBuilder getSb(){
+        return sb;
     }
-
-    @Override
-    public void save(String encode) {
-        File f = new File(System.currentTimeMillis() +".lzss");
-        try {
-            f.createNewFile();
-            BufferedWriter writer = new BufferedWriter(new FileWriter(f));
-            writer.write(encode);
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 初始化检查,检查文本长度等相关问题
-     *
-     * @return boolean
-     */
-    private boolean initCheck(String text) {
-        return text.length() > 1;
-    }
-
     /**
      * 找到最长匹配字符串
      *
@@ -135,7 +94,6 @@ public class LZSS implements Compressor {
         }
         return res;
     }
-
     /**
      * 添加匹配项
      *
@@ -166,4 +124,12 @@ public class LZSS implements Compressor {
     }
 
 
+    /**
+     * 初始化检查,检查文本长度等相关问题
+     *
+     * @return boolean
+     */
+    private boolean initCheck(String text) {
+        return text.length() > 1;
+    }
 }
