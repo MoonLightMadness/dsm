@@ -8,7 +8,7 @@ public interface Compressor {
      * @param text 文本
      * @return {@link String}
      */
-    public String encode(String text);
+    String encode(String text);
 
     /**
      * 解码
@@ -16,7 +16,7 @@ public interface Compressor {
      * @param text 文本
      * @return {@link String}
      */
-    public String decode(String text);
+    String decode(String text);
 
-    public void save(String encode);
+    void save(String encode);
 }

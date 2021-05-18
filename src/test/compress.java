@@ -137,9 +137,9 @@ public class compress {
         log.immediatelySaveMode(true);
         String[] files=new String[]{
                 "./LICENSE",
-                "./test.db",
-                "C:\\Users\\Administrator\\Desktop\\entertainment\\java\\dsm\\.idea\\workspace.xml",
-                "C:\\Users\\Administrator\\Documents\\Study\\毕业设计\\1.docx"
+                //"./test.db",
+                //"C:\\Users\\Administrator\\Desktop\\entertainment\\java\\dsm\\.idea\\workspace.xml",
+                //"C:\\Users\\Administrator\\Documents\\Study\\毕业设计\\1.docx"
         };
         run(files,log);
     }
@@ -149,7 +149,7 @@ public class compress {
             String test = readFile(file);
             int len = test.length();
             //n线程
-            int thread_num = 8;
+            int thread_num = 1;
             int cut = len/thread_num;
             Thread[] threads = new Thread[thread_num];
             StringBuilder[] sbs = new StringBuilder[thread_num];
@@ -210,7 +210,13 @@ public class compress {
                         String.valueOf(System.currentTimeMillis()-time)
                         );
             }else {
-                log.error(this.getClass().getName(),"错误");
+                log.error(this.getClass().getName(),"文件名:{},文件大小:{}字节,压缩后大小{},压缩时间:{},压缩率:{},解压缩时间:{}",
+                        new File(file).getName(),
+                        String.valueOf(test.length()),
+                        String.valueOf(encode.toString().length()),
+                        String.valueOf(encode_end_time),
+                        (100-((encode.length()*1.0f)/test.length()*100))+"%",
+                        String.valueOf(System.currentTimeMillis()-time));
             }
         }
     }
@@ -232,5 +238,10 @@ public class compress {
             e.printStackTrace();
         }
         return null;
+    }
+    @Test
+    public void playground(){
+        char a =(char) 65535;
+        System.out.println(a)  ;
     }
 }

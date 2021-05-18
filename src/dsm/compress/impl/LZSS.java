@@ -63,7 +63,7 @@ public class LZSS implements Compressor {
         char[] c_text = text.toCharArray();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < c_text.length; i++) {
-            if (c_text[i] == (char) 24) {
+            if (c_text[i] == (char)65535) {
                 int index = c_text[i + 1];
                 int offset = c_text[i + 2];
 //                if(offset==0||(index+offset)>sb.length()){
@@ -163,7 +163,7 @@ public class LZSS implements Compressor {
     }
 
     private void appendNoMatch(StringBuilder sb, String text, int pointer) {
-        sb.append(text.substring(pointer, pointer + 1));
+        sb.append(text.charAt(pointer));
     }
 
     /**

@@ -28,10 +28,11 @@ public class LZSS_MT implements Runnable{
         initCheck(text);
         //一些常数
         //滑动窗口最大长度
-        int windowMax = 2048;
+        int windowMax = 4000;
         //初始化滑动窗口、前项缓冲区、指针长度
         int window = 0, buffer = text.length() - 1, pointer = 0;
         int[] res;
+        int count=0;
         while (pointer <= buffer) {
             //找到最长匹配字符串
             res = findLongestMatchString(text, window, buffer, pointer);
@@ -49,7 +50,11 @@ public class LZSS_MT implements Runnable{
                 appendNoMatch(sb, text, pointer);
                 pointer++;
             }
+            count++;
         }
+        System.out.println(count);
+        System.out.println(find_count);
+        System.out.println(find_count/count);
 //        encoded = sb.toString();
 //        return encoded;
     }
@@ -57,6 +62,9 @@ public class LZSS_MT implements Runnable{
     public StringBuilder getSb(){
         return sb;
     }
+
+    private int find_count=0;
+
     /**
      * 找到最长匹配字符串
      *
@@ -72,13 +80,12 @@ public class LZSS_MT implements Runnable{
         //前项缓冲区指针
         int bufferPointer = pointer + 2;
         //前项缓冲最大容量
-        int maxBufferPointer = 128;
+        int maxBufferPointer = 20;
         if (bufferPointer > buffer) {
             return res;
         }
         //使用KMP算法进行字符串匹配
         matchMethod = new KMP();
-        int maxLen = 0;
         //当前项缓冲区指针区间小于缓冲区区间时才查找
         while (calLen(window, pointer) > calLen(pointer, bufferPointer) && calLen(pointer, bufferPointer) < maxBufferPointer) {
             if (bufferPointer >= buffer) {
@@ -91,6 +98,7 @@ public class LZSS_MT implements Runnable{
                 res[1] = calLen(pointer, bufferPointer);
             }
             bufferPointer++;
+            find_count++;
         }
         return res;
     }
@@ -104,12 +112,12 @@ public class LZSS_MT implements Runnable{
     private void appendMatch(StringBuilder sb, String text, int[] res) {
         char index = (char) res[0];
         char offset = (char) res[1];
-        sb.append((char) 24).append(index).append(offset);
+        sb.append((char) 65535).append(index).append(offset);
 //        sb.append("(").append(res[0]).append(",").append(res[1] -1).append(")");
     }
 
     private void appendNoMatch(StringBuilder sb, String text, int pointer) {
-        sb.append(text.substring(pointer, pointer + 1));
+        sb.append(text.charAt(pointer));
     }
 
     /**
