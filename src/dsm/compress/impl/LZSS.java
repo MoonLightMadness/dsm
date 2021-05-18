@@ -31,7 +31,7 @@ public class LZSS implements Compressor {
         initCheck(text);
         //一些常数
         //滑动窗口最大长度
-        int windowMax = 4096;
+        int windowMax = 2048;
         //初始化滑动窗口、前项缓冲区、指针长度
         int window = 0, buffer = text.length() - 1, pointer = 0;
         int[] res;
@@ -63,9 +63,13 @@ public class LZSS implements Compressor {
         char[] c_text = text.toCharArray();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < c_text.length; i++) {
-            if (c_text[i] == '\0') {
+            if (c_text[i] == (char) 24) {
                 int index = c_text[i + 1];
                 int offset = c_text[i + 2];
+//                if(offset==0||(index+offset)>sb.length()){
+//                    continue;
+//                }
+                //System.out.println(index+" "+offset+" "+sb.length());
                 sb.append(sb.subSequence(index, index + offset - 1));
                 i+=2;
             } else {
@@ -113,7 +117,7 @@ public class LZSS implements Compressor {
         //前项缓冲区指针
         int bufferPointer = pointer + 2;
         //前项缓冲最大容量
-        int maxBufferPointer = 4096;
+        int maxBufferPointer = 128;
         if (bufferPointer > buffer) {
             return res;
         }
@@ -146,8 +150,16 @@ public class LZSS implements Compressor {
     private void appendMatch(StringBuilder sb, String text, int[] res) {
         char index = (char) res[0];
         char offset = (char) res[1];
-        sb.append('\0').append(index).append(offset);
-//        sb.append("(").append(res[0]).append(",").append(res[1] -1).append(")");
+        //二进制：00011000
+        //
+        //十进制：24
+        //
+        //十六进制：18
+        //
+        //缩写：CAN (Cancel)
+        //
+        //含义：取消
+        sb.append((char) 24).append(index).append(offset);
     }
 
     private void appendNoMatch(StringBuilder sb, String text, int pointer) {

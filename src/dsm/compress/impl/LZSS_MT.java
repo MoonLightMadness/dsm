@@ -28,7 +28,7 @@ public class LZSS_MT implements Runnable{
         initCheck(text);
         //一些常数
         //滑动窗口最大长度
-        int windowMax = 4096;
+        int windowMax = 2048;
         //初始化滑动窗口、前项缓冲区、指针长度
         int window = 0, buffer = text.length() - 1, pointer = 0;
         int[] res;
@@ -72,7 +72,7 @@ public class LZSS_MT implements Runnable{
         //前项缓冲区指针
         int bufferPointer = pointer + 2;
         //前项缓冲最大容量
-        int maxBufferPointer = 4096;
+        int maxBufferPointer = 128;
         if (bufferPointer > buffer) {
             return res;
         }
@@ -104,7 +104,7 @@ public class LZSS_MT implements Runnable{
     private void appendMatch(StringBuilder sb, String text, int[] res) {
         char index = (char) res[0];
         char offset = (char) res[1];
-        sb.append('\0').append(index).append(offset);
+        sb.append((char) 24).append(index).append(offset);
 //        sb.append("(").append(res[0]).append(",").append(res[1] -1).append(")");
     }
 
