@@ -133,7 +133,7 @@ public class StandardComponent implements ModuleComponent {
     public ModuleComponent getNextComponent() {
         newComponents();
         ModuleComponent res = null;
-        if (components.isEmpty()) {
+        if (components.isEmpty() || component_pointer == components.size()) {
             return null;
         }
         res = components.get(component_pointer);
@@ -175,7 +175,7 @@ public class StandardComponent implements ModuleComponent {
 
     @Override
     public void setAttachment(Map attachment) {
-        this.attachment=attachment;
+        this.attachment = attachment;
     }
 
     /**
@@ -193,4 +193,8 @@ public class StandardComponent implements ModuleComponent {
         }
     }
 
+    @Override
+    public void resetPointerCount() {
+        component_pointer = 0;
+    }
 }

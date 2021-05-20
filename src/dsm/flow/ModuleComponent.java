@@ -142,6 +142,9 @@ public interface ModuleComponent {
      */
     void setAttachment(Map attachment);
 
-
+    /**
+     * 重置计数器
+     */
+    void resetPointerCount();
 
 }

@@ -39,7 +39,7 @@ public class FlowConfigReader implements ConfigReader {
             }
             br.close();
         } catch (FileNotFoundException ffe) {
-            log.info(this.getClass().getName(), "找不到配置文件");
+            log.error(this.getClass().getName(), "找不到线程池配置文件,切换到默认配置");
         } catch (IOException e) {
             e.printStackTrace();
         }

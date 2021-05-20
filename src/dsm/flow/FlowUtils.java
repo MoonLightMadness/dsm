@@ -117,7 +117,7 @@ public class FlowUtils {
     private static String[] readConfig() {
         StringBuilder res = new StringBuilder();
         try {
-            BufferedReader br = new BufferedReader(new FileReader(new File("./flowconfig.txt")));
+            BufferedReader br = new BufferedReader(new FileReader(new File("./flowconfig.yaml")));
             String temp;
             while ((temp = br.readLine()) != null) {
                 if (SimpleUtils.isEmptyString(temp.trim())) {
@@ -130,7 +130,7 @@ public class FlowUtils {
             }
             br.close();
         } catch (FileNotFoundException ffe) {
-            log.info(FlowUtils.class.getName(), "找不到配置文件");
+            log.info(FlowUtils.class.getName(), "找不到配置文件--{}", ffe.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
             log.error(FlowUtils.class.getName(),e.getMessage());

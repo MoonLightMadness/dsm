@@ -30,7 +30,8 @@ public class StandardFlowEngine implements FlowEngine {
 
     private ThreadPoolExecutor executor;
 
-    private HashMap<String,Module> runningFlow;
+    private volatile HashMap<String,Module> runningFlow;
+
 
     @Override
     public void init() {
@@ -67,10 +68,13 @@ public class StandardFlowEngine implements FlowEngine {
     @Override
     public String startFlow(String moduleId, Map attachment) {
         String id = UUID.randomUUID().toString();
-        StandardModule flow = (StandardModule) modules.get(moduleId);
+        StandardModule flow = null;
+        flow = (StandardModule) ((StandardModule)modules.get(moduleId));
         flow.setAttachment(attachment);
         if(flow.preWork()){
-            runningFlow.put(id,flow);
+            synchronized (this){
+                runningFlow.put(id,flow);
+            }
             executor.execute(flow);
         }
         return id;

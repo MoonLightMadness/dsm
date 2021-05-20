@@ -48,20 +48,34 @@ public class Car {
     }
 
     @Test
-    public void test1(){
-        Car c =new Car();
+    public void test1() {
+        Car c1 = new Car();
+        Car c2 = new Car();
 //            FlowEngine engine = FlowUtils.getFlowEngine();
 //            String id = engine.startFlow("test_car_make",c);
 //            while (!engine.getFlowStatus(id).equals(FlowStatusEnum.CLOSED.getMessage())){
 //                Thread.sleep(1);
 //            }
 //            System.out.println(Debuger.getDebug());
-        Map<String,Object> map = new HashMap<>();
-        map.put("car",c);
-        FlowEngineUtil.getAttachment("test_car_make",map);
-        System.out.println(c.body);
-        System.out.println(c.door);
-        System.out.println(c.wheel);
+        Map<String, Object> map = new HashMap<>();
+        map.put("car", c1);
+        Map<String, Object> c2_map = new HashMap<>();
+        c2_map.put("car", c2);
+        String id_1 = FlowEngineUtil.startFlow("test_car_make", map);
+        //System.out.println(FlowEngineUtil.getFlowStatus(id_1));
+        //String id_2=FlowEngineUtil.startFlow("test_car_make", c2_map);
+        try {
+            Thread.sleep(900);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //System.out.println(FlowEngineUtil.getFlowStatus(id_2));
+        System.out.println(c1.body);
+        System.out.println(c1.door);
+        System.out.println(c1.wheel);
+        System.out.println(c2.body);
+        System.out.println(c2.door);
+        System.out.println(c2.wheel);
 
     }
 }
