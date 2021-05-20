@@ -10,10 +10,7 @@ import dsm.log.debuger.Debuger;
 import dsm.utils.SimpleUtils;
 import sun.nio.ch.ThreadPool;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.*;
 
 
@@ -68,10 +65,10 @@ public class StandardFlowEngine implements FlowEngine {
      * @date 10:06 2021/5/9
      **/
     @Override
-    public String startFlow(String moduleId,Object obj) {
+    public String startFlow(String moduleId, Map attachment) {
         String id = UUID.randomUUID().toString();
         StandardModule flow = (StandardModule) modules.get(moduleId);
-        flow.setObject(obj);
+        flow.setAttachment(attachment);
         if(flow.preWork()){
             runningFlow.put(id,flow);
             executor.execute(flow);

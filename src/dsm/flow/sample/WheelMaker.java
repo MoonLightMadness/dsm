@@ -2,6 +2,8 @@ package dsm.flow.sample;
 
 import dsm.flow.ComponentMethod;
 
+import java.util.Map;
+
 /**
  * @ClassName : dsm.flow.sample.WheelMaker
  * @Description :
@@ -16,10 +18,9 @@ public class WheelMaker extends ComponentMethod {
 
     @Override
     public void run() {
-        Car c = (Car) getObj();
-
+        Map map = getAttachment();
+        Car c = (Car) map.get("car");
         c.setWheel("Wheel_A");
-
-        this.setObj(c);
+        //this.setAttachment(map);
     }
 }

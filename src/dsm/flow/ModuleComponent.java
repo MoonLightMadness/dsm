@@ -1,5 +1,7 @@
 package dsm.flow;
 
+import java.util.Map;
+
 /**
  * 模板组件
  * @param
@@ -125,18 +127,20 @@ public interface ModuleComponent {
     void setName(String name);
 
     /**
-     * 得到对象
+     * 得到附件
      *
-     * @return {@link Object}
+     *
+     * @return {@link Map}
      */
-    Object getObject();
+    Map getAttachment();
 
     /**
-     * 设置对象
+     * 设置附件
      *
-     * @param obj obj
+     *
+     * @param attachment 附件
      */
-    void setObject(Object obj);
+    void setAttachment(Map attachment);
 
 
 

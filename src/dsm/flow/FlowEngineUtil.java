@@ -2,6 +2,8 @@ package dsm.flow;
 
 import dsm.flow.constant.FlowStatusEnum;
 
+import java.util.Map;
+
 /**
  * @ClassName : dsm.flow.FlowEngineUtil
  * @Description :
@@ -14,15 +16,15 @@ public class FlowEngineUtil {
 
 
     /**
-     * 使用流程引擎得到对象
+     * 开启流程引擎并得到附件结果
      *
      * @param flowName 流的名字
-     * @param obj      对象
+     * @param attachment 附件
      * @return {@link Object}
      */
-    public static Object getObject(String flowName,Object obj){
+    public static Map getAttachment(String flowName, Map attachment){
         FlowEngine engine = FlowUtils.getFlowEngine();
-        String id = engine.startFlow(flowName,obj);
+        String id = engine.startFlow(flowName,attachment);
         try {
             while (!engine.getFlowStatus(id).equals(FlowStatusEnum.CLOSED.getMessage())){
                 Thread.sleep(1);
@@ -30,6 +32,6 @@ public class FlowEngineUtil {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return obj;
+        return attachment;
     }
 }

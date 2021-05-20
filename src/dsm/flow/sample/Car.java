@@ -7,6 +7,9 @@ import dsm.flow.constant.FlowStatusEnum;
 import dsm.log.debuger.Debuger;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @ClassName : dsm.flow.sample.Car
  * @Description :
@@ -53,7 +56,9 @@ public class Car {
 //                Thread.sleep(1);
 //            }
 //            System.out.println(Debuger.getDebug());
-        FlowEngineUtil.getObject("test_car_make",c);
+        Map<String,Object> map = new HashMap<>();
+        map.put("car",c);
+        FlowEngineUtil.getAttachment("test_car_make",map);
         System.out.println(c.body);
         System.out.println(c.door);
         System.out.println(c.wheel);

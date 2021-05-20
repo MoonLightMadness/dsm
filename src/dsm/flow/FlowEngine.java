@@ -2,6 +2,8 @@ package dsm.flow;
 
 import dsm.flow.constant.FlowStatusEnum;
 
+import java.util.Map;
+
 
 /**
  * 流程引擎
@@ -39,7 +41,7 @@ public interface FlowEngine {
      * @param obj      传入参数
      * @return {@link String}
      */
-    String startFlow(String moduleId,Object obj);
+    String startFlow(String moduleId, Map attachment);
 
     /**
      * 中止流程

@@ -2,6 +2,8 @@ package dsm.flow.sample;
 
 import dsm.flow.ComponentMethod;
 
+import java.util.Map;
+
 /**
  * @ClassName : dsm.flow.sample.AdvancedBodyMaker
  * @Description :
@@ -18,11 +20,10 @@ public class AdvancedBodyMaker extends ComponentMethod {
     public void run() {
 
 
-        Car c =(Car) getObj();
-
-        c.setBody("advanced_body_A");
-
-        setObj(c);
+        Map map = getAttachment();
+        Car c = (Car) map.get("car");
+        c.setBody("Adv_Body_A");
+        //this.setAttachment(map);
 
 
     }

@@ -3,6 +3,8 @@ package dsm.flow.sample;
 import dsm.flow.ComponentMethod;
 import org.junit.Test;
 
+import java.util.Map;
+
 /**
  * @ClassName : dsm.flow.sample.BodyMaker
  * @Description :
@@ -17,10 +19,10 @@ public class BodyMaker extends ComponentMethod {
 
     @Override
     public void run() {
-        Car c = (Car) getObj();
-
-        c.setBody("body_A");
-        this.setObj(c);
+        Map map = getAttachment();
+        Car c = (Car) map.get("car");
+        c.setBody("Body_A");
+        //this.setAttachment(map);
     }
 
 

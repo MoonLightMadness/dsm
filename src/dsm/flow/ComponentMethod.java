@@ -1,6 +1,7 @@
 package dsm.flow;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * @ClassName : dsm.flow.ComponentMethod
@@ -10,7 +11,7 @@ import java.lang.reflect.Method;
  */
 public class ComponentMethod {
 
-    private Object obj;
+    private Map attachment;
 
     /**
      * 该组件在启动前需要做的检测
@@ -88,11 +89,13 @@ public class ComponentMethod {
         return null;
     }
 
-    public Object getObj() {
-        return obj;
+
+    public Map getAttachment() {
+        return attachment;
     }
 
-    public void setObj(Object obj) {
-        this.obj = obj;
+
+    public void setAttachment(Map attachment) {
+        this.attachment=attachment;
     }
 }

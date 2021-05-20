@@ -1,6 +1,8 @@
 package dsm.flow;
 
 
+import java.util.Map;
+
 /**
  * 流程模板
  *
@@ -85,16 +87,18 @@ public interface Module {
     String getStage();
 
     /**
-     * 得到对象
+     * 得到附件
      *
-     * @return {@link Object}
+     *
+     * @return {@link Map}
      */
-    Object getObject();
+    Map getAttachment();
 
     /**
-     * 设置传入的对象
+     * 设置附件
      *
-     * @param obj obj
+     *
+     * @param attachment 附件
      */
-    void setObject(Object obj);
+    void setAttachment(Map attachment);
 }

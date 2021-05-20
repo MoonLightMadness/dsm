@@ -6,6 +6,8 @@ import dsm.flow.constant.FlowStatusEnum;
 import dsm.log.debuger.Debuger;
 import dsm.utils.SimpleUtils;
 
+import java.util.Map;
+
 /**
  * @ClassName : dsm.flow.impl.StandardModule
  * @Description :
@@ -26,7 +28,7 @@ public class StandardModule implements Module, Runnable {
 
     private String name;
 
-    private Object obj;
+    private Map attachment;
 
     @Override
     public void start() {
@@ -38,11 +40,11 @@ public class StandardModule implements Module, Runnable {
         current = root;
         boolean canRun = root.preRun();
         if(canRun){
-            current.setObject(obj);
+            current.setAttachment(attachment);
             return canRun;
         }
         //也许这里以后需要改动
-        current.setObject(obj);
+        current.setAttachment(attachment);
         return canRun;
     }
 
@@ -66,7 +68,7 @@ public class StandardModule implements Module, Runnable {
 
     @Override
     public void flowToNext() {
-        obj = current.getObject();
+        attachment = current.getAttachment();
         while (current.hasNext()) {
             ModuleComponent temp = current.getNextComponent();
             boolean canRun = true;
@@ -76,7 +78,7 @@ public class StandardModule implements Module, Runnable {
             }
             if (temp != null && canRun) {
                 current = temp;
-                current.setObject(obj);
+                current.setAttachment(attachment);
                 return;
             }
         }
@@ -169,12 +171,12 @@ public class StandardModule implements Module, Runnable {
     }
 
     @Override
-    public Object getObject() {
-        return obj;
+    public Map getAttachment() {
+        return attachment;
     }
 
     @Override
-    public void setObject(Object obj) {
-        this.obj = obj;
+    public void setAttachment(Map attachment) {
+        this.attachment=attachment;
     }
 }

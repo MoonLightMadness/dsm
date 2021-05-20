@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName : dsm.flow.impl.StandardComponent
@@ -31,7 +32,7 @@ public class StandardComponent implements ModuleComponent {
 
     private String name;
 
-    private Object obj;
+    private Map attachment;
 
     @Override
     public boolean preRun() {
@@ -58,11 +59,11 @@ public class StandardComponent implements ModuleComponent {
 
     @Override
     public void run() {
-        runnableMethod.setObj(obj);
+        runnableMethod.setAttachment(attachment);
         runnableMethod.run();
 //            runnableMethod.getSetObjectMethod().invoke(runnableMethod, obj);
 //            runnableMethod.getRunMethod().invoke(runnableMethod);
-        obj = runnableMethod.getObj();
+        attachment = runnableMethod.getAttachment();
     }
 
     @Override
@@ -136,7 +137,7 @@ public class StandardComponent implements ModuleComponent {
             return null;
         }
         res = components.get(component_pointer);
-        res.setObject(this.getObject());
+        res.setAttachment(this.getAttachment());
         component_pointer++;
         return res;
     }
@@ -168,13 +169,13 @@ public class StandardComponent implements ModuleComponent {
     }
 
     @Override
-    public Object getObject() {
-        return obj;
+    public Map getAttachment() {
+        return attachment;
     }
 
     @Override
-    public void setObject(Object obj) {
-        this.obj = obj;
+    public void setAttachment(Map attachment) {
+        this.attachment=attachment;
     }
 
     /**
