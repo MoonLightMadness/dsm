@@ -12,17 +12,29 @@ public class Logger {
 
     public LogEntity<String> info(String src, String msg, String... args){
         msg=messageHandler(msg,args);
-        return LogEntityWrapper.normal(src,msg);
+        String className=Thread.currentThread().getStackTrace()[3].getClassName();
+        String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
+        String fileName=Thread.currentThread().getStackTrace()[3].getFileName();
+        int line=Thread.currentThread().getStackTrace()[3].getLineNumber();
+        return LogEntityWrapper.normal(fileName+"("+className+"."+methodName+"."+line+")",msg);
     }
 
     public LogEntity<String> ok(String src, String msg, String... args){
         msg=messageHandler(msg,args);
-        return LogEntityWrapper.ok(src,msg);
+        String className=Thread.currentThread().getStackTrace()[3].getClassName();
+        String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
+        String fileName=Thread.currentThread().getStackTrace()[3].getFileName();
+        int line=Thread.currentThread().getStackTrace()[3].getLineNumber();
+        return LogEntityWrapper.ok(fileName+"("+className+"."+methodName+"."+line+")",msg);
     }
 
     public LogEntity<String> error(String src, String msg, String... args){
         msg=messageHandler(msg,args);
-        return LogEntityWrapper.error(src,msg);
+        String className=Thread.currentThread().getStackTrace()[3].getClassName();
+        String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
+        String fileName=Thread.currentThread().getStackTrace()[3].getFileName();
+        int line=Thread.currentThread().getStackTrace()[3].getLineNumber();
+        return LogEntityWrapper.error(fileName+"("+className+"."+methodName+"."+line+")",msg);
     }
 
 

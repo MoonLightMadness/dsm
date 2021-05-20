@@ -1,5 +1,7 @@
 package test;
 
+import dsm.log.LogSystem;
+import dsm.log.LogSystemFactory;
 import dsm.utils.SimpleUtils;
 import org.junit.Test;
 
@@ -27,5 +29,15 @@ public class system {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    @Test
+    public void stacktrace(){
+
+        System.out.println(Thread.currentThread().getStackTrace()[1].getClassName());
+        System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName());
+        System.out.println(Thread.currentThread().getStackTrace()[1].getFileName());
+        System.out.println(Thread.currentThread().getStackTrace()[1].getLineNumber());
+        LogSystem log = LogSystemFactory.getLogSystem();
+        log.info("aaa","test");
     }
 }
