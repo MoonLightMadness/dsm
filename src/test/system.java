@@ -3,9 +3,13 @@ package test;
 import dsm.log.LogSystem;
 import dsm.log.LogSystemFactory;
 import dsm.utils.SimpleUtils;
+import dsm.utils.TimeFormatter;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * @ClassName : test.system
@@ -39,5 +43,15 @@ public class system {
         System.out.println(Thread.currentThread().getStackTrace()[1].getLineNumber());
         LogSystem log = LogSystemFactory.getLogSystem();
         log.info("aaa","test");
+    }
+    @Test
+    public void uuid(){
+        String id = UUID.randomUUID().toString().replace("-","");
+        System.out.println(id);
+        Date d = new Date();
+        SimpleDateFormat sdf=new SimpleDateFormat(TimeFormatter.SEC_LEVEL);
+        long time = d.getTime();
+        String date=sdf.format(d);
+        System.out.println(time+"\n"+date);
     }
 }

@@ -51,19 +51,16 @@ public class Car {
     public void test1() {
         Car c1 = new Car();
         Car c2 = new Car();
-//            FlowEngine engine = FlowUtils.getFlowEngine();
-//            String id = engine.startFlow("test_car_make",c);
-//            while (!engine.getFlowStatus(id).equals(FlowStatusEnum.CLOSED.getMessage())){
-//                Thread.sleep(1);
-//            }
-//            System.out.println(Debuger.getDebug());
         Map<String, Object> map = new HashMap<>();
         map.put("car", c1);
         Map<String, Object> c2_map = new HashMap<>();
         c2_map.put("car", c2);
-        String id_1 = FlowEngineUtil.startFlow("test_car_make", map);
-        //System.out.println(FlowEngineUtil.getFlowStatus(id_1));
-        //String id_2=FlowEngineUtil.startFlow("test_car_make", c2_map);
+        String flowName="test_car_make";
+        String id_1=FlowUtils.generateByName(flowName);
+        String id_2=FlowUtils.generateByName(flowName);
+        FlowEngineUtil.startFlow(id_1,map);
+        FlowEngineUtil.startFlow(id_2,c2_map);
+
         try {
             Thread.sleep(900);
         } catch (InterruptedException e) {
