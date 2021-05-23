@@ -52,9 +52,9 @@ public class LZSS_MT implements Runnable{
             }
             count++;
         }
-        System.out.println(count);
-        System.out.println(find_count);
-        System.out.println(find_count/count);
+//        System.out.println(count);
+//        System.out.println(find_count);
+//        System.out.println(find_count/count);
 //        encoded = sb.toString();
 //        return encoded;
     }

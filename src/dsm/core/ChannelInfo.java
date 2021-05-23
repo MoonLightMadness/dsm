@@ -15,6 +15,8 @@ public class ChannelInfo {
 
     private SocketChannel channel;
 
+    private String name;
+
     /**
      * 心跳，超过一定次数则认为死亡
      */
@@ -23,6 +25,23 @@ public class ChannelInfo {
     private String stime = SimpleUtils.getTimeStamp();
 
     private String lastCheck = stime;
+
+    /**
+     * 心跳加一
+     */
+    public void beat() {
+        beat += 1;
+        if (beat > 20) {
+            channel = null;
+        }
+    }
+
+    /**
+     * 重置心跳计数
+     */
+    public void reset() {
+        beat = 0;
+    }
 
     /**
      * 时间间隔,默认单位:秒
@@ -67,5 +86,13 @@ public class ChannelInfo {
 
     public void setInterval(int interval) {
         this.interval = interval;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

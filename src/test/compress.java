@@ -135,12 +135,12 @@ public class compress {
     public void test(){
         LogSystem log = LogSystemFactory.getLogSystem();
         log.immediatelySaveMode(true);
+
         String[] files=new String[]{
-                //"./LICENSE",
-                //"./test.db",
-                //"C:\\Users\\Administrator\\Desktop\\entertainment\\java\\dsm\\.idea\\workspace.xml",
-                //"C:\\Users\\Administrator\\Documents\\Study\\毕业设计\\1.docx,"
-                "./1.flac"
+                "./LICENSE",
+                "./test.db",
+                "./.idea\\workspace.xml",
+
         };
         run(files,log);
     }
@@ -150,7 +150,7 @@ public class compress {
             String test = readFile(file);
             int len = test.length();
             //n线程
-            int thread_num = 4;
+            int thread_num = 1;
             int cut = len/thread_num;
             Thread[] threads = new Thread[thread_num];
             StringBuilder[] sbs = new StringBuilder[thread_num];

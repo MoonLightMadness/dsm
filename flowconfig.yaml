@@ -6,3 +6,11 @@ test_car_make:
     sub1: dsm.flow.sample.DoorMaker
   stage3:
     sub1: dsm.flow.sample.WheelMaker
+
+service_compress_code:
+  stage1:
+    sub1: dsm.security.flow.MQSender
+  stage2:
+    sub1: dsm.security.flow.CodeReceiver
+  stage3:
+    sub1: dsm.security.flow.CodeVerifier

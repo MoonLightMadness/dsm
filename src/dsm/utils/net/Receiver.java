@@ -2,6 +2,9 @@ package dsm.utils.net;
 
 import dsm.base.BaseEntity;
 import dsm.base.impl.UniversalEntity;
+import dsm.core.ChannelInfo;
+import dsm.log.LogSystem;
+import dsm.log.LogSystemFactory;
 import dsm.utils.SimpleUtils;
 
 import java.io.BufferedReader;
@@ -19,6 +22,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Queue;
 
@@ -29,15 +33,20 @@ import java.util.Queue;
  * @Author ZhangHL
  */
 public class Receiver implements Runnable {
-    private Queue<BaseEntity> msg;
 
     private String name;
 
-    private String strategy;
+    private ICallBack callBack;
 
-    public void init(String name, Queue queue) {
+    private List info;
+
+    private LogSystem log;
+
+    public void init(String name,ICallBack callBack,List info) {
         this.name = name;
-        this.msg = queue;
+        this.callBack=callBack;
+        this.info=info;
+        log = LogSystemFactory.getLogSystem();
     }
 
     @Override
@@ -57,27 +66,19 @@ public class Receiver implements Runnable {
                         SocketChannel remote = ((ServerSocketChannel) sk.channel()).accept();
                         remote.configureBlocking(false);
                         remote.register(selector, SelectionKey.OP_READ);
+                        generateChannelInfo(remote);
+                        log.info(null,"接入:{}",remote.getRemoteAddress().toString());
                     }
                     if (sk.isReadable()) {
                         byte[] data = SimpleUtils.receiveDataInNIO((SocketChannel) sk.channel());
                         BaseEntity entity = (BaseEntity) SimpleUtils.bytesToSerializableObject(data);
-                        Class temp = (Class) Class.forName(strategy).newInstance();
-                        Method m = temp.getDeclaredMethod("invoke", Array.class);
-                        m.setAccessible(true);
-                        m.invoke(temp,data);
+                        log.info(null,"收到:{}",entity.toString());
+                        callBack.invoke((SocketChannel) sk.channel(),entity);
                     }
                     iterator.remove();
                 }
             }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -98,9 +99,6 @@ public class Receiver implements Runnable {
                 if (temp.startsWith(name+".port")) {
                     port = temp.substring((name+".port=").length());
                 }
-                if(temp.startsWith(name+".strategy=")){
-                    strategy = temp.substring((name+".strategy=").length());
-                }
             }
             if (ip == null) {
                 ip = InetAddress.getLocalHost().getHostAddress();
@@ -112,5 +110,11 @@ public class Receiver implements Runnable {
         }
         address = new InetSocketAddress(ip, Integer.parseInt(port));
         return address;
+    }
+
+    private void generateChannelInfo(SocketChannel channel){
+        ChannelInfo channelInfo = new ChannelInfo();
+        channelInfo.setChannel(channel);
+        info.add(channelInfo);
     }
 }
