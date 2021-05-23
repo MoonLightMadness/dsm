@@ -2,8 +2,11 @@ package dsm.core;
 
 import dsm.base.BaseEntity;
 import dsm.base.impl.UniversalEntity;
+import dsm.base.impl.UniversalEntityWrapper;
 import dsm.log.LogSystem;
 import dsm.log.LogSystemFactory;
+import dsm.utils.SimpleUtils;
+import dsm.utils.net.Sender;
 import dsm.utils.net.impl.CallBack;
 
 import java.io.IOException;
@@ -33,6 +36,10 @@ public class CoreMessageHandler extends CallBack {
             if(cmd.startsWith(CoreCommandEnum.SET_NAME.getMessage())){
                 log.info(null,"接收到更名指令");
                 resetName(universalEntity.getMessage().split(" ")[1],channel.getRemoteAddress().toString());
+            }
+            if(cmd.startsWith(CoreCommandEnum.GET_IP.getMessage())){
+                UniversalEntity ip = (UniversalEntity) getIP(cmd.split(" ")[1]);
+                send(channel,ip);
             }
         } catch (IOException e) {
             log.error(null,e.getMessage());
@@ -72,5 +79,33 @@ public class CoreMessageHandler extends CallBack {
         } catch (IOException e) {
             log.error(null,e.getMessage());
         }
+    }
+
+    private BaseEntity getIP(String name){
+        ListIterator<ChannelInfo> iterator = list.listIterator();
+        String ip=null;
+        UniversalEntity entity=null;
+        try {
+            synchronized (iterator){
+                while (iterator.hasNext()){
+                    ChannelInfo info = iterator.next();
+                    if(info.getName()!=null&&info.getName().equals(name)){
+                        ip = info.getChannel().getRemoteAddress().toString();
+                        break;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        entity = UniversalEntityWrapper.getOne("0",
+                "1","core","remote","1",ip,"reply","00001");
+        return entity;
+    }
+
+    private void send(SocketChannel channel,BaseEntity entity){
+        byte[] data = SimpleUtils.serializableToBytes(entity);
+        Sender.send(channel,data);
+        log.info(null,"已发送:{}",entity.toString());
     }
 }
