@@ -10,6 +10,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @ClassName : test.compress
@@ -19,220 +23,243 @@ import java.io.*;
  */
 public class compress {
     @Test
-    public void testEncode(){
-        Compressor compressor = new LZSS();
-        String test = "asdzxcmasdzxcjkasdzxiatyughjtyughjnisckoasfoafeasdzxingkjbjvhcdzhgtasdzxdfxtz";
-        String res = compressor.encode(test);
-        String decode = compressor.decode(res);
-        System.out.println(test+" "+test.length());
-        System.out.println(res+" "+res.length());
-        System.out.println(decode+" "+decode.length());
-        Assert.assertEquals(test,decode);
+    public void testEncode() {
+        LZSS_MT mt = new LZSS_MT();
+        String test = "asdzxcmasdzxcjkasdzxiatyughjtyughjnisckoasfoafeasdzxingkjbjvhcdzhgtasdzxdfxtzasfasffchjaa";
+        StringBuilder sb = new StringBuilder();
+        mt.init(test, sb);
+        mt.run();
+        String res = sb.toString();
+        String decode = mt.decode(res);
+        System.out.println(test + " " + test.length());
+        System.out.println(res + " " + res.length());
+        System.out.println(decode + " " + decode.length());
+        Assert.assertEquals(test, decode);
     }
-@Test
-    public void testFile_1(){
+
+    @Test
+    public void testFile_1() {
         Compressor compressor = new LZSS();
-        String test = readFile("./LICENSE");
+        String test = readFile(new File("./LICENSE"));
         long time = System.currentTimeMillis();
-        System.out.println("原文长度:"+test.length());
+        System.out.println("原文长度:" + test.length());
         String res = compressor.encode(test);
-        System.out.println("压缩时长:"+(System.currentTimeMillis()-time));
-        System.out.println("压缩之后长度:"+res.length());
-        System.out.println("比率:"+(100-((res.length()*1.0f)/test.length()*100))+"%");
+        System.out.println("压缩时长:" + (System.currentTimeMillis() - time));
+        System.out.println("压缩之后长度:" + res.length());
+        System.out.println("比率:" + (100 - ((res.length() * 1.0f) / test.length() * 100)) + "%");
         time = System.currentTimeMillis();
         String decode = compressor.decode(res);
-        System.out.println("解压缩时长:"+(System.currentTimeMillis()-time));
+        System.out.println("解压缩时长:" + (System.currentTimeMillis() - time));
         System.out.println(decode.length());
-        Assert.assertEquals(test.length(),decode.length());
+        Assert.assertEquals(test.length(), decode.length());
         compressor.save(res);
     }
 
     @Test
-    public void testFile_2(){
+    public void testFile_2() {
         Compressor compressor = new LZSS();
-        String test = readFile("C:\\Users\\Administrator\\Desktop\\entertainment\\java\\dsm\\.idea\\workspace.xml");
+        String test = readFile(new File("C:\\Users\\Administrator\\Desktop\\entertainment\\java\\dsm\\.idea\\workspace.xml"));
         long time = System.currentTimeMillis();
-        System.out.println("原文长度:"+test.length());
+        System.out.println("原文长度:" + test.length());
         String res = compressor.encode(test);
-        System.out.println("压缩时长:"+(System.currentTimeMillis()-time));
-        System.out.println("压缩之后长度:"+res.length());
-        System.out.println("压缩率:"+(100-((res.length()*1.0f)/test.length()*100))+"%");
+        System.out.println("压缩时长:" + (System.currentTimeMillis() - time));
+        System.out.println("压缩之后长度:" + res.length());
+        System.out.println("压缩率:" + (100 - ((res.length() * 1.0f) / test.length() * 100)) + "%");
         time = System.currentTimeMillis();
         String decode = compressor.decode(res);
-        System.out.println("解压缩时长:"+(System.currentTimeMillis()-time));
+        System.out.println("解压缩时长:" + (System.currentTimeMillis() - time));
         System.out.println(decode.length());
-        Assert.assertEquals(test.length(),decode.length());
+        Assert.assertEquals(test.length(), decode.length());
         compressor.save(res);
     }
+
     @Test
-    public void testFile_3_MT(){
+    public void testFile_3_MT() {
         //多线程测试
-        String test = readFile("./LICENSE");
+        String test = readFile(new File("./LICENSE"));
         //String test = readFile("C:\\Users\\Administrator\\Desktop\\entertainment\\java\\dsm\\.idea\\workspace.xml");
         //String test = readFile("./test.db");
         int len = test.length();
-        System.out.println("文件长度:"+len);
+        System.out.println("文件长度:" + len);
         //n线程
         int thread_num = 8;
-        int cut = len/thread_num;
+        int cut = len / thread_num;
         Thread[] threads = new Thread[thread_num];
         StringBuilder[] sbs = new StringBuilder[thread_num];
         LZSS_MT[] mts = new LZSS_MT[thread_num];
         for (int i = 0; i < thread_num; i++) {
             mts[i] = new LZSS_MT();
-            int start = i*cut;
-            int end = start+cut;
-            if(i+1==thread_num ){
+            int start = i * cut;
+            int end = start + cut;
+            if (i + 1 == thread_num) {
                 end = test.length();
             }
-            sbs[i]=new StringBuilder();
-            String slice = test.substring(start,end);
-            mts[i].init(slice,sbs[i]);
-            threads[i]=new Thread(mts[i]);
-            threads[i].setName("T-"+i);
+            sbs[i] = new StringBuilder();
+            String slice = test.substring(start, end);
+            mts[i].init(slice, sbs[i]);
+            threads[i] = new Thread(mts[i]);
+            threads[i].setName("T-" + i);
             threads[i].start();
         }
         //等待结束
-        long time =System.currentTimeMillis();
-        int[] status=new int[thread_num];
-        int point=0,endSum=0;
-        boolean isEnd=false;
-        while (true){
-            if(point>=thread_num){
-                point=0;
+        long time = System.currentTimeMillis();
+        int[] status = new int[thread_num];
+        int point = 0, endSum = 0;
+        boolean isEnd = false;
+        while (true) {
+            if (point >= thread_num) {
+                point = 0;
             }
-            if(!threads[point].isAlive()){
-                status[point]=1;
+            if (!threads[point].isAlive()) {
+                status[point] = 1;
             }
             for (int i = 0; i < status.length; i++) {
-                if(status[i]==1){
+                if (status[i] == 1) {
                     endSum++;
                 }
             }
-            if(endSum== status.length){
+            if (endSum == status.length) {
                 break;
-            }else {
-                endSum=0;
+            } else {
+                endSum = 0;
             }
             point++;
         }
-        StringBuilder encode=new StringBuilder();
+        StringBuilder encode = new StringBuilder();
         Compressor compressor = new LZSS();
-        for(LZSS_MT mt:mts){
+        for (LZSS_MT mt : mts) {
             encode.append(mt.getSb().toString());
         }
         //compressor.save(encode.toString());
-        System.out.println("压缩后长度："+encode.length());
-        System.out.println("压缩率:"+(100-((encode.length()*1.0f)/test.length()*100))+"%");
+        System.out.println("压缩后长度：" + encode.length());
+        System.out.println("压缩率:" + (100 - ((encode.length() * 1.0f) / test.length() * 100)) + "%");
         time = System.currentTimeMillis();
         String decode = compressor.decode(encode.toString());
-        System.out.println("解压缩时长:"+(System.currentTimeMillis()-time));
+        System.out.println("解压缩时长:" + (System.currentTimeMillis() - time));
         System.out.println(decode.length());
 
-        Assert.assertEquals(test.length(),decode.length());
+        Assert.assertEquals(test.length(), decode.length());
     }
+
     @Test
-    public void test(){
+    public void test() {
         LogSystem log = LogSystemFactory.getLogSystem();
         log.immediatelySaveMode(true);
 
-        String[] files=new String[]{
-                "./LICENSE",
-                "./test.db",
-                "./.idea\\workspace.xml",
-
-        };
-        run(files,log);
+//        String[] files=new String[]{
+//                "./LICENSE",
+//                "./test.db",
+//                "./.idea\\workspace.xml",
+//                "./assets/西游记.txt"
+//
+//        };
+        File directory = new File("./assets");
+        File[] files = directory.listFiles();
+        run(files, log);
     }
 
-    private void run(String[] files, LogSystem log){
-        for(String file:files){
+    private void run(File[] files, LogSystem log) {
+        for (File file : files) {
             String test = readFile(file);
             int len = test.length();
             //n线程
             int thread_num = 1;
-            int cut = len/thread_num;
+            int cut = len / thread_num;
             Thread[] threads = new Thread[thread_num];
             StringBuilder[] sbs = new StringBuilder[thread_num];
             LZSS_MT[] mts = new LZSS_MT[thread_num];
             for (int i = 0; i < thread_num; i++) {
                 mts[i] = new LZSS_MT();
-                int start = i*cut;
-                int end = start+cut;
-                if(i+1==thread_num ){
+                int start = i * cut;
+                int end = start + cut;
+                if (i + 1 == thread_num) {
                     end = test.length();
                 }
-                sbs[i]=new StringBuilder();
-                String slice = test.substring(start,end);
-                mts[i].init(slice,sbs[i]);
-                threads[i]=new Thread(mts[i]);
-                threads[i].setName("T-"+i);
+                sbs[i] = new StringBuilder();
+                String slice = test.substring(start, end);
+                mts[i].init(slice, sbs[i]);
+                threads[i] = new Thread(mts[i]);
+                threads[i].setName("T-" + i);
                 threads[i].start();
             }
             //等待结束
-            int[] status=new int[thread_num];
-            int point=0,endSum=0;
-            boolean isEnd=false;
-            long time =System.currentTimeMillis();
-            while (true){
-                if(point>=thread_num){
-                    point=0;
+            int[] status = new int[thread_num];
+            int point = 0, endSum = 0;
+            boolean isEnd = false;
+            long time = System.currentTimeMillis();
+            while (true) {
+                if (point >= thread_num) {
+                    point = 0;
                 }
-                if(!threads[point].isAlive()){
-                    status[point]=1;
+                if (!threads[point].isAlive()) {
+                    status[point] = 1;
                 }
                 for (int i = 0; i < status.length; i++) {
-                    if(status[i]==1){
+                    if (status[i] == 1) {
                         endSum++;
                     }
                 }
-                if(endSum== status.length){
+                if (endSum == status.length) {
                     break;
-                }else {
-                    endSum=0;
+                } else {
+                    endSum = 0;
                 }
                 point++;
             }
-            long encode_end_time = System.currentTimeMillis() -time;
-            StringBuilder encode=new StringBuilder();
+            long encode_end_time = System.currentTimeMillis() - time;
+            StringBuilder encode = new StringBuilder();
             Compressor compressor = new LZSS();
-            for(LZSS_MT mt:mts){
+            for (LZSS_MT mt : mts) {
                 encode.append(mt.getSb().toString());
             }
             time = System.currentTimeMillis();
             String decode = compressor.decode(encode.toString());
-            if(test.length()==decode.length()){
-                log.info(this.getClass().getName(),"文件名:{},文件大小:{}字节,压缩后大小{},压缩时间:{},压缩率:{},解压缩时间:{}",
-                        new File(file).getName(),
+            compressor.save(decode);
+            if (test.length() == decode.length()) {
+                log.info(this.getClass().getName(), "文件名:{},文件大小:{}字节,压缩后大小{},压缩时间:{},压缩率:{},解压缩时间:{},解压缩大小:{}",
+                        file.getName(),
                         String.valueOf(test.length()),
                         String.valueOf(encode.toString().length()),
                         String.valueOf(encode_end_time),
-                        (100-((encode.length()*1.0f)/test.length()*100))+"%",
-                        String.valueOf(System.currentTimeMillis()-time)
-                        );
-            }else {
-                log.error(this.getClass().getName(),"文件名:{},文件大小:{}字节,压缩后大小{},压缩时间:{},压缩率:{},解压缩时间:{}",
-                        new File(file).getName(),
+                        (100 - ((encode.length() * 1.0f) / test.length() * 100)) + "%",
+                        String.valueOf(System.currentTimeMillis() - time),
+                        String.valueOf(decode.length())
+                );
+            } else {
+                log.error(this.getClass().getName(), "文件名:{},文件大小:{}字节,压缩后大小{},压缩时间:{},压缩率:{},解压缩时间:{}",
+                        file.getName(),
                         String.valueOf(test.length()),
                         String.valueOf(encode.toString().length()),
                         String.valueOf(encode_end_time),
-                        (100-((encode.length()*1.0f)/test.length()*100))+"%",
-                        String.valueOf(System.currentTimeMillis()-time));
+                        (100 - ((encode.length() * 1.0f) / test.length() * 100)) + "%",
+                        String.valueOf(System.currentTimeMillis() - time));
             }
         }
     }
 
-    private String readFile(String path){
+    private String readFile(File f) {
         try {
-            File f= new File(path);
-            BufferedReader reader = new BufferedReader(new FileReader(f));
-            StringBuilder sb =new StringBuilder();
-            String temp;
-            while ((temp=reader.readLine())!=null){
-                sb.append(temp);
+            //BufferedReader reader = new BufferedReader(new FileReader(f));
+//            String temp;
+//            while ((temp=reader.readLine())!=null){
+//                sb.append(temp).append("\n");
+//            }
+//            reader.close();
+            FileInputStream fis = new FileInputStream(f);
+            byte temp = 0;
+            List<Byte> buffer = new ArrayList<Byte>();
+            int count = 0;
+            while ((temp = (byte) fis.read()) != -1) {
+                buffer.add(new Byte(temp));
             }
-            reader.close();
-            return sb.toString();
+            fis.close();
+            byte[] buf = new byte[buffer.size()];
+            for(int i=0;i<buffer.size(); i++){
+                buf[i]= buffer.get(i);
+            }
+            String sb = new String(buf);
+           // System.out.println(sb.length());
+            return sb;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -240,9 +267,12 @@ public class compress {
         }
         return null;
     }
+
+
+
     @Test
-    public void playground(){
-        char a =(char) 65535;
-        System.out.println(a)  ;
+    public void playground() {
+        char a = (char) 65535;
+        System.out.println(a);
     }
 }

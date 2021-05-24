@@ -27,12 +27,12 @@ public class core {
 
                 SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress(InetAddress.getLocalHost(),9002));
                 Thread.sleep(400);
-                UniversalEntity entity = UniversalEntityWrapper.getOne(String.valueOf(new Date().getTime()),
+                UniversalEntity entity = UniversalEntityWrapper.getOne(String.valueOf(System.currentTimeMillis()),
                         "1",
                         "test",
                         "core",
                         "1",
-                        "set_name "+String.valueOf(new Date().getTime()),
+                        "set_name "+ System.currentTimeMillis(),
                         "null",
                         "00001");
                 byte[] data = SimpleUtils.serializableToBytes(entity);
@@ -57,7 +57,7 @@ public class core {
             //先注册一个服务
             SocketChannel socketChannel = SocketChannel.open(new InetSocketAddress(InetAddress.getLocalHost(),9002));
             Thread.sleep(400);
-            UniversalEntity entity = UniversalEntityWrapper.getOne(String.valueOf(new Date().getTime()),
+            UniversalEntity entity = UniversalEntityWrapper.getOne(String.valueOf(System.currentTimeMillis()),
                     "1",
                     "test",
                     "core",
@@ -74,7 +74,7 @@ public class core {
             //获取这个服务的IP
             SocketChannel socketChannel1 = SocketChannel.open(new InetSocketAddress(InetAddress.getLocalHost(),9002));
             Thread.sleep(400);
-            UniversalEntity entity1 = UniversalEntityWrapper.getOne(String.valueOf(new Date().getTime()),
+            UniversalEntity entity1 = UniversalEntityWrapper.getOne(String.valueOf(System.currentTimeMillis()),
                     "1",
                     "test",
                     "core",

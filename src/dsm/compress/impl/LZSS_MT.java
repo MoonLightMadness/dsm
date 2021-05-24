@@ -8,18 +8,18 @@ import dsm.compress.MatchMethod;
  * @Date 2021-05-18 08:50:11
  * @Author ZhangHL
  */
-public class LZSS_MT implements Runnable{
+public class LZSS_MT implements Runnable {
 
-    StringBuilder sb ;
+    StringBuilder sb;
 
     String text;
 
     MatchMethod matchMethod;
 
-    public void init(String text,StringBuilder sb){
-        this.text=text;
-        this.sb=sb;
-        matchMethod=new KMP();
+    public void init(String text, StringBuilder sb) {
+        this.text = text;
+        this.sb = sb;
+        matchMethod = new KMP();
     }
 
     @Override
@@ -32,18 +32,19 @@ public class LZSS_MT implements Runnable{
         //初始化滑动窗口、前项缓冲区、指针长度
         int window = 0, buffer = text.length() - 1, pointer = 0;
         int[] res;
-        int count=0;
+        int count = 0;
         while (pointer <= buffer) {
             //找到最长匹配字符串
-            res = findLongestMatchString(text, window, buffer, pointer);
+            res = findLongestMatchString(text, window, windowMax, buffer, pointer);
             //如果找到了匹配字符串
             if (res[0] != -1) {
+                System.out.println(res[0] + " " + res[1] + " " + pointer);
                 //将匹配项添加到结果集中
                 appendMatch(sb, text, res);
                 pointer += res[1] - 1;
                 //检测滑动窗口有没有超过最大值
                 if (calLen(window, pointer) > windowMax) {
-                    window += calLen(window, pointer) - windowMax;
+                    window += calLen(window, pointer) - windowMax - 1;
                 }
             } else {
                 //如果没有匹配到字符串
@@ -59,11 +60,31 @@ public class LZSS_MT implements Runnable{
 //        return encoded;
     }
 
-    public StringBuilder getSb(){
+    public String decode(String text) {
+        char[] c_text = text.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < c_text.length; i++) {
+            if (c_text[i] == (char) 65535) {
+                int index = c_text[i + 1];
+                int offset = c_text[i + 2];
+//                if(offset==0||(index+offset)>sb.length()){
+//                    continue;
+//                }
+                //System.out.println(index+" "+offset+" "+sb.length());
+                sb.append(sb.subSequence(index, index + offset - 1));
+                i += 2;
+            } else {
+                sb.append(c_text[i]);
+            }
+        }
+        return sb.toString();
+    }
+
+    public StringBuilder getSb() {
         return sb;
     }
 
-    private int find_count=0;
+    private int find_count = 0;
 
     /**
      * 找到最长匹配字符串
@@ -74,34 +95,46 @@ public class LZSS_MT implements Runnable{
      * @param pointer 指针，滑动窗口的终点和前项缓冲区的起点
      * @return int 最长匹配字符串在滑动窗口中的位置,int[0]表示其实起始位置，int[1]代表长度
      */
-    private int[] findLongestMatchString(String text, int window, int buffer, int pointer) {
+    private int[] findLongestMatchString(String text, int window, int max_window, int buffer, int pointer) {
         //初始化结果集
         int[] res = new int[]{-1, 1};
         //前项缓冲区指针
         int bufferPointer = pointer + 2;
         //前项缓冲最大容量
-        int maxBufferPointer = 20;
+        int maxBufferPointer = 30;
         if (bufferPointer > buffer) {
             return res;
         }
         //使用KMP算法进行字符串匹配
-        matchMethod = new KMP();
+        //matchMethod = new KMP();
         //当前项缓冲区指针区间小于缓冲区区间时才查找
-        while (calLen(window, pointer) > calLen(pointer, bufferPointer) && calLen(pointer, bufferPointer) < maxBufferPointer) {
-            if (bufferPointer >= buffer) {
-                break;
+//        while (calLen(window, pointer) > calLen(pointer, bufferPointer) && calLen(pointer, bufferPointer) < maxBufferPointer) {
+//            if (bufferPointer >= buffer) {
+//                break;
+//            }
+//            //match()方法返回-1代表无匹配，否则代表匹配下标
+//            int match = matchMethod.match(text.substring(window, pointer), text.substring(pointer, bufferPointer));
+//            if (match != -1 && calLen(pointer, bufferPointer) >= 5) {
+//                res[0] = match+(window);
+//                res[1] = calLen(pointer, bufferPointer -1);
+//            }
+//            bufferPointer++;
+//            find_count++;
+//        }
+        ZHL zhl = new ZHL();
+        int front = pointer + maxBufferPointer;
+        if (front > text.length()) {
+            front = (front - text.length()) + pointer;
+        }
+        if (front < text.length()) {
+            res = zhl.match(text.substring(window, pointer), text.substring(pointer, front));
+            if (res[1] < 5) {
+                res[0] = -1;
             }
-            //match()方法返回-1代表无匹配，否则代表匹配下标
-            int match = matchMethod.match(text.substring(window, pointer), text.substring(pointer, bufferPointer));
-            if (match != -1 && calLen(pointer, bufferPointer) >= 5) {
-                res[0] = match;
-                res[1] = calLen(pointer, bufferPointer);
-            }
-            bufferPointer++;
-            find_count++;
         }
         return res;
     }
+
     /**
      * 添加匹配项
      *
@@ -113,7 +146,6 @@ public class LZSS_MT implements Runnable{
         char index = (char) res[0];
         char offset = (char) res[1];
         sb.append((char) 65535).append(index).append(offset);
-//        sb.append("(").append(res[0]).append(",").append(res[1] -1).append(")");
     }
 
     private void appendNoMatch(StringBuilder sb, String text, int pointer) {
