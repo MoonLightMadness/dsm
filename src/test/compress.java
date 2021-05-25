@@ -146,14 +146,6 @@ public class compress {
     public void test() {
         LogSystem log = LogSystemFactory.getLogSystem();
         log.immediatelySaveMode(true);
-
-//        String[] files=new String[]{
-//                "./LICENSE",
-//                "./test.db",
-//                "./.idea\\workspace.xml",
-//                "./assets/西游记.txt"
-//
-//        };
         File directory = new File("./assets");
         File[] files = directory.listFiles();
         run(files, log);
@@ -240,27 +232,13 @@ public class compress {
 
     private String readFile(File f) {
         try {
-            //BufferedReader reader = new BufferedReader(new FileReader(f));
-//            String temp;
-//            while ((temp=reader.readLine())!=null){
-//                sb.append(temp).append("\n");
-//            }
-//            reader.close();
-            FileInputStream fis = new FileInputStream(f);
-            byte temp = 0;
-            List<Byte> buffer = new ArrayList<Byte>();
-            int count = 0;
-            while ((temp = (byte) fis.read()) != -1) {
-                buffer.add(new Byte(temp));
-            }
-            fis.close();
-            byte[] buf = new byte[buffer.size()];
-            for(int i=0;i<buffer.size(); i++){
-                buf[i]= buffer.get(i);
-            }
-            String sb = new String(buf);
-           // System.out.println(sb.length());
-            return sb;
+            FileReader reader = new FileReader(f);
+            char[] buffer = new char[(int) f.length()];
+            int size = reader.read(buffer);
+            reader.close();
+            char[] res = new char[size];
+            System.arraycopy(buffer, 0, res, 0, size);
+            return String.valueOf(res);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

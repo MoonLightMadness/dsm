@@ -33,7 +33,7 @@ public class LZSS_MT implements Runnable {
         initCheck(text);
         //一些常数
         //滑动窗口最大长度
-        int windowMax = 4096;
+        int windowMax = 2333;
         //初始化滑动窗口、前项缓冲区、指针长度
         int window = 0, buffer = text.length() - 1, pointer = 0;
         int[] res;
@@ -48,14 +48,14 @@ public class LZSS_MT implements Runnable {
                 //将匹配项添加到结果集中
                 appendMatch(sb, text, res);
                 pointer += res[1] ;
-                //检测滑动窗口有没有超过最大值
-                if (calLen(window, pointer) > windowMax) {
-                    window += calLen(window, pointer) - windowMax - 1;
-                }
             } else {
                 //如果没有匹配到字符串
                 appendNoMatch(sb, text, pointer);
                 pointer++;
+            }
+            //检测滑动窗口有没有超过最大值
+            if (calLen(window, pointer) > windowMax) {
+                window += calLen(window, pointer) - windowMax - 1;
             }
             count++;
         }
@@ -95,13 +95,10 @@ public class LZSS_MT implements Runnable {
     private int[] findLongestMatchString(String text, int window, int max_window, int buffer, int pointer) {
         //初始化结果集
         int[] res = new int[]{-1, 1};
-        //前项缓冲区指针
-        int bufferPointer = pointer + 2;
+
         //前项缓冲最大容量
         int maxBufferPointer = 512;
-        if (bufferPointer > buffer) {
-            return res;
-        }
+
         ZHL zhl = new ZHL();
         int front = pointer + maxBufferPointer;
         if (front > text.length()) {
@@ -109,7 +106,7 @@ public class LZSS_MT implements Runnable {
         }
         if (front < text.length()) {
             res = zhl.match(text.substring(window, pointer), text.substring(pointer, front));
-            if (res[1] < 5) {
+            if (res[1] < 3) {
                 res[0] = -1;
             }
         }

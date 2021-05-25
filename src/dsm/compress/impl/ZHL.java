@@ -12,7 +12,6 @@ import org.junit.Test;
 public class ZHL {
 
     public int[] match(String text, String pattern) {
-        //System.out.println(text + " " + pattern);
         //模式串最长前缀匹配
         char[] c_text = text.toCharArray();
         char[] c_pattern = pattern.toCharArray();
@@ -24,7 +23,6 @@ public class ZHL {
                     break;
                 }
                 if (c_text[i + j] == c_pattern[j]) {
-                    //System.out.println(c_text[i + j] + " " + (i + j) + " " + c_pattern[j] + " " + j);
                     max = j;
                     if (!isMatch) {
                         lastIndex = i;
@@ -39,7 +37,6 @@ public class ZHL {
                 lastIndex = -1;
             }
         }
-        //System.out.println(lastIndex+" "+max);
         return new int[]{lastIndex, max};
     }
 
