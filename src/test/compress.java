@@ -82,7 +82,7 @@ public class compress {
         int len = test.length();
         System.out.println("文件长度:" + len);
         //n线程
-        int thread_num = 8;
+        int thread_num = 1;
         int cut = len / thread_num;
         Thread[] threads = new Thread[thread_num];
         StringBuilder[] sbs = new StringBuilder[thread_num];
@@ -130,6 +130,7 @@ public class compress {
         for (LZSS_MT mt : mts) {
             encode.append(mt.getSb().toString());
         }
+        //System.out.println(encode);
         //compressor.save(encode.toString());
         System.out.println("压缩后长度：" + encode.length());
         System.out.println("压缩率:" + (100 - ((encode.length() * 1.0f) / test.length() * 100)) + "%");
@@ -208,13 +209,13 @@ public class compress {
             }
             long encode_end_time = System.currentTimeMillis() - time;
             StringBuilder encode = new StringBuilder();
-            Compressor compressor = new LZSS();
+            LZSS_MT compressor = new LZSS_MT();
             for (LZSS_MT mt : mts) {
                 encode.append(mt.getSb().toString());
             }
             time = System.currentTimeMillis();
             String decode = compressor.decode(encode.toString());
-            compressor.save(decode);
+            //compressor.save(encode.toString());
             if (test.length() == decode.length()) {
                 log.info(this.getClass().getName(), "文件名:{},文件大小:{}字节,压缩后大小{},压缩时间:{},压缩率:{},解压缩时间:{},解压缩大小:{}",
                         file.getName(),

@@ -2,6 +2,11 @@ package dsm.compress.impl;
 
 import dsm.compress.MatchMethod;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  * @ClassName : dsm.compress.impl.LZSS_MT
  * @Description :
@@ -28,7 +33,7 @@ public class LZSS_MT implements Runnable {
         initCheck(text);
         //一些常数
         //滑动窗口最大长度
-        int windowMax = 4000;
+        int windowMax = 4096;
         //初始化滑动窗口、前项缓冲区、指针长度
         int window = 0, buffer = text.length() - 1, pointer = 0;
         int[] res;
@@ -38,10 +43,11 @@ public class LZSS_MT implements Runnable {
             res = findLongestMatchString(text, window, windowMax, buffer, pointer);
             //如果找到了匹配字符串
             if (res[0] != -1) {
-                System.out.println(res[0] + " " + res[1] + " " + pointer);
+                res[0]+=window;
+                //System.out.println(res[0]+" "+res[1]);
                 //将匹配项添加到结果集中
                 appendMatch(sb, text, res);
-                pointer += res[1] - 1;
+                pointer += res[1] ;
                 //检测滑动窗口有没有超过最大值
                 if (calLen(window, pointer) > windowMax) {
                     window += calLen(window, pointer) - windowMax - 1;
@@ -53,11 +59,6 @@ public class LZSS_MT implements Runnable {
             }
             count++;
         }
-//        System.out.println(count);
-//        System.out.println(find_count);
-//        System.out.println(find_count/count);
-//        encoded = sb.toString();
-//        return encoded;
     }
 
     public String decode(String text) {
@@ -67,11 +68,7 @@ public class LZSS_MT implements Runnable {
             if (c_text[i] == (char) 65535) {
                 int index = c_text[i + 1];
                 int offset = c_text[i + 2];
-//                if(offset==0||(index+offset)>sb.length()){
-//                    continue;
-//                }
-                //System.out.println(index+" "+offset+" "+sb.length());
-                sb.append(sb.subSequence(index, index + offset - 1));
+                sb.append(sb.subSequence(index, index + offset ));
                 i += 2;
             } else {
                 sb.append(c_text[i]);
@@ -101,26 +98,10 @@ public class LZSS_MT implements Runnable {
         //前项缓冲区指针
         int bufferPointer = pointer + 2;
         //前项缓冲最大容量
-        int maxBufferPointer = 30;
+        int maxBufferPointer = 512;
         if (bufferPointer > buffer) {
             return res;
         }
-        //使用KMP算法进行字符串匹配
-        //matchMethod = new KMP();
-        //当前项缓冲区指针区间小于缓冲区区间时才查找
-//        while (calLen(window, pointer) > calLen(pointer, bufferPointer) && calLen(pointer, bufferPointer) < maxBufferPointer) {
-//            if (bufferPointer >= buffer) {
-//                break;
-//            }
-//            //match()方法返回-1代表无匹配，否则代表匹配下标
-//            int match = matchMethod.match(text.substring(window, pointer), text.substring(pointer, bufferPointer));
-//            if (match != -1 && calLen(pointer, bufferPointer) >= 5) {
-//                res[0] = match+(window);
-//                res[1] = calLen(pointer, bufferPointer -1);
-//            }
-//            bufferPointer++;
-//            find_count++;
-//        }
         ZHL zhl = new ZHL();
         int front = pointer + maxBufferPointer;
         if (front > text.length()) {
@@ -171,5 +152,18 @@ public class LZSS_MT implements Runnable {
      */
     private boolean initCheck(String text) {
         return text.length() > 1;
+    }
+
+    public void save(String encode) {
+        File f = new File(System.currentTimeMillis() +".lzss");
+        try {
+            f.createNewFile();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(f));
+            writer.write(encode);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
