@@ -1,6 +1,10 @@
 package dsm.bili;
 
 
+import dsm.utils.SimpleUtils;
+import dsm.utils.TimeFormatter;
+import org.junit.Test;
+
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -27,10 +31,33 @@ public class Tool {
         Date d=java.sql.Date.valueOf(out);
         return d;
     }
-    public static List<Extracted> getInfo(int n) throws SQLException, ClassNotFoundException, ParseException {
-        DBforBili dfb=new DBforBili();
-        List<Extracted> li=dfb.read(Tool.ChangeDate(new Date(new java.util.Date().getTime()),n));
-        dfb.close();
-        return li;
+
+    public static String getCountByName(String theme,String date){
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        int size=0;
+        try {
+            DBforBili dbb = new DBforBili();
+            List<Extracted> list = dbb.read(SimpleUtils.getTimeStamp2(TimeFormatter.DAY_LEVEL));
+            for (Extracted extracted : list) {
+                if(extracted.tags.contains(theme)){
+                    sb.append(extracted.title).append("      author:").append(extracted.author).append("    score:").append(extracted.point).append("\n");
+                    count++;
+                }
+                size++;
+            }
+            sb.append(count).append("\n");
+            sb.append("ratio:").append(((float) count/size)*100).append("%\n");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return sb.toString();
+    }
+    @Test
+    public void getTest(){
+        String res = Tool.getCountByName("英雄联盟",SimpleUtils.getTimeStamp2(TimeFormatter.DAY_LEVEL));
+        System.out.println(res);
     }
 }
