@@ -144,15 +144,17 @@ public class SimpleUtils {
         }
         return 0L;
     }
+
     /**
      * 计算时间间隔(与现在)
+     *
      * @param option 使用TimeFormatter.****_FATOR进行格式化
      * @return
      * @author Zhang huai lan
      * @date 13:51 2021/5/6
      * @version V1.0
      **/
-    public static long timeCalculator(String date,int option) {
+    public static long timeCalculator(String date, int option) {
         try {
             SimpleDateFormat format = new SimpleDateFormat(TimeFormatter.MILLISEC_LEVEL);
             Date d = format.parse(date);
@@ -185,15 +187,17 @@ public class SimpleUtils {
         }
         return 0L;
     }
+
     /**
      * 计算给定两时间的时间间隔(d2 - d1)
+     *
      * @param option 使用TimeFormatter.****_FATOR进行格式化
      * @return
      * @author Zhang huai lan
      * @date 13:47 2021/5/6
      * @version V1.0
      **/
-    public static long timeCalculator2(String date1, String date2,int option){
+    public static long timeCalculator2(String date1, String date2, int option) {
         try {
             SimpleDateFormat format = new SimpleDateFormat(TimeFormatter.MILLISEC_LEVEL);
             Date d1 = format.parse(date1);
@@ -220,20 +224,20 @@ public class SimpleUtils {
         return new String(Base64.getDecoder().decode(base64Str.getBytes(StandardCharsets.UTF_8)));
     }
 
-    public static String ConfigRead(String filename,String header){
-        String res=null;
+    public static String ConfigRead(String filename, String header) {
+        String res = null;
         try {
-            BufferedReader br=new BufferedReader(new FileReader(new File(filename)));
+            BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
             String temp;
-            while ((temp= br.readLine())!=null){
-                temp=temp.toLowerCase(Locale.ROOT);
-                temp=temp.replaceAll(" ","\0");
-                if(temp.startsWith(header)){
-                    res=temp.substring(header.length());
+            while ((temp = br.readLine()) != null) {
+                temp = temp.toLowerCase(Locale.ROOT);
+                temp = temp.replaceAll(" ", "\0");
+                if (temp.startsWith(header)) {
+                    res = temp.substring(header.length());
                 }
             }
             br.close();
-        }catch (FileNotFoundException ffe){
+        } catch (FileNotFoundException ffe) {
             ffe.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -245,27 +249,28 @@ public class SimpleUtils {
 
     /**
      * 调用Shell <br>
-     *
+     * <p>
      * c 是执行完dir命令后关闭命令窗口。<br>
      * k 是执行完dir命令后不关闭命令窗口。<br>
      * c start 会打开一个新窗口后执行dir指令，原窗口会关闭。<br>
      * k start 会打开一个新窗口后执行dir指令，原窗口不会关闭。<br>
+     *
      * @param cmd    cmd
      * @param option 选项
-     * @param block 是否阻塞直到运行完毕
+     * @param block  是否阻塞直到运行完毕
      * @return {@link String} 返回值
      */
-    public static String callShell(String cmd,String option,boolean block){
+    public static String callShell(String cmd, String option, boolean block) {
         try {
             Process p;
-            p = Runtime.getRuntime().exec("cmd /"+option+" "+cmd);
-            if(block){
-               p.waitFor();
+            p = Runtime.getRuntime().exec("cmd /" + option + " " + cmd);
+            if (block) {
+                p.waitFor();
             }
-            BufferedReader reader =new BufferedReader(new InputStreamReader(p.getInputStream(), Charset.forName("gbk")));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), Charset.forName("gbk")));
             String temp;
             StringBuilder builder = new StringBuilder();
-            while ((temp=reader.readLine())!=null){
+            while ((temp = reader.readLine()) != null) {
                 builder.append(temp).append("\n");
             }
             return builder.toString();
@@ -282,14 +287,14 @@ public class SimpleUtils {
      * @return {@link String}
      */
     @Deprecated
-    public static String call(String cmd){
+    public static String call(String cmd) {
         try {
             Process p;
             p = Runtime.getRuntime().exec(cmd);
-            BufferedReader reader =new BufferedReader(new InputStreamReader(p.getInputStream(), Charset.forName("gbk")));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), Charset.forName("gbk")));
             String temp;
             StringBuilder builder = new StringBuilder();
-            while ((temp=reader.readLine())!=null){
+            while ((temp = reader.readLine()) != null) {
                 builder.append(temp).append("\n");
             }
             return builder.toString();
@@ -306,7 +311,7 @@ public class SimpleUtils {
      * @param count 总长度
      * @return {@link byte[]}
      */
-    public static byte[] mergeByteList(List<byte[]> list,int count){
+    public static byte[] mergeByteList(List<byte[]> list, int count) {
         byte[] res = new byte[count];
         int pointer = 0;
         for (byte[] b : list) {
@@ -319,8 +324,8 @@ public class SimpleUtils {
         return res;
     }
 
-    public static byte[] receiveDataInNIO(SocketChannel socketChannel){
-        List<byte[]> recv=new ArrayList<>();
+    public static byte[] receiveDataInNIO(SocketChannel socketChannel) {
+        List<byte[]> recv = new ArrayList<>();
         ByteBuffer buffer = ByteBuffer.allocate(1024);
         int size = 0;
         int count = 0;
@@ -349,9 +354,47 @@ public class SimpleUtils {
         /**
          * 预处理接收到的信息，并做后续处理
          */
-        byte[] data = SimpleUtils.mergeByteList(recv,count);
+        byte[] data = SimpleUtils.mergeByteList(recv, count);
         recv.clear();
         return data;
+    }
+
+    public static String stringFormatter(String[] titles, String[]... args) {
+        StringBuilder sb = new StringBuilder();
+        int count = args.length;
+        int[] max = new int[count];
+        int temp = 0;
+        for (int i = 0; i < count; i++) {
+            String[] ss = args[i];
+            for (String s : ss) {
+                if (s!=null) {
+                    temp = s.length();
+                }
+                if(max[i]<temp){
+                    max[i] = temp;
+                }
+            }
+            temp=0;
+        }
+        for (int i = 0; i < titles.length; i++) {
+            sb.append(titles[i]).append(getSpaces(max[i]-titles[i].length()+5));
+        }
+        sb.append("\n");
+        for (int i =0;i<args[0].length;i++){
+            for (int j = 0; j < titles.length; j++) {
+                sb.append(args[j][i]).append(getSpaces(max[j]-args[j][i].length()+5));
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    private static String getSpaces(int num) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < num; i++) {
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 
 }

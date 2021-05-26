@@ -57,7 +57,13 @@ public class Tool {
     }
     @Test
     public void getTest(){
-        String res = Tool.getCountByName("英雄联盟",SimpleUtils.getTimeStamp2(TimeFormatter.DAY_LEVEL));
-        System.out.println(res);
+        String res = Tool.getCountByName("机动战姬",SimpleUtils.getTimeStamp2(TimeFormatter.DAY_LEVEL));
+        String[] titles={"Title","Author","Score"};
+        String[] name={"drfhftgdjntucgyjmky",
+        "drfhyre",
+        "egtrrrrrrrrreeeee"};
+        String[] author ={"werr3","jack","cuindy"};
+        String[] score={"1130440","920259","912121"};
+        System.out.println(SimpleUtils.stringFormatter(titles,name,author,score));
     }
 }
