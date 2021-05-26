@@ -50,6 +50,16 @@ public class SimpleUtils {
     }
 
     /**
+     * 使用TimeFormatter获取时间
+     *
+     * @param format 格式
+     * @return {@link String}
+     */
+    public static String getTimeStamp2(String format) {
+        return new SimpleDateFormat(format).format(new Date());
+    }
+
+    /**
      * 序列化
      *
      * @return byte数组

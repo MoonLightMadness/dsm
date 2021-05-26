@@ -9,7 +9,8 @@ public class Extractor {
     private Pattern pUrl = Pattern.compile("<div class=\"info\"><a href=\"//www.(.*?)\" target=\"_blank\" class=\"title\"");
     private Pattern pAu = Pattern.compile(" author\"></i>(.*?)</span>");
     private Pattern pPoint = Pattern.compile("<div class=\"pts\"><div>(.*?)</div>综合得分");
-    private Pattern pTags=Pattern.compile("<li class=\"tag\"><a href=(.*?) target=\"_blank\">(.*?)</a>");
+    //private Pattern pTags=Pattern.compile("<li class=\"tag\"><a href=(.*?) target=\"_blank\">(.*?)</a>");
+    private Pattern pTags = Pattern.compile("\"tag_name\":\"(.*?)\"");
     public Extractor(String c){
         content=c;
     }
@@ -50,7 +51,7 @@ public class Extractor {
         try {
             Matcher m=pTags.matcher(content);
             while (m.find()){
-                tags.append(m.group(2)).append("&&");
+                tags.append(m.group(1)).append("&&");
             }
         }
         catch (Exception e){

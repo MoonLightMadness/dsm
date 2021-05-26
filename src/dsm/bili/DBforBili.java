@@ -1,5 +1,8 @@
 package dsm.bili;
 
+import dsm.utils.SimpleUtils;
+import dsm.utils.TimeFormatter;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +60,21 @@ public class DBforBili  {
         statement.close();
         conn.commit();
     }
+
+    /**
+     * 写入今日数据的标签
+     *
+     * @param tags 标签
+     * @param url  url
+     * @throws SQLException sqlexception异常
+     */
+    public void writeTodayTags(String url,String tags) throws SQLException {
+        String s="Update Info Set Tags='"+tags+"' Where Url='"+url+"' And updateDate='"+SimpleUtils.getTimeStamp2(TimeFormatter.DAY_LEVEL)+"'";
+        Statement statement=conn.createStatement();
+        statement.executeUpdate(s);
+        statement.close();
+        conn.commit();
+    }
     public void turnToUndone() throws SQLException {
         String s="Update updateDate Set status='UNDONE'";
         Statement statement=conn.createStatement();
@@ -96,6 +114,24 @@ public class DBforBili  {
         }
         rs.close();
         statement.close();
+        return list;
+    }
+
+    /**
+     * 获取今天的数据的URL
+     *
+     * @return {@link List<String>}
+     * @throws SQLException sqlexception异常
+     */
+    public List<String> readToay() throws SQLException {
+        List<String> list = new ArrayList<>();
+        String s = "Select * From Info Where UpdateDate='"+ SimpleUtils.getTimeStamp2(TimeFormatter.DAY_LEVEL) +"'";
+        Statement statement = conn.createStatement();
+        ResultSet rs = statement.executeQuery(s);
+        while (rs.next()){
+            String res = rs.getString(1);
+            list.add(res);
+        }
         return list;
     }
     public void close() throws SQLException {

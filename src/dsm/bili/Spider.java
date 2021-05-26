@@ -22,7 +22,7 @@ public class Spider {
             huc.setConnectTimeout(8000);
             huc.setReadTimeout(10000);
             huc.setInstanceFollowRedirects(false);
-            huc.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+            huc.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36");
 
             try {
                 int code = huc.getResponseCode();
@@ -59,7 +59,7 @@ public class Spider {
                 }
             }
             catch (Exception e){
-                System.out.print(" Failed");
+                System.out.println(e.getMessage());
                 break;
             }
 
