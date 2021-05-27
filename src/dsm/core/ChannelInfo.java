@@ -1,8 +1,11 @@
 package dsm.core;
 
 import dsm.base.BaseEntity;
+import dsm.log.LogSystem;
+import dsm.log.LogSystemFactory;
 import dsm.utils.SimpleUtils;
 
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 /**
@@ -16,6 +19,8 @@ public class ChannelInfo {
     private SocketChannel channel;
 
     private String name;
+
+    private LogSystem log = LogSystemFactory.getLogSystem();
 
     /**
      * 心跳，超过一定次数则认为死亡
@@ -32,6 +37,12 @@ public class ChannelInfo {
     public void beat() {
         beat += 1;
         if (beat > 20) {
+            try {
+                log.info(null,"{}({})--Offline at:{}",name,channel.getRemoteAddress().toString(),SimpleUtils.getTimeStamp());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             channel = null;
         }
     }

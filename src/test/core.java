@@ -87,7 +87,7 @@ public class core {
             buffer1.put(data1);
             buffer1.flip();
             socketChannel1.write(buffer1);
-            Thread.sleep(1000);
+            Thread.sleep(9000);
 
         } catch (InterruptedException e) {
             e.printStackTrace();

@@ -37,14 +37,6 @@ public class CoreReceiver implements Runnable{
     public void init(List<ChannelInfo> list){
         log = LogSystemFactory.getLogSystem();
         this.list=list;
-//        try {
-//            server = ServerSocketChannel.open();
-//            String port = IPConfigReader.readPortByName("core");
-//            server.bind(new InetSocketAddress(InetAddress.getLocalHost(),Integer.parseInt(port)));
-//            server.configureBlocking(false);
-//        } catch (IOException e) {
-//            log.error(null,e.getMessage());
-//        }
         handler = new CoreMessageHandler();
         handler.init(list);
     }

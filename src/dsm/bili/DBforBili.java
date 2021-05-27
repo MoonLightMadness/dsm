@@ -75,6 +75,7 @@ public class DBforBili  {
         statement.close();
         conn.commit();
     }
+
     public void turnToUndone() throws SQLException {
         String s="Update updateDate Set status='UNDONE'";
         Statement statement=conn.createStatement();
