@@ -1,14 +1,20 @@
 package test;
 
+import dsm.statemachine.entity.HistoryEntity;
 import dsm.statemachine.impl.Event;
 import dsm.statemachine.impl.EventManager;
 import org.junit.Test;
 
 public class testEvent extends Event {
+
+    private int atk =100;
+
     @Override
     public int activateAction(Object obj) {
         System.out.println("I'm active");
-        System.out.println((int) obj +1);
+        testEvent t = (testEvent)obj;
+        t.atk *= (1.1f);
+        System.out.println(t.atk);
         return 1;
     }
 
@@ -16,7 +22,13 @@ public class testEvent extends Event {
     public void test1(){
         EventManager manager = new EventManager();
         manager.setPackage("test");
-        int i =1;
-        manager.activateEvent("testEvent",i);
+        manager.activateEvent("testEvent",this);
+        manager.activateEvent("testEvent",this);
+        manager.activateEvent("testEvent",this);
+        manager.activateEvent("testEvent",this);
+        manager.activateEvent("testEvent",this);
+        for(HistoryEntity entity: manager.getHistory()){
+            System.out.println(entity.getTimestamp()+"  "+entity.getEventName()+"  "+entity.getRes());
+        }
     }
 }
