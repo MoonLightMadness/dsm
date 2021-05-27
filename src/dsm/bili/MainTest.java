@@ -17,9 +17,6 @@ public class MainTest {
     public static void main(String[] args) throws SQLException, ClassNotFoundException, IOException, InterruptedException, ParseException {
 
         Controler controler=new Controler();
-//        System.out.println("Start to get Routine");
-//        Controler.getRoutine();
-//        System.out.println("Success");
         if(!controler.checkDate() && controler.getStatus().equals(STATECODE.DONE.getCode())){
             System.out.println("Start to get Routine");
             Controler.getRoutine();
