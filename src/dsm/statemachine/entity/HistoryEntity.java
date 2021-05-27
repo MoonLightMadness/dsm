@@ -13,7 +13,7 @@ public class HistoryEntity {
 
     private String eventName;
 
-    private int res;
+    private int res = -1;
 
     public String getTimestamp() {
         return timestamp;

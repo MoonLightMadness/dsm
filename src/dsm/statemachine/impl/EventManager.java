@@ -40,20 +40,22 @@ public class EventManager implements IEventManager {
      *
      * @param eventName 事件名称
      * @param obj       obj
-     * @return int 0-表示失败 1-运行成功 x-其他
+     * @return int 0-表示失败 1-运行成功 -1-发生未知错误
      */
     @Override
     public int activateEvent(String eventName, Object obj) {
         String path = pathConstructor(eventName);
         try {
             String time = SimpleUtils.getTimeStamp();
+            HistoryEntity entity = HistoryEntityConstructor.getEntity(time,eventName);
+            addLog(entity);
             Event e = (Event) Class.forName(path).newInstance();
             int res = e.activateAction(obj);
             if(res == 0){
                 log.info(null,"触发事件:{},返回失败结果",eventName);
             }
             //记录到历史事件当中
-            addLog(time,eventName, res);
+            updateHistory(entity,res);
             return res;
         } catch (ClassNotFoundException e) {
             log.error(null,"未找到该类") ;
@@ -61,6 +63,8 @@ public class EventManager implements IEventManager {
             log.error(null,"类初始化失败") ;
         } catch (IllegalAccessException e) {
             log.error(null,"非法错误") ;
+        } catch (ClassCastException e){
+            log.error(null, "{}必须是Event的子类",eventName);
         }
         return 0;
     }
@@ -82,11 +86,14 @@ public class EventManager implements IEventManager {
         return history;
     }
 
-    private void addLog(String time, String eventName, int res){
+    private void addLog(HistoryEntity entity){
         if(history==null){
             initHistory();
         }
-        HistoryEntity entity = HistoryEntityConstructor.getEntity(time,eventName, res);
         history.add(entity);
+    }
+
+    private void updateHistory(HistoryEntity entity,int res){
+        entity.setRes(res);
     }
 }

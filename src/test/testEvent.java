@@ -1,5 +1,6 @@
 package test;
 
+import dsm.statemachine.EventManagerFactory;
 import dsm.statemachine.entity.HistoryEntity;
 import dsm.statemachine.impl.Event;
 import dsm.statemachine.impl.EventManager;
@@ -20,9 +21,9 @@ public class testEvent extends Event {
 
     @Test
     public void test1(){
-        EventManager manager = new EventManager();
+        EventManager manager = EventManagerFactory.getInstance();
         manager.setPackage("test");
-        manager.activateEvent("testEvent",this);
+        manager.activateEvent("db",this);
         manager.activateEvent("testEvent",this);
         manager.activateEvent("testEvent",this);
         manager.activateEvent("testEvent",this);

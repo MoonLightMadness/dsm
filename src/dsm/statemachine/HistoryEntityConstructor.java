@@ -12,4 +12,11 @@ public class HistoryEntityConstructor {
         entity.setRes(res);
         return entity;
     }
+
+    public static HistoryEntity getEntity(String time,String eventName){
+        HistoryEntity entity = new HistoryEntity();
+        entity.setTimestamp(time);
+        entity.setEventName(eventName);
+        return entity;
+    }
 }
