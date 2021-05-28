@@ -60,6 +60,26 @@ public class SimpleUtils {
     }
 
     /**
+     * 获取偏移量的时间戳
+     *
+     * @param format 格式
+     * @param level  水平
+     * @param offset 位移 -n代表前推 n表示后推
+     * @return {@link String}
+     */
+    public static String getTimeStamp(String format,int level,int offset){
+        String today = getTimeStamp2(format);
+        try {
+            long d = new SimpleDateFormat(format).parse(today).getTime();
+            d += (level*offset);
+            Date date = new Date(d);
+            return new SimpleDateFormat(format).format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    /**
      * 序列化
      *
      * @return byte数组

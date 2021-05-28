@@ -29,6 +29,9 @@ public class MainTest {
         }
         if(controler.checkDate() && STATECODE.DONE.getCode().equals(controler.getStatus())){
             System.out.println("Today's work has been done");
+            //Analyse
+            System.out.println("Today's new:\n");
+            System.out.println(Tool.newToday());
         }
 
 
@@ -39,6 +42,8 @@ public class MainTest {
         String date = "2021-05-23 20:59:43.404";
         long interval = SimpleUtils.timeCalculator2(date,time);
         System.out.println(interval);
+
+        System.out.println(Tool.newToday());
     }
 
 }
