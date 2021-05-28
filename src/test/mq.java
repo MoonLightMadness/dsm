@@ -28,7 +28,7 @@ public class mq {
             MQReceiver receiver = new MQReceiver();
             receiver.init("event.mq",new MQReceiverHandler());
             new Thread(receiver).start();
-            Thread.sleep(400);
+            Thread.sleep(100);
             //注册一个消费者
             SocketChannel socketChannel1 = SocketChannel.open(new InetSocketAddress(InetAddress.getLocalHost(),9003));
             UniversalEntity entity1 = UniversalEntityWrapper.getOne(String.valueOf(System.currentTimeMillis()),
@@ -40,7 +40,7 @@ public class mq {
                     "null",
                     "00001");
             Sender.send(socketChannel1, SimpleUtils.serializableToBytes(entity1));
-            Thread.sleep(400);
+            Thread.sleep(100);
             //向消息队列发送信息
             SocketChannel socketChannel2 = SocketChannel.open(new InetSocketAddress(InetAddress.getLocalHost(),9003));
             UniversalEntity entity2 = UniversalEntityWrapper.getOne(String.valueOf(System.currentTimeMillis()),
@@ -52,7 +52,7 @@ public class mq {
                     "event1",
                     "00001");
             Sender.send(socketChannel2, SimpleUtils.serializableToBytes(entity2));
-            Thread.sleep(2400);
+            Thread.sleep(5000);
 
         } catch (UnknownHostException e) {
             e.printStackTrace();

@@ -3,6 +3,8 @@ package dsm.mq.impl;
 import dsm.base.BaseEntity;
 import dsm.base.impl.UniversalEntity;
 import dsm.core.ChannelInfo;
+import dsm.log.LogSystem;
+import dsm.log.LogSystemFactory;
 import dsm.utils.SimpleUtils;
 import dsm.utils.net.Receiver;
 
@@ -38,19 +40,49 @@ public class MQReceiver implements Runnable {
 
     private MQReceiverHandler handler;
 
+    private List<ChannelInfo> list;
+
+    private LogSystem log;
+
     public void init(String name,MQReceiverHandler handler){
         this.name = name;
         this.handler = handler;
         handler.init(new ArrayList<BaseEntity>());
+        list = new ArrayList<ChannelInfo>();
+        log = LogSystemFactory.getLogSystem();
     }
 
     @Override
     public void run() {
         Receiver receiver = new Receiver();
-        receiver.init(name,handler,new ArrayList<ChannelInfo>());
+        receiver.init(name,handler,list);
         Thread t =new Thread(receiver);
         t.start();
+        //开启心跳检测
+        sync();
     }
 
+    /**
+     * 心跳检测
+     */
+    private void sync() {
+        long interval = 2000;
+        while (true) {
+            Iterator<ChannelInfo> iterator = list.listIterator();
+            while (iterator.hasNext()) {
+                ChannelInfo info = iterator.next();
+                if (info.getChannel() == null) {
+                    iterator.remove();
+                    continue;
+                }
+                info.beat();
+            }
+            try {
+                Thread.sleep(interval);
+            } catch (InterruptedException e) {
+                log.error(null,e.getMessage());
+            }
+        }
+    }
 
 }

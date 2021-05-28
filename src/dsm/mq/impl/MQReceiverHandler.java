@@ -48,7 +48,7 @@ public class MQReceiverHandler extends CallBack {
             register(channel, uni.getMessage());
         }
         //添加消息
-        if(uni.getMessage().equals("message")){
+        if(uni.getMessage().startsWith("message")){
             ListIterator iter = list.listIterator();
             iter.add(entity);
         }
