@@ -21,10 +21,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * @ClassName : dsm.utils.net.Receiver
@@ -70,10 +67,13 @@ public class Receiver implements Runnable {
                         log.info(null,"接入:{}",remote.getRemoteAddress().toString());
                     }
                     if (sk.isReadable()) {
+                        checkBeat((SocketChannel) sk.channel());
                         byte[] data = SimpleUtils.receiveDataInNIO((SocketChannel) sk.channel());
-                        BaseEntity entity = (BaseEntity) SimpleUtils.bytesToSerializableObject(data);
-                        log.info(null,"收到:{}",entity.toString());
-                        callBack.invoke((SocketChannel) sk.channel(),entity);
+                        if(data.length > 0){
+                            BaseEntity entity = (BaseEntity) SimpleUtils.bytesToSerializableObject(data);
+                            log.info(null,"收到:{}",entity.toString());
+                            callBack.invoke((SocketChannel) sk.channel(),entity);
+                        }
                     }
                     iterator.remove();
                 }
@@ -115,6 +115,21 @@ public class Receiver implements Runnable {
     private void generateChannelInfo(SocketChannel channel){
         ChannelInfo channelInfo = new ChannelInfo();
         channelInfo.setChannel(channel);
-        info.add(channelInfo);
+        ListIterator iterator = info.listIterator();
+        iterator.add(channelInfo);
+    }
+
+    private void checkBeat(SocketChannel channel){
+        ListIterator<ChannelInfo> ci = info.listIterator();
+        try {
+            while (ci.hasNext()){
+                ChannelInfo inf = ci.next();
+                if(inf.getChannel().getRemoteAddress().toString().equals(channel.getRemoteAddress().toString())){
+                    inf.reset();
+                }
+            }
+        } catch (IOException e) {
+            log.error(null, e.getMessage());
+        }
     }
 }

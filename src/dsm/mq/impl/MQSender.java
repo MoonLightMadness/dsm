@@ -40,28 +40,33 @@ public class MQSender implements Runnable {
     @Override
     public void run() {
         boolean isSend = false;
-        while (true) {
-            ListIterator<BaseEntity> iterator = list.listIterator();
-            while (iterator.hasNext()) {
-                UniversalEntity uni = (UniversalEntity) iterator.next();
-                String type = uni.getMessageType();
-                ListIterator<Consumer> ci = consumers.listIterator();
-                while (ci.hasNext()) {
-                    Consumer con = (Consumer) ci.next();
-                    if (con.getChannel() == null) {
-                        ci.remove();
-                        continue;
+        try {
+            while (true) {
+                ListIterator<BaseEntity> iterator = list.listIterator();
+                while (iterator.hasNext()) {
+                    UniversalEntity uni = (UniversalEntity) iterator.next();
+                    String type = uni.getMessageType();
+                    ListIterator<Consumer> ci = consumers.listIterator();
+                    while (ci.hasNext()) {
+                        Consumer con = (Consumer) ci.next();
+                        if (con.getChannel() == null) {
+                            ci.remove();
+                            continue;
+                        }
+                        if (con.getInterest().contains(type)) {
+                            MQSender.send(con.getChannel(), SimpleUtils.serializableToBytes(uni));
+                            isSend = true;
+                        }
                     }
-                    if (con.getInterest().contains(type)) {
-                        MQSender.send(con.getChannel(), SimpleUtils.serializableToBytes(uni));
-                        isSend = true;
+                    if (isSend) {
+                        iterator.remove();
+                        isSend = false;
                     }
                 }
-                if (isSend) {
-                    iterator.remove();
-                    isSend = false;
-                }
+                Thread.sleep(1);
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

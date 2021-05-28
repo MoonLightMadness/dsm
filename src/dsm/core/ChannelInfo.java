@@ -40,10 +40,13 @@ public class ChannelInfo {
             try {
                 log.info(null,"{}({})--Offline at:{}",name,channel.getRemoteAddress().toString(),SimpleUtils.getTimeStamp());
             } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    log.error(null, "{}:--{}",channel.getRemoteAddress().toString(),e.getMessage());
+                } catch (IOException ioException) {
+                    log.error(null, "{}",ioException.getMessage());
+                }
             }
-
-            channel = null;
+            //channel = null;
         }
     }
 

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -62,7 +63,7 @@ public class LogSystem {
                 if(!f.exists()){
                     f.createNewFile();
                 }
-                OutputStreamWriter writer=new OutputStreamWriter(new FileOutputStream(f,true));
+                OutputStreamWriter writer=new OutputStreamWriter(new FileOutputStream(f,true), StandardCharsets.UTF_8);
                 Iterator<LogEntity<String>> iterator = list.iterator();
                 while (iterator.hasNext()){
                     LogEntity<String> entity = iterator.next();

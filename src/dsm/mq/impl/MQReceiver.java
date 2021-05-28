@@ -30,12 +30,6 @@ import java.util.*;
  */
 public class MQReceiver implements Runnable {
 
-    //private List<BaseEntity> msg;
-
-//    public void init(List queue) {
-//        this.msg = queue;
-//    }
-
     private String name;
 
     private MQReceiverHandler handler;
@@ -66,22 +60,40 @@ public class MQReceiver implements Runnable {
      * 心跳检测
      */
     private void sync() {
-        long interval = 2000;
-        while (true) {
-            Iterator<ChannelInfo> iterator = list.listIterator();
-            while (iterator.hasNext()) {
-                ChannelInfo info = iterator.next();
-                if (info.getChannel() == null) {
-                    iterator.remove();
-                    continue;
+        long interval = 200;
+        try {
+            while (true) {
+                Iterator<ChannelInfo> iterator = list.listIterator();
+                while (iterator.hasNext()) {
+                    ChannelInfo info = iterator.next();
+                    if (info.getBeat() > 20) {
+                        info.getChannel().socket().close();
+                        iterator.remove();
+                        continue;
+                    }
+                    info.beat();
                 }
-                info.beat();
+                try {
+                    Thread.sleep(interval);
+                } catch (InterruptedException e) {
+                    log.error(null,e.getMessage());
+                }
             }
-            try {
-                Thread.sleep(interval);
-            } catch (InterruptedException e) {
-                log.error(null,e.getMessage());
+        } catch (IOException e) {
+            log.error(null,e.getMessage());
+        }
+    }
+
+    public static void main(String[] args) {
+        MQReceiver receiver = new MQReceiver();
+        receiver.init("event.mq",new MQReceiverHandler());
+        new Thread(receiver).start();
+        try {
+            while (true) {
+                Thread.sleep(1);
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

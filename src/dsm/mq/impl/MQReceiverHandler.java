@@ -52,6 +52,7 @@ public class MQReceiverHandler extends CallBack {
             ListIterator iter = list.listIterator();
             iter.add(entity);
         }
+
     }
 
     private void register(SocketChannel channel,String data){

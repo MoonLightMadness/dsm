@@ -109,6 +109,7 @@ public class SimpleUtils {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(baos);
             oos.writeObject(obj);
+            oos.writeObject(null);
             byte[] res = baos.toByteArray();
             baos.close();
             oos.close();
@@ -133,10 +134,13 @@ public class SimpleUtils {
         try {
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
             ObjectInputStream ois = new ObjectInputStream(bais);
-            Object obj = ois.readObject();
-            bais.close();
-            ois.close();
-            return obj;
+            Object obj;
+            while ((obj = ois.readObject())!=null){
+                bais.close();
+                ois.close();
+                return obj;
+            }
+            //Object obj = ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
