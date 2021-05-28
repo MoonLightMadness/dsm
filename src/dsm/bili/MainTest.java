@@ -46,4 +46,13 @@ public class MainTest {
         System.out.println(Tool.newToday());
     }
 
+    @Test
+    public void dailyTest(){
+        Daily daily = new Daily();
+        daily.init();
+        System.out.println(daily.updateData());
+        System.out.println(daily.updateTags());
+        System.out.println(daily.showNew());
+    }
+
 }
