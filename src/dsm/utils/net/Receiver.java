@@ -38,11 +38,11 @@ public class Receiver implements Runnable {
 
     private ICallBack callBack;
 
-    private List info;
+    private List<ChannelInfo> info;
 
     private LogSystem log;
 
-    public void init(String name,ICallBack callBack,List info) {
+    public void init(String name,ICallBack callBack,List<ChannelInfo> info) {
         this.name = name;
         this.callBack=callBack;
         this.info=info;

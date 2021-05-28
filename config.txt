@@ -5,3 +5,5 @@ database=test.db
 mq.port=9000
 
 core.port=9002
+
+event.mq.port=9003
