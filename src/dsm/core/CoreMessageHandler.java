@@ -28,21 +28,21 @@ public class CoreMessageHandler extends CallBack {
 
     @Override
     public void invoke(SocketChannel channel, BaseEntity entity) {
-        log.info(null,"开始处理");
+        //log.info(null,"开始处理");
         UniversalEntity universalEntity = (UniversalEntity) entity;
         String cmd = universalEntity.getMessage();
         cmd = cmd.toLowerCase(Locale.ROOT);
-        try {
-            if(cmd.startsWith(CoreCommandEnum.SET_NAME.getMessage())){
-                log.info(null,"接收到更名指令");
-                resetName(universalEntity.getMessage().split(" ")[1],channel.getRemoteAddress().toString());
-            }
-            if(cmd.startsWith(CoreCommandEnum.GET_IP.getMessage())){
-                UniversalEntity ip = (UniversalEntity) getIP(cmd.split(" ")[1]);
-                send(channel,ip);
-            }
-        } catch (IOException e) {
-            log.error(null,e.getMessage());
+        if(cmd.startsWith(CoreCommandEnum.SET_NAME.getMessage())){
+            log.info(null,"接收到更名指令");
+            resetName(channel,universalEntity.getMessage().split(" ")[1],universalEntity.getMessage().split(" ")[2]);
+        }
+        if(cmd.startsWith(CoreCommandEnum.GET_IP.getMessage())){
+            log.info(null, "返回ip");
+            UniversalEntity ip = (UniversalEntity) getIP(cmd.split(" ")[1]);
+            send(channel,ip);
+        }
+        if(universalEntity.getMessageType().toLowerCase(Locale.ROOT).equals(CoreCommandEnum.BEAT.getMessage())){
+            checkBeat(channel,universalEntity);
         }
     }
 
@@ -63,14 +63,15 @@ public class CoreMessageHandler extends CallBack {
         }
     }
 
-    private void resetName(String name,String ip){
+    private void resetName(SocketChannel channel,String name,String ip){
         ListIterator<ChannelInfo> iterator = list.listIterator();
         try {
             synchronized (iterator){
                 while (iterator.hasNext()){
                     ChannelInfo info = iterator.next();
-                    if(info.getChannel().getRemoteAddress().toString().equals(ip)){
+                    if(info.getChannel().getRemoteAddress().toString().equals(channel.getRemoteAddress().toString())){
                         info.setName(name);
+                        info.setIp(ip);
                         log.info(null,"reset_name:{}",name);
                         break;
                     }
@@ -85,18 +86,14 @@ public class CoreMessageHandler extends CallBack {
         ListIterator<ChannelInfo> iterator = list.listIterator();
         String ip=null;
         UniversalEntity entity=null;
-        try {
-            synchronized (iterator){
-                while (iterator.hasNext()){
-                    ChannelInfo info = iterator.next();
-                    if(info.getName()!=null&&info.getName().equals(name)){
-                        ip = info.getChannel().getRemoteAddress().toString();
-                        break;
-                    }
+        synchronized (iterator){
+            while (iterator.hasNext()){
+                ChannelInfo info = iterator.next();
+                if(info.getName()!=null&&info.getName().equals(name)){
+                    ip = info.getIp();
+                    break;
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         entity = UniversalEntityWrapper.getOne("0",
                 "1","core","remote","1",ip,"reply","00001");
@@ -107,5 +104,22 @@ public class CoreMessageHandler extends CallBack {
         byte[] data = SimpleUtils.serializableToBytes(entity);
         Sender.send(channel,data);
         log.info(null,"已发送:{}",entity.toString());
+    }
+
+    private void checkBeat(SocketChannel channel,UniversalEntity entity){
+        ListIterator listIterator = list.listIterator();
+        try {
+            while (listIterator.hasNext()){
+                ChannelInfo info = (ChannelInfo) listIterator.next();
+                if(info.getChannel().getRemoteAddress().toString().equals(channel.getRemoteAddress().toString())){
+                    info.reset();
+                }
+//                if(info.getChannel().getRemoteAddress().toString().equals(entity.getMessage())){
+//                    info.reset();
+//                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

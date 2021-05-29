@@ -71,7 +71,7 @@ public class Receiver implements Runnable {
                         byte[] data = SimpleUtils.receiveDataInNIO((SocketChannel) sk.channel());
                         if(data.length > 0){
                             BaseEntity entity = (BaseEntity) SimpleUtils.bytesToSerializableObject(data);
-                            log.info(null,"收到:{}",entity.toString());
+                            //log.info(null,"收到:{}",entity.toString());
                             callBack.invoke((SocketChannel) sk.channel(),entity);
                         }
                     }
@@ -100,6 +100,7 @@ public class Receiver implements Runnable {
                     port = temp.substring((name+".port=").length());
                 }
             }
+            reader.close();
             if (ip == null) {
                 ip = InetAddress.getLocalHost().getHostAddress();
             }

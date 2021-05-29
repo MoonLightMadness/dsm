@@ -4,7 +4,7 @@ public enum CoreCommandEnum {
 
     SET_NAME("01","set_name"),
     GET_IP("02","get_ip"),
-
+    BEAT("03","beat")
     ;
 
 

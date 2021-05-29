@@ -2,11 +2,14 @@ package dsm.mq.impl;
 
 import dsm.base.BaseEntity;
 import dsm.base.impl.UniversalEntity;
+import dsm.base.impl.UniversalEntityWrapper;
+import dsm.config.impl.UniversalConfigReader;
 import dsm.core.ChannelInfo;
 import dsm.log.LogSystem;
 import dsm.log.LogSystemFactory;
 import dsm.utils.SimpleUtils;
 import dsm.utils.net.Receiver;
+import dsm.utils.net.Sender;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -38,12 +41,28 @@ public class MQReceiver implements Runnable {
 
     private LogSystem log;
 
+    private String[] aboutCore;
+
+    private SocketChannel coreChannel;
+
     public void init(String name,MQReceiverHandler handler){
         this.name = name;
         this.handler = handler;
         handler.init(new ArrayList<BaseEntity>());
         list = new ArrayList<ChannelInfo>();
         log = LogSystemFactory.getLogSystem();
+        //读取core地址
+        UniversalConfigReader reader =new  UniversalConfigReader();
+        reader.setName("core");
+        aboutCore = new String[2];
+        aboutCore = reader.read();
+        try {
+            coreChannel = coreChannel.open(new InetSocketAddress(aboutCore[0], Integer.parseInt(aboutCore[1])));
+            Thread.sleep(100);
+            Sender.send(coreChannel,SimpleUtils.serializableToBytes(constructSetNameEntity()));
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -57,10 +76,10 @@ public class MQReceiver implements Runnable {
     }
 
     /**
-     * 心跳检测
+     * 心跳检测,在每个周期向core发送心跳包
      */
     private void sync() {
-        long interval = 200;
+        long interval = 2000;
         try {
             while (true) {
                 Iterator<ChannelInfo> iterator = list.listIterator();
@@ -73,6 +92,9 @@ public class MQReceiver implements Runnable {
                     }
                     info.beat();
                 }
+                //向core发送
+
+                Sender.send(coreChannel,SimpleUtils.serializableToBytes(constructBeatEntity()));
                 try {
                     Thread.sleep(interval);
                 } catch (InterruptedException e) {
@@ -95,6 +117,40 @@ public class MQReceiver implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    private BaseEntity constructBeatEntity(){
+        UniversalConfigReader reader =new  UniversalConfigReader();
+        reader.setName("event.mq");
+        String[] res = reader.read();
+        StringBuilder sb = new StringBuilder();
+        sb.append("/").append(res[0]).append(":").append(res[1]);
+        UniversalEntity entity = UniversalEntityWrapper.getOne("0",
+                "0",
+                "mq",
+                "core",
+                "1",
+                sb.toString(),
+                "beat",
+                "1");
+        return entity;
+    }
+
+    private BaseEntity constructSetNameEntity(){
+        UniversalConfigReader reader =new  UniversalConfigReader();
+        reader.setName("event.mq");
+        String[] res = reader.read();
+        StringBuilder sb = new StringBuilder();
+        sb.append("/").append(res[0]).append(":").append(res[1]);
+        UniversalEntity entity = UniversalEntityWrapper.getOne("0",
+                "0",
+                "mq",
+                "core",
+                "1",
+                "set_name mq "+sb.toString(),
+                "set",
+                "1");
+        return entity;
     }
 
 }

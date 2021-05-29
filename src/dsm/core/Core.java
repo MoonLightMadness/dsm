@@ -3,10 +3,12 @@ package dsm.core;
 import dsm.log.LogSystem;
 import dsm.log.LogSystemFactory;
 
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @ClassName : dsm.core.Core
@@ -45,21 +47,26 @@ public class Core implements Runnable {
      */
     private void sync() {
         long interval = 2000;
-        while (true) {
-            Iterator<ChannelInfo> iterator = list.listIterator();
-            while (iterator.hasNext()) {
-                ChannelInfo info = iterator.next();
-                if (info.getChannel() == null) {
-                    iterator.remove();
-                    continue;
+        try {
+            while (true) {
+                ListIterator<ChannelInfo> iterator = list.listIterator();
+                while (iterator.hasNext()) {
+                    ChannelInfo info = iterator.next();
+                    if (info.getBeat() > 20) {
+                        info.getChannel().socket().close();
+                        iterator.remove();
+                        continue;
+                    }
+                    info.beat();
                 }
-                info.beat();
+                try {
+                    Thread.sleep(interval);
+                } catch (InterruptedException e) {
+                    log.error(null,e.getMessage());
+                }
             }
-            try {
-                Thread.sleep(interval);
-            } catch (InterruptedException e) {
-                log.error(null,e.getMessage());
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

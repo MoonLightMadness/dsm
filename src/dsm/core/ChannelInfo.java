@@ -20,6 +20,8 @@ public class ChannelInfo {
 
     private String name;
 
+    private String ip;
+
     private LogSystem log = LogSystemFactory.getLogSystem();
 
     /**
@@ -108,5 +110,13 @@ public class ChannelInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 }
