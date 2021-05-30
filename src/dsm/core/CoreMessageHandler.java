@@ -111,12 +111,11 @@ public class CoreMessageHandler extends CallBack {
         try {
             while (listIterator.hasNext()){
                 ChannelInfo info = (ChannelInfo) listIterator.next();
-                if(info.getChannel().getRemoteAddress().toString().equals(channel.getRemoteAddress().toString())){
-                    info.reset();
+                if(info.getChannel().isConnected()){
+                    if(info.getChannel().getRemoteAddress().toString().equals(channel.getRemoteAddress().toString())){
+                        info.reset();
+                    }
                 }
-//                if(info.getChannel().getRemoteAddress().toString().equals(entity.getMessage())){
-//                    info.reset();
-//                }
             }
         } catch (IOException e) {
             e.printStackTrace();

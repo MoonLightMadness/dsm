@@ -69,6 +69,8 @@ public class DBforBili  {
      * @throws SQLException sqlexception异常
      */
     public void writeTodayTags(String url,String tags) throws SQLException {
+        tags = tags.replaceAll("\'"," ");
+        tags = tags.replaceAll("\""," ");
         String s="Update Info Set Tags='"+tags+"' Where Url='"+url+"' And updateDate='"+SimpleUtils.getTimeStamp2(TimeFormatter.DAY_LEVEL)+"'";
         Statement statement=conn.createStatement();
         statement.executeUpdate(s);

@@ -79,7 +79,7 @@ public class Receiver implements Runnable {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(null,e.getMessage());
         }
     }
 
@@ -105,9 +105,9 @@ public class Receiver implements Runnable {
                 ip = InetAddress.getLocalHost().getHostAddress();
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            log.error(null,e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(null,e.getMessage());
         }
         address = new InetSocketAddress(ip, Integer.parseInt(port));
         return address;
@@ -125,8 +125,10 @@ public class Receiver implements Runnable {
         try {
             while (ci.hasNext()){
                 ChannelInfo inf = ci.next();
-                if(inf.getChannel().getRemoteAddress().toString().equals(channel.getRemoteAddress().toString())){
-                    inf.reset();
+                if(inf.getChannel().isConnected()){
+                    if(inf.getChannel().getRemoteAddress().toString().equals(channel.getRemoteAddress().toString())){
+                        inf.reset();
+                    }
                 }
             }
         } catch (IOException e) {

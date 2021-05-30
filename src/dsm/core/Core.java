@@ -70,4 +70,17 @@ public class Core implements Runnable {
         }
     }
 
+    public static void main(String[] args) {
+        Core core = new Core();
+        core.init();
+        Thread thread = new Thread(core);
+        thread.start();
+
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

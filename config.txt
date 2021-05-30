@@ -1,8 +1,4 @@
-port=8999
 
-database=test.db
-
-mq.port=9000
 
 core.port=9002
 

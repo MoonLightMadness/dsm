@@ -3,6 +3,8 @@ package test;
 import dsm.base.impl.UniversalEntity;
 import dsm.base.impl.UniversalEntityWrapper;
 import dsm.core.Core;
+import dsm.mq.impl.MQReceiver;
+import dsm.mq.impl.MQReceiverHandler;
 import dsm.utils.EntityUtils;
 import dsm.utils.SimpleUtils;
 import org.junit.Test;
@@ -101,9 +103,11 @@ public class core {
         core.init();
         Thread thread = new Thread(core);
         thread.start();
-
+        MQReceiver receiver = new MQReceiver();
+        receiver.init("event.mq",new MQReceiverHandler());
+        new Thread(receiver).start();
         try {
-            Thread.sleep(3000);
+            Thread.sleep(5000);
             SocketChannel socketChannel1 = SocketChannel.open(new InetSocketAddress(InetAddress.getLocalHost(),9002));
             Thread.sleep(400);
             UniversalEntity entity1 = UniversalEntityWrapper.getOne(String.valueOf(System.currentTimeMillis()),
@@ -132,6 +136,37 @@ public class core {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void test4(){
+        try {
+            SocketChannel socketChannel1 = SocketChannel.open(new InetSocketAddress(InetAddress.getLocalHost(),9002));
+            Thread.sleep(400);
+            UniversalEntity entity1 = UniversalEntityWrapper.getOne(String.valueOf(System.currentTimeMillis()),
+                    "1",
+                    "test",
+                    "core",
+                    "1",
+                    "get_ip mq",
+                    "null",
+                    "00001");
+            byte[] data1 = SimpleUtils.serializableToBytes(entity1);
+            ByteBuffer buffer1 = ByteBuffer.allocate(data1.length);
+            buffer1.put(data1);
+            buffer1.flip();
+            socketChannel1.write(buffer1);
+            Thread.sleep(1000);
+            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            socketChannel1.read(buffer);
+            UniversalEntity entity3 = (UniversalEntity) SimpleUtils.bytesToSerializableObject(buffer.array());
+            System.out.println(entity3.toString());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

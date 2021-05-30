@@ -57,11 +57,11 @@ public class MQReceiver implements Runnable {
         aboutCore = new String[2];
         aboutCore = reader.read();
         try {
-            coreChannel = coreChannel.open(new InetSocketAddress(aboutCore[0], Integer.parseInt(aboutCore[1])));
+            coreChannel = SocketChannel.open(new InetSocketAddress(aboutCore[0], Integer.parseInt(aboutCore[1])));
             Thread.sleep(100);
             Sender.send(coreChannel,SimpleUtils.serializableToBytes(constructSetNameEntity()));
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            log.error(null,e.getMessage());
         }
     }
 

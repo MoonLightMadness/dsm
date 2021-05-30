@@ -59,9 +59,11 @@ public class MQReceiverHandler extends CallBack {
         try {
             //检查是否是重新再注册，是的话刷新兴趣表
             for(Consumer c:consumers){
-                if(c.getChannel().getRemoteAddress().toString().equals(channel.getRemoteAddress().toString())){
-                    c.setInterest(data);
-                    return;
+                if(c.getChannel().isConnected()){
+                    if(c.getChannel().getRemoteAddress().toString().equals(channel.getRemoteAddress().toString())){
+                        c.setInterest(data);
+                        return;
+                    }
                 }
             }
         } catch (IOException e) {
