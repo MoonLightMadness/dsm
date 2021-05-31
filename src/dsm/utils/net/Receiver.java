@@ -129,6 +129,8 @@ public class Receiver implements Runnable {
                     if(inf.getChannel().getRemoteAddress().toString().equals(channel.getRemoteAddress().toString())){
                         inf.reset();
                     }
+                }else {
+                    ci.remove();
                 }
             }
         } catch (IOException e) {
