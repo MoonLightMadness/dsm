@@ -1,7 +1,7 @@
 package app.dsm.statemachine.impl;
 
-import app.dsm.log.LogSystem;
-import app.dsm.log.LogSystemFactory;
+import app.log.LogSystem;
+import app.log.LogSystemFactory;
 import app.dsm.statemachine.HistoryEntityConstructor;
 import app.dsm.statemachine.IEventManager;
 import app.dsm.statemachine.entity.HistoryEntity;

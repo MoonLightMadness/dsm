@@ -1,4 +1,4 @@
-package app.dsm.log;
+package app.log;
 
 import app.utils.SimpleUtils;
 

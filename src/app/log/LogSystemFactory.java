@@ -1,7 +1,7 @@
-package app.dsm.log;
+package app.log;
 
 /**
- * @ClassName : app.dsm.log.LogSystemFactory
+ * @ClassName : app.log.LogSystemFactory
  * @Description :
  * @Date 2021-04-29 22:33:03
  * @Author ZhangHL

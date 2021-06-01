@@ -1,4 +1,4 @@
-package app.dsm.log;
+package app.log;
 
 /**
  * 日志系统常量类

@@ -3,8 +3,8 @@ package app.dsm.db.impl;
 import app.dsm.config.ConfigReader;
 import app.dsm.config.impl.DatabaseConfigReader;
 import app.dsm.db.DataBase;
-import app.dsm.log.LogSystem;
-import app.dsm.log.LogSystemFactory;
+import app.log.LogSystem;
+import app.log.LogSystemFactory;
 
 import java.sql.*;
 import java.util.ArrayList;

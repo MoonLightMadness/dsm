@@ -1,8 +1,8 @@
 package app.dsm.verify.impl;
 
 import app.dsm.base.impl.UniversalEntity;
-import app.dsm.log.LogSystem;
-import app.dsm.log.LogSystemFactory;
+import app.log.LogSystem;
+import app.log.LogSystemFactory;
 import app.dsm.security.Decoder;
 import app.dsm.security.Encoder;
 import app.dsm.security.SecurityService;

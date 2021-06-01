@@ -1,7 +1,7 @@
-package app.dsm.log.debuger;
+package app.log.debuger;
 
 /**
- * @ClassName : app.dsm.log.debuger.Debuger
+ * @ClassName : app.log.debuger.Debuger
  * @Description :
  * @Date 2021-05-09 14:48:44
  * @Author ZhangHL

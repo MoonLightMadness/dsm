@@ -2,8 +2,8 @@ package app.dsm.mq.impl;
 
 import app.dsm.base.BaseEntity;
 import app.dsm.base.impl.UniversalEntity;
-import app.dsm.log.LogSystem;
-import app.dsm.log.LogSystemFactory;
+import app.log.LogSystem;
+import app.log.LogSystemFactory;
 import app.dsm.mq.entity.Consumer;
 import app.utils.net.impl.CallBack;
 

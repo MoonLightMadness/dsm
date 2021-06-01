@@ -1,7 +1,7 @@
 package app.dsm.core;
 
-import app.dsm.log.LogSystem;
-import app.dsm.log.LogSystemFactory;
+import app.log.LogSystem;
+import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
 
 import java.io.IOException;

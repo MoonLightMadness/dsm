@@ -23,7 +23,7 @@ public class FlowEngineUtil {
      * @return {@link Map}
      */
     public static Map getAttachment(String flowName, Map attachment){
-        FlowEngine engine = FlowUtils.getFlowEngine();
+        FlowEngine engine = FlowUtils.getFlowEngine(flowName);
         String id = engine.startFlow(flowName,attachment);
         try {
             while (!engine.getFlowStatus(id).equals(FlowStatusEnum.CLOSED.getMessage())){
@@ -43,7 +43,7 @@ public class FlowEngineUtil {
      * @return {@link String} 流程实例id
      */
     public static String startFlow(String flowName,Map attachment){
-        flowEngine = FlowUtils.getFlowEngine();
+        flowEngine = FlowUtils.getFlowEngine(flowName);
         String id = flowEngine.startFlow(flowName,attachment);
         return id;
     }

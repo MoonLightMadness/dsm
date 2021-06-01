@@ -3,9 +3,9 @@ package app.dsm.flow;
 import app.dsm.flow.impl.StandardComponent;
 import app.dsm.flow.impl.StandardFlowEngine;
 import app.dsm.flow.impl.StandardModule;
-import app.dsm.log.LogSystem;
-import app.dsm.log.LogSystemFactory;
-import app.dsm.log.debuger.Debuger;
+import app.log.LogSystem;
+import app.log.LogSystemFactory;
+import app.log.debuger.Debuger;
 import app.utils.SimpleUtils;
 import org.yaml.snakeyaml.Yaml;
 
@@ -30,16 +30,16 @@ public class FlowUtils {
      *
      * @return {@link FlowEngine}
      */
-    public static FlowEngine getFlowEngine() {
+    public static FlowEngine getFlowEngine(String flowName) {
         if (flowEngine == null) {
-            generate();
+            generate(flowName);
         }
         return flowEngine;
     }
 
 
 
-    private static void generate() {
+    private static void generate(String flowName) {
         /**============================================================
          *  test_car_make=stage1:app.dsm.flow.sample.BodyMaker|&stage2:app.dsm.flow.sample.DoorMaker|&stage3:app.dsm.flow.sample.WheelMaker|&
          *
@@ -50,7 +50,7 @@ public class FlowUtils {
         ModuleComponent component = null;
         ComponentMethod method = null;
         //总的数据
-        String[] flows = readConfigbyYaml();
+        String[] flows = readConfigbyYaml(flowName);
         //单条数据
         String[] single;
         //流程名
@@ -130,7 +130,7 @@ public class FlowUtils {
         ModuleComponent component = null;
         ComponentMethod method = null;
         //总的数据
-        String[] flows = readConfigbyYaml();
+        String[] flows = readConfigbyYaml(name);
         //单条数据
         String[] single;
         //流程名
@@ -140,12 +140,14 @@ public class FlowUtils {
         //子处理程序名
         String[] subs;
         //开始处理
+        boolean founded=false;
         try {
             for (int i = 0; i < flows.length; i++) {
                 //处理单条数据
                 single = flows[i].split("=");
                 header = single[0];
                 if(name.equals(header)){
+                    founded = true;
                     module = new StandardModule();
                     header += SimpleUtils.getTimeStamp();
                     module.setName(header);
@@ -172,6 +174,9 @@ public class FlowUtils {
                             tempComponent.setComponentMethod(method);
                         }
                     }
+                    break;
+                }
+                if(founded){
                     break;
                 }
             }
@@ -220,7 +225,7 @@ public class FlowUtils {
         return res.toString().split("\n");
     }
 
-    private static String[] readConfigbyYaml() {
+    private static String[] readConfigbyYaml(String name) {
         Yaml yaml = new Yaml();
         File file = new File("./flowconfig.yaml");
         StringBuilder res = new StringBuilder();
@@ -230,21 +235,23 @@ public class FlowUtils {
             Iterator flowIterator = flow.entrySet().iterator();
             while (flowIterator.hasNext()) {
                 Map.Entry entry = (Map.Entry) flowIterator.next();
-                res.append(entry.getKey()).append("=");
-                //第二层
-                Map<String, String> stage = (Map<String, String>) entry.getValue();
-                Iterator stageIterator = stage.entrySet().iterator();
-                while (stageIterator.hasNext()) {
-                    //第三层
-                    Map.Entry stageEntry = (Map.Entry) stageIterator.next();
-                    res.append(stageEntry.getKey()).append(":");
-                    Map<String, String> sub = (Map<String, String>) stageEntry.getValue();
-                    Iterator subIterator = sub.entrySet().iterator();
-                    while (subIterator.hasNext()) {
-                        Map.Entry subEntry = (Map.Entry) subIterator.next();
-                        res.append(subEntry.getValue()).append("|");
+                if(entry.getKey().equals(name)){
+                    res.append(entry.getKey()).append("=");
+                    //第二层
+                    Map<String, String> stage = (Map<String, String>) entry.getValue();
+                    Iterator stageIterator = stage.entrySet().iterator();
+                    while (stageIterator.hasNext()) {
+                        //第三层
+                        Map.Entry stageEntry = (Map.Entry) stageIterator.next();
+                        res.append(stageEntry.getKey()).append(":");
+                        Map<String, String> sub = (Map<String, String>) stageEntry.getValue();
+                        Iterator subIterator = sub.entrySet().iterator();
+                        while (subIterator.hasNext()) {
+                            Map.Entry subEntry = (Map.Entry) subIterator.next();
+                            res.append(subEntry.getValue()).append("|");
+                        }
+                        res.append("&");
                     }
-                    res.append("&");
                 }
             }
         } catch (FileNotFoundException e) {

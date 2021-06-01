@@ -2,8 +2,8 @@ package app.utils.net;
 
 import app.dsm.base.BaseEntity;
 import app.dsm.core.ChannelInfo;
-import app.dsm.log.LogSystem;
-import app.dsm.log.LogSystemFactory;
+import app.log.LogSystem;
+import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
 
 import java.io.BufferedReader;

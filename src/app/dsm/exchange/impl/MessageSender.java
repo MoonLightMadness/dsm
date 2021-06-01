@@ -1,8 +1,8 @@
 package app.dsm.exchange.impl;
 
 import app.dsm.exchange.Sender;
-import app.dsm.log.LogSystem;
-import app.dsm.log.LogSystemFactory;
+import app.log.LogSystem;
+import app.log.LogSystemFactory;
 import app.dsm.security.SecurityService;
 import app.dsm.security.excp.EncodeException;
 

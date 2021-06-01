@@ -4,8 +4,8 @@ import app.dsm.flow.FlowConfigReader;
 import app.dsm.flow.FlowEngine;
 import app.dsm.flow.Module;
 import app.dsm.flow.constant.FlowStatusEnum;
-import app.dsm.log.LogSystem;
-import app.dsm.log.LogSystemFactory;
+import app.log.LogSystem;
+import app.log.LogSystemFactory;
 
 import java.util.*;
 import java.util.concurrent.*;

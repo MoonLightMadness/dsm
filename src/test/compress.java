@@ -3,8 +3,8 @@ package test;
 import app.dsm.compress.Compressor;
 import app.dsm.compress.impl.LZSS;
 import app.dsm.compress.impl.LZSS_MT;
-import app.dsm.log.LogSystem;
-import app.dsm.log.LogSystemFactory;
+import app.log.LogSystem;
+import app.log.LogSystemFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
