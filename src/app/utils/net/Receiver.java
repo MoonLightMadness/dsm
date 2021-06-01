@@ -1,10 +1,10 @@
-package app.dsm.utils.net;
+package app.utils.net;
 
 import app.dsm.base.BaseEntity;
 import app.dsm.core.ChannelInfo;
 import app.dsm.log.LogSystem;
 import app.dsm.log.LogSystemFactory;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -20,7 +20,7 @@ import java.nio.channels.SocketChannel;
 import java.util.*;
 
 /**
- * @ClassName : app.dsm.utils.net.Receiver
+ * @ClassName : app.utils.net.Receiver
  * @Description :
  * @Date 2021-05-13 15:06:09
  * @Author ZhangHL

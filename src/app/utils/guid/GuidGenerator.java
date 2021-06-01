@@ -1,4 +1,4 @@
-package app.dsm.utils.guid;
+package app.utils.guid;
 
 /**
  * guid生成器

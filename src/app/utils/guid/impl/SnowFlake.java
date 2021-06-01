@@ -1,6 +1,6 @@
-package app.dsm.utils.guid.impl;
+package app.utils.guid.impl;
 
-import app.dsm.utils.guid.GuidGenerator;
+import app.utils.guid.GuidGenerator;
 
 
 /**

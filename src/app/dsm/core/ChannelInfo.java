@@ -2,7 +2,7 @@ package app.dsm.core;
 
 import app.dsm.log.LogSystem;
 import app.dsm.log.LogSystemFactory;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;

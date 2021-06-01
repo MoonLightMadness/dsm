@@ -1,4 +1,4 @@
-package app.dsm.utils.net;
+package app.utils.net;
 
 import app.dsm.base.BaseEntity;
 

@@ -11,9 +11,9 @@ import app.dsm.exchange.impl.GateExchangerCore;
 import app.dsm.security.SecurityService;
 import app.dsm.security.excp.EncodeException;
 import app.dsm.security.impl.*;
-import app.dsm.utils.SimpleUtils;
-import app.dsm.utils.guid.impl.SnowFlake;
-import app.dsm.utils.special.ExchangerUtils;
+import app.utils.SimpleUtils;
+import app.utils.guid.impl.SnowFlake;
+import app.utils.special.ExchangerUtils;
 import org.junit.Test;
 
 import java.io.IOException;

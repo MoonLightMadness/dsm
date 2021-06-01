@@ -1,5 +1,7 @@
-package app.dsm.utils;
+package app.utils;
 
+
+import app.utils.datastructure.XByteBuffer;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -348,7 +350,9 @@ public class SimpleUtils {
 
     public static byte[] receiveDataInNIO(SocketChannel socketChannel) {
         List<byte[]> recv = new ArrayList<>();
-        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        int standard = 1024;
+        XByteBuffer xb = new XByteBuffer();
+        ByteBuffer buffer = ByteBuffer.allocate(standard);
         int size = 0;
         int count = 0;
         byte[] temp;
@@ -356,7 +360,16 @@ public class SimpleUtils {
             buffer.clear();
             try {
                 size = socketChannel.read(buffer);
-                count += size;
+                if(size == standard){
+                    buffer.flip();
+                    xb.append(buffer.array());
+                }else {
+                    byte[] rb = new byte[size];
+                    buffer.flip();
+                    System.arraycopy(buffer.array(),0,rb,0,size);
+                    xb.append(rb);
+                }
+                //count += size;
             } catch (Exception e) {
                 try {
                     socketChannel.close();
@@ -368,17 +381,17 @@ public class SimpleUtils {
             if (size <= 0) {
                 break;
             }
-            buffer.flip();
-            temp = new byte[size];
-            System.arraycopy(buffer.array(), 0, temp, 0, size);
-            recv.add(temp);
+//            buffer.flip();
+//            temp = new byte[size];
+//            System.arraycopy(buffer.array(), 0, temp, 0, size);
+//            recv.add(temp);
         }
         /**
          * 预处理接收到的信息，并做后续处理
          */
-        byte[] data = SimpleUtils.mergeByteList(recv, count);
-        recv.clear();
-        return data;
+        //byte[] data = SimpleUtils.mergeByteList(recv, count);
+        //recv.clear();
+        return xb.getBytes();
     }
 
     public static String stringFormatter(String[] titles, String[]... args) {

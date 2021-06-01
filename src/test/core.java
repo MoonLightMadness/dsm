@@ -5,7 +5,7 @@ import app.dsm.base.impl.UniversalEntityWrapper;
 import app.dsm.core.Core;
 import app.dsm.mq.impl.MQReceiver;
 import app.dsm.mq.impl.MQReceiverHandler;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -88,7 +88,12 @@ public class core {
             buffer1.put(data1);
             buffer1.flip();
             socketChannel1.write(buffer1);
-            Thread.sleep(9000);
+            Thread.sleep(3000);
+            buffer.clear();
+            socketChannel1.read(buffer);
+            buffer.flip();
+            UniversalEntity entity2 = (UniversalEntity) SimpleUtils.bytesToSerializableObject(buffer.array());
+            System.out.println(entity2.toString());
 
         } catch (InterruptedException e) {
             e.printStackTrace();

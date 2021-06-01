@@ -5,9 +5,9 @@ import app.dsm.base.impl.UniversalEntity;
 import app.dsm.base.impl.UniversalEntityWrapper;
 import app.dsm.log.LogSystem;
 import app.dsm.log.LogSystemFactory;
-import app.dsm.utils.SimpleUtils;
-import app.dsm.utils.net.Sender;
-import app.dsm.utils.net.impl.CallBack;
+import app.utils.SimpleUtils;
+import app.utils.net.Sender;
+import app.utils.net.impl.CallBack;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;

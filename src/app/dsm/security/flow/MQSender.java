@@ -2,7 +2,7 @@ package app.dsm.security.flow;
 
 import app.dsm.base.impl.UniversalEntity;
 import app.dsm.flow.ComponentMethod;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 
 import java.util.Map;
 

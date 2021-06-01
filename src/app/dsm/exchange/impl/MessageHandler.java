@@ -8,8 +8,8 @@ import app.dsm.exchange.constant.MessageHandlerConstant;
 import app.dsm.log.LogSystem;
 import app.dsm.log.LogSystemFactory;
 import app.dsm.security.EntitySecurityService;
-import app.dsm.utils.special.DBUtils;
-import app.dsm.utils.special.ExchangerUtils;
+import app.utils.special.DBUtils;
+import app.utils.special.ExchangerUtils;
 
 import java.io.IOException;
 import java.nio.channels.SelectionKey;

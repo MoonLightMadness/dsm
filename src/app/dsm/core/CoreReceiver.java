@@ -2,7 +2,7 @@ package app.dsm.core;
 
 import app.dsm.log.LogSystem;
 import app.dsm.log.LogSystemFactory;
-import app.dsm.utils.net.Receiver;
+import app.utils.net.Receiver;
 
 import java.nio.channels.ServerSocketChannel;
 import java.util.List;

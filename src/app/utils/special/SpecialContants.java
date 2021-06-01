@@ -1,7 +1,7 @@
-package app.dsm.utils.special;
+package app.utils.special;
 
 /**
- * @ClassName : app.dsm.utils.special.SpecialContants
+ * @ClassName : app.utils.special.SpecialContants
  * @Description :
  * @Date 2021-05-06 17:25:14
  * @Author ZhangHL

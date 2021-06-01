@@ -13,7 +13,7 @@ import app.dsm.log.LogSystemFactory;
 import app.dsm.security.EntitySecurityService;
 import app.dsm.security.excp.DecodeException;
 import app.dsm.security.impl.*;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

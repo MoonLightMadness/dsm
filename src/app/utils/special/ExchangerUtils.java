@@ -1,11 +1,11 @@
-package app.dsm.utils.special;
+package app.utils.special;
 
 import app.dsm.base.BaseEntity;
 import app.dsm.base.impl.UniversalEntity;
 import app.dsm.security.EntitySecurityService;
 import app.dsm.security.excp.DecodeException;
 import app.dsm.security.excp.EncodeException;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @ClassName : app.dsm.utils.special.ExchangerUtils
+ * @ClassName : app.utils.special.ExchangerUtils
  * @Description :
  * @Date 2021-05-06 21:24:44
  * @Author ZhangHL

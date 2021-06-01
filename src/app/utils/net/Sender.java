@@ -1,11 +1,11 @@
-package app.dsm.utils.net;
+package app.utils.net;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
 /**
- * @ClassName : app.dsm.utils.net.Sender
+ * @ClassName : app.utils.net.Sender
  * @Description :
  * @Date 2021-05-14 09:00:15
  * @Author ZhangHL

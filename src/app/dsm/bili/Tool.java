@@ -1,8 +1,8 @@
 package app.dsm.bili;
 
 
-import app.dsm.utils.SimpleUtils;
-import app.dsm.utils.TimeFormatter;
+import app.utils.SimpleUtils;
+import app.utils.TimeFormatter;
 
 import java.sql.SQLException;
 import java.util.Iterator;

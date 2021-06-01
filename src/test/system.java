@@ -2,7 +2,7 @@ package test;
 
 import app.dsm.log.LogSystem;
 import app.dsm.log.LogSystemFactory;
-import app.dsm.utils.TimeFormatter;
+import app.utils.TimeFormatter;
 import org.junit.Test;
 
 import java.io.IOException;

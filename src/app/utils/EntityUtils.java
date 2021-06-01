@@ -1,11 +1,11 @@
-package app.dsm.utils;
+package app.utils;
 
 import app.dsm.base.BaseEntity;
 
 import java.lang.reflect.Field;
 
 /**
- * @ClassName : app.dsm.utils.EntityUtils
+ * @ClassName : app.utils.EntityUtils
  * @Description :
  * @Date 2021-05-06 20:07:17
  * @Author ZhangHL

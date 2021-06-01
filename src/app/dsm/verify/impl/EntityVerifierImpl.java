@@ -2,7 +2,7 @@ package app.dsm.verify.impl;
 
 import app.dsm.base.BaseEntity;
 import app.dsm.security.Encoder;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 import app.dsm.verify.EntityVerifier;
 
 /**

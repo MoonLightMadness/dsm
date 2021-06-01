@@ -1,7 +1,7 @@
 package app.dsm.base.impl;
 
 import app.dsm.security.impl.Sha1Encoder;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 
 /**
  * @ClassName : app.dsm.base.impl.UniversalEntityWrapper

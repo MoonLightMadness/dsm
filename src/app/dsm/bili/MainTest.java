@@ -1,6 +1,6 @@
 package app.dsm.bili;
 
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 import org.junit.Test;
 
 import java.io.IOException;

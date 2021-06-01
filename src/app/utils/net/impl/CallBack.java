@@ -1,7 +1,7 @@
-package app.dsm.utils.net.impl;
+package app.utils.net.impl;
 
 import app.dsm.base.BaseEntity;
-import app.dsm.utils.net.ICallBack;
+import app.utils.net.ICallBack;
 
 import java.nio.channels.SocketChannel;
 

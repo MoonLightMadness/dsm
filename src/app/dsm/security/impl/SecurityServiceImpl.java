@@ -7,7 +7,7 @@ import app.dsm.security.Decoder;
 import app.dsm.security.Encoder;
 import app.dsm.security.SecurityService;
 import app.dsm.security.excp.EncodeException;
-import app.dsm.utils.special.DBUtils;
+import app.utils.special.DBUtils;
 
 
 /**

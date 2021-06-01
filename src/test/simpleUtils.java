@@ -2,9 +2,9 @@ package test;
 
 import app.dsm.base.impl.UniversalEntity;
 import app.dsm.base.impl.UniversalEntityWrapper;
-import app.dsm.utils.EntityUtils;
-import app.dsm.utils.SimpleUtils;
-import app.dsm.utils.TimeFormatter;
+import app.utils.EntityUtils;
+import app.utils.SimpleUtils;
+import app.utils.TimeFormatter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -69,5 +69,13 @@ public class simpleUtils {
     public void test7(){
         String res =  SimpleUtils.callShell("PWDGenerator 20000 type-A 1","c",true);
         System.out.println(res);
+    }
+
+    @Test
+    public void test8(){
+        byte[] bytes =new byte[1024];
+        bytes[0] = 'a';
+        bytes[1] = '\0';
+        System.out.println(bytes.length);
     }
 }

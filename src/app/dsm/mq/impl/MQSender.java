@@ -5,7 +5,7 @@ import app.dsm.base.impl.UniversalEntity;
 import app.dsm.log.LogSystem;
 import app.dsm.log.LogSystemFactory;
 import app.dsm.mq.entity.Consumer;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

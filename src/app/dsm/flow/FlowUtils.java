@@ -6,7 +6,7 @@ import app.dsm.flow.impl.StandardModule;
 import app.dsm.log.LogSystem;
 import app.dsm.log.LogSystemFactory;
 import app.dsm.log.debuger.Debuger;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;

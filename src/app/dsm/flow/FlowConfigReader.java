@@ -3,7 +3,7 @@ package app.dsm.flow;
 import app.dsm.config.ConfigReader;
 import app.dsm.log.LogSystem;
 import app.dsm.log.LogSystemFactory;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 
 import java.io.*;
 import java.util.Locale;

@@ -2,8 +2,8 @@ package test;
 
 import app.dsm.base.impl.UniversalEntity;
 import app.dsm.base.impl.UniversalEntityWrapper;
-import app.dsm.utils.SimpleUtils;
-import app.dsm.utils.net.Sender;
+import app.utils.SimpleUtils;
+import app.utils.net.Sender;
 import org.junit.Test;
 
 import java.io.IOException;

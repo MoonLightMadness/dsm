@@ -8,7 +8,7 @@ import app.dsm.security.Encoder;
 import app.dsm.security.SecurityService;
 import app.dsm.security.excp.DecodeException;
 import app.dsm.security.impl.SecurityServiceImpl;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 import app.dsm.verify.Verifier;
 
 import java.nio.charset.StandardCharsets;

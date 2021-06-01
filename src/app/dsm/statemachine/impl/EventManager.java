@@ -5,7 +5,7 @@ import app.dsm.log.LogSystemFactory;
 import app.dsm.statemachine.HistoryEntityConstructor;
 import app.dsm.statemachine.IEventManager;
 import app.dsm.statemachine.entity.HistoryEntity;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 
 import java.util.ArrayList;
 import java.util.List;

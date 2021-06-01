@@ -1,11 +1,11 @@
-package app.dsm.utils.special;
+package app.utils.special;
 
 import app.dsm.db.DataBase;
 import app.dsm.db.impl.SqlReader;
 import app.dsm.db.impl.SqliteFactory;
 
 /**
- * @ClassName : app.dsm.utils.special.DBUtils
+ * @ClassName : app.utils.special.DBUtils
  * @Description :
  * @Date 2021-05-06 17:23:44
  * @Author ZhangHL

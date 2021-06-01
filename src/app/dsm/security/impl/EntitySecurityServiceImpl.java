@@ -9,7 +9,7 @@ import app.dsm.security.Encoder;
 import app.dsm.security.EntitySecurityService;
 import app.dsm.security.excp.DecodeException;
 import app.dsm.security.excp.EncodeException;
-import app.dsm.utils.special.DBUtils;
+import app.utils.special.DBUtils;
 import app.dsm.verify.EntityVerifier;
 import app.dsm.verify.impl.EntityVerifierImpl;
 

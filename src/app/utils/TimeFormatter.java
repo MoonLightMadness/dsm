@@ -1,4 +1,4 @@
-package app.dsm.utils;
+package app.utils;
 
 /**
  * @ClassName : utils.base.constant.TimeFormatter

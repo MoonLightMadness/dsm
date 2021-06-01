@@ -1,6 +1,6 @@
 package app.dsm.log;
 
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 
 
 /**

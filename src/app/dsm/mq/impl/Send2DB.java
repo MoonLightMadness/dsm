@@ -1,7 +1,7 @@
 package app.dsm.mq.impl;
 
 import app.dsm.base.impl.UniversalEntity;
-import app.dsm.utils.SimpleUtils;
+import app.utils.SimpleUtils;
 
 import java.nio.channels.SocketChannel;
 

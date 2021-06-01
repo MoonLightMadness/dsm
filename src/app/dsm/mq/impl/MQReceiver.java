@@ -7,9 +7,9 @@ import app.dsm.config.impl.UniversalConfigReader;
 import app.dsm.core.ChannelInfo;
 import app.dsm.log.LogSystem;
 import app.dsm.log.LogSystemFactory;
-import app.dsm.utils.SimpleUtils;
-import app.dsm.utils.net.Receiver;
-import app.dsm.utils.net.Sender;
+import app.utils.SimpleUtils;
+import app.utils.net.Receiver;
+import app.utils.net.Sender;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
