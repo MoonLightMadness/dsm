@@ -381,16 +381,7 @@ public class SimpleUtils {
             if (size <= 0) {
                 break;
             }
-//            buffer.flip();
-//            temp = new byte[size];
-//            System.arraycopy(buffer.array(), 0, temp, 0, size);
-//            recv.add(temp);
         }
-        /**
-         * 预处理接收到的信息，并做后续处理
-         */
-        //byte[] data = SimpleUtils.mergeByteList(recv, count);
-        //recv.clear();
         return xb.getBytes();
     }
 

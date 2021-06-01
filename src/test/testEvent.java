@@ -4,6 +4,7 @@ import app.dsm.statemachine.EventManagerFactory;
 import app.dsm.statemachine.entity.HistoryEntity;
 import app.dsm.statemachine.impl.Event;
 import app.dsm.statemachine.impl.EventManager;
+import app.utils.special.RTimer;
 import org.junit.Test;
 
 public class testEvent extends Event {
@@ -21,6 +22,8 @@ public class testEvent extends Event {
 
     @Test
     public void test1(){
+        RTimer timer = new RTimer();
+        timer.start();
         EventManager manager = EventManagerFactory.getInstance();
         manager.setPackage("test");
         manager.activateEvent("db",this);
@@ -28,6 +31,7 @@ public class testEvent extends Event {
         manager.activateEvent("testEvent",this);
         manager.activateEvent("testEvent",this);
         manager.activateEvent("testEvent",this);
+        System.out.println(timer.end());
         for(HistoryEntity entity: manager.getHistory()){
             System.out.println(entity.getTimestamp()+"  "+entity.getEventName()+"  "+entity.getRes());
         }
