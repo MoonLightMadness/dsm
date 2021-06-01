@@ -1,12 +1,11 @@
 package test;
 
-import dsm.base.impl.UniversalEntity;
-import dsm.base.impl.UniversalEntityWrapper;
-import dsm.core.Core;
-import dsm.mq.impl.MQReceiver;
-import dsm.mq.impl.MQReceiverHandler;
-import dsm.utils.EntityUtils;
-import dsm.utils.SimpleUtils;
+import app.dsm.base.impl.UniversalEntity;
+import app.dsm.base.impl.UniversalEntityWrapper;
+import app.dsm.core.Core;
+import app.dsm.mq.impl.MQReceiver;
+import app.dsm.mq.impl.MQReceiverHandler;
+import app.dsm.utils.SimpleUtils;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,7 +14,6 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.Date;
 
 public class core {
 
@@ -35,7 +33,7 @@ public class core {
                         "test",
                         "core",
                         "1",
-                        "set_name "+ System.currentTimeMillis(),
+                        "set_name "+socketChannel.getLocalAddress().toString()+" "+ System.currentTimeMillis(),
                         "null",
                         "00001");
                 byte[] data = SimpleUtils.serializableToBytes(entity);
@@ -65,7 +63,7 @@ public class core {
                     "test",
                     "core",
                     "1",
-                    "set_name test",
+                    "set_name test "+socketChannel.getLocalAddress().toString(),
                     "null",
                     "00001");
             byte[] data = SimpleUtils.serializableToBytes(entity);

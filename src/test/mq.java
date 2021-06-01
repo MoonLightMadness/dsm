@@ -1,12 +1,9 @@
 package test;
 
-import dsm.base.impl.UniversalEntity;
-import dsm.base.impl.UniversalEntityWrapper;
-import dsm.mq.impl.MQReceiver;
-import dsm.mq.impl.MQReceiverHandler;
-import dsm.utils.SimpleUtils;
-import dsm.utils.net.Receiver;
-import dsm.utils.net.Sender;
+import app.dsm.base.impl.UniversalEntity;
+import app.dsm.base.impl.UniversalEntityWrapper;
+import app.dsm.utils.SimpleUtils;
+import app.dsm.utils.net.Sender;
 import org.junit.Test;
 
 import java.io.IOException;

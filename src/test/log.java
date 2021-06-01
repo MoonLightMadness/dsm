@@ -1,7 +1,7 @@
 package test;
 
-import dsm.log.LogSystem;
-import dsm.log.LogSystemFactory;
+import app.dsm.log.LogSystem;
+import app.dsm.log.LogSystemFactory;
 import org.junit.Test;
 
 /**

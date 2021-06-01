@@ -1,7 +1,7 @@
 package test;
 
-import dsm.container.Container;
-import dsm.container.impl.UniversalContainerFactory;
+import app.dsm.container.Container;
+import app.dsm.container.impl.UniversalContainerFactory;
 import org.junit.Test;
 
 /**

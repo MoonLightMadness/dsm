@@ -1,10 +1,10 @@
 package test;
 
-import dsm.db.DataBase;
-import dsm.db.SqlBuilder;
-import dsm.db.impl.SqlBuilderImpl;
-import dsm.db.impl.SqlReader;
-import dsm.db.impl.SqliteImpl;
+import app.dsm.db.DataBase;
+import app.dsm.db.SqlBuilder;
+import app.dsm.db.impl.SqlBuilderImpl;
+import app.dsm.db.impl.SqlReader;
+import app.dsm.db.impl.SqliteImpl;
 import org.junit.Test;
 
 /**

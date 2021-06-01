@@ -1,10 +1,10 @@
 package test;
 
-import dsm.base.impl.UniversalEntity;
-import dsm.base.impl.UniversalEntityWrapper;
-import dsm.utils.EntityUtils;
-import dsm.utils.SimpleUtils;
-import dsm.utils.TimeFormatter;
+import app.dsm.base.impl.UniversalEntity;
+import app.dsm.base.impl.UniversalEntityWrapper;
+import app.dsm.utils.EntityUtils;
+import app.dsm.utils.SimpleUtils;
+import app.dsm.utils.TimeFormatter;
 import org.junit.Assert;
 import org.junit.Test;
 

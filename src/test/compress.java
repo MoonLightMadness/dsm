@@ -1,19 +1,14 @@
 package test;
 
-import dsm.compress.Compressor;
-import dsm.compress.impl.LZSS;
-import dsm.compress.impl.LZSS_MT;
-import dsm.log.LogSystem;
-import dsm.log.LogSystemFactory;
-import dsm.utils.SimpleUtils;
+import app.dsm.compress.Compressor;
+import app.dsm.compress.impl.LZSS;
+import app.dsm.compress.impl.LZSS_MT;
+import app.dsm.log.LogSystem;
+import app.dsm.log.LogSystemFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @ClassName : test.compress
@@ -58,7 +53,7 @@ public class compress {
     @Test
     public void testFile_2() {
         Compressor compressor = new LZSS();
-        String test = readFile(new File("C:\\Users\\Administrator\\Desktop\\entertainment\\java\\dsm\\.idea\\workspace.xml"));
+        String test = readFile(new File("C:\\Users\\Administrator\\Desktop\\entertainment\\java\\app.dsm\\.idea\\workspace.xml"));
         long time = System.currentTimeMillis();
         System.out.println("原文长度:" + test.length());
         String res = compressor.encode(test);
@@ -77,7 +72,7 @@ public class compress {
     public void testFile_3_MT() {
         //多线程测试
         String test = readFile(new File("./LICENSE"));
-        //String test = readFile("C:\\Users\\Administrator\\Desktop\\entertainment\\java\\dsm\\.idea\\workspace.xml");
+        //String test = readFile("C:\\Users\\Administrator\\Desktop\\entertainment\\java\\app.dsm\\.idea\\workspace.xml");
         //String test = readFile("./test.db");
         int len = test.length();
         System.out.println("文件长度:" + len);

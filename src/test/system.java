@@ -1,9 +1,8 @@
 package test;
 
-import dsm.log.LogSystem;
-import dsm.log.LogSystemFactory;
-import dsm.utils.SimpleUtils;
-import dsm.utils.TimeFormatter;
+import app.dsm.log.LogSystem;
+import app.dsm.log.LogSystemFactory;
+import app.dsm.utils.TimeFormatter;
 import org.junit.Test;
 
 import java.io.IOException;

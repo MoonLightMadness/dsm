@@ -1,6 +1,6 @@
 package test;
 
-import dsm.base.start.ProjectStarter;
+import app.dsm.base.start.ProjectStarter;
 import org.junit.Test;
 
 /**

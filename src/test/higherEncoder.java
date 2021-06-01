@@ -1,11 +1,11 @@
 package test;
 
-import dsm.base.impl.UniversalEntity;
-import dsm.base.impl.UniversalEntityWrapper;
-import dsm.security.higher.UniversalHigherDecoder;
-import dsm.security.higher.UniversalHigherEncoder;
-import dsm.security.impl.AESDecoder;
-import dsm.security.impl.AESEncoder;
+import app.dsm.base.impl.UniversalEntity;
+import app.dsm.base.impl.UniversalEntityWrapper;
+import app.dsm.security.higher.UniversalHigherDecoder;
+import app.dsm.security.higher.UniversalHigherEncoder;
+import app.dsm.security.impl.AESDecoder;
+import app.dsm.security.impl.AESEncoder;
 import org.junit.Test;
 
 /**

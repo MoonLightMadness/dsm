@@ -1,7 +1,7 @@
 package test;
 
-import dsm.config.ConfigReader;
-import dsm.config.impl.IPConfigReader;
+import app.dsm.config.ConfigReader;
+import app.dsm.config.impl.IPConfigReader;
 import org.junit.Test;
 
 /**

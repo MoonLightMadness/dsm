@@ -1,9 +1,9 @@
 package test;
 
-import dsm.statemachine.EventManagerFactory;
-import dsm.statemachine.entity.HistoryEntity;
-import dsm.statemachine.impl.Event;
-import dsm.statemachine.impl.EventManager;
+import app.dsm.statemachine.EventManagerFactory;
+import app.dsm.statemachine.entity.HistoryEntity;
+import app.dsm.statemachine.impl.Event;
+import app.dsm.statemachine.impl.EventManager;
 import org.junit.Test;
 
 public class testEvent extends Event {

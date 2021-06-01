@@ -1,24 +1,15 @@
 package test;
 
-import dsm.base.impl.UniversalEntity;
-import dsm.base.impl.UniversalEntityWrapper;
-import dsm.security.EntitySecurityService;
-import dsm.security.SecurityService;
-import dsm.security.excp.DecodeException;
-import dsm.security.excp.EncodeException;
-import dsm.security.impl.*;
-import dsm.utils.SimpleUtils;
-import dsm.verify.EntityVerifier;
-import dsm.verify.Verifier;
-import dsm.verify.impl.EntityVerifierImpl;
-import dsm.verify.impl.MessageVerifier;
+import app.dsm.base.impl.UniversalEntity;
+import app.dsm.base.impl.UniversalEntityWrapper;
+import app.dsm.security.EntitySecurityService;
+import app.dsm.security.excp.DecodeException;
+import app.dsm.security.excp.EncodeException;
+import app.dsm.security.impl.*;
+import app.dsm.verify.EntityVerifier;
+import app.dsm.verify.impl.EntityVerifierImpl;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Objects;
 
 /**
  * @ClassName : test.verify
