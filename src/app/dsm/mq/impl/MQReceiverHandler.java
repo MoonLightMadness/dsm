@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
+ * 主动式消息队列处理器
  * @ClassName : app.dsm.mq.impl.MQReceiverHandler
  * @Description :
  * @Date 2021-05-28 14:11:10

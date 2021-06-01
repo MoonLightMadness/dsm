@@ -20,7 +20,7 @@ public class core {
     @Test
     public void test1() throws IOException {
         Core core = new Core();
-        core.init();
+        core.init("core");
         Thread thread = new Thread(core);
         thread.start();
         try {
@@ -51,7 +51,7 @@ public class core {
     @Test
     public void test2() throws IOException {
         Core core = new Core();
-        core.init();
+        core.init("core");
         Thread thread = new Thread(core);
         thread.start();
         try {
@@ -103,7 +103,7 @@ public class core {
     @Test
     public void test3(){
         Core core = new Core();
-        core.init();
+        core.init("core");
         Thread thread = new Thread(core);
         thread.start();
         MQReceiver receiver = new MQReceiver();

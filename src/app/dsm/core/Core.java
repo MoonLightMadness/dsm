@@ -20,9 +20,16 @@ public class Core implements Runnable {
 
     private LogSystem log;
 
-    public void init() {
+    private String name;
+
+    /**
+     * 初始化
+     * @param name 名字
+     */
+    public void init(String name) {
         list = new ArrayList<>();
         log = LogSystemFactory.getLogSystem();
+        this.name = name;
     }
 
 
@@ -35,7 +42,7 @@ public class Core implements Runnable {
 
     private void startReceive() {
         CoreReceiver receiver = new CoreReceiver();
-        receiver.init(list);
+        receiver.init(list,name);
         Thread t = new Thread(receiver);
         t.start();
     }
@@ -70,7 +77,7 @@ public class Core implements Runnable {
 
     public static void main(String[] args) {
         Core core = new Core();
-        core.init();
+        core.init("core");
         Thread thread = new Thread(core);
         thread.start();
 
