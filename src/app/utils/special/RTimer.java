@@ -10,12 +10,34 @@ package app.utils.special;
 public class RTimer {
     private long time = 1;
 
+    private long total = 0;
+    /**
+     * 开始 <br\>
+     * 会重置时间
+     */
     public void start(){
         time = System.currentTimeMillis();
     }
 
+    /**
+     * 结束
+     *
+     * @return long 运行时间
+     */
     public long end(){
-        return System.currentTimeMillis() - time;
+        long interval = System.currentTimeMillis() - time;
+        total += interval;
+        return interval;
     }
+
+    /**
+     * 返回所有start()->end()调用的时间总和
+     *
+     * @return long
+     */
+    public long getTotal(){
+        return total;
+    }
+
 
 }
