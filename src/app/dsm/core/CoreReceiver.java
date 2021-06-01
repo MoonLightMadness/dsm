@@ -23,7 +23,9 @@ public class CoreReceiver implements Runnable{
 
     private LogSystem log;
 
-    public void init(List<ChannelInfo> list){
+    private String name;
+
+    public void init(List<ChannelInfo> list,String name){
         log = LogSystemFactory.getLogSystem();
         this.list=list;
         handler = new CoreMessageHandler();
@@ -33,7 +35,7 @@ public class CoreReceiver implements Runnable{
     @Override
     public void run() {
         Receiver receiver = new Receiver();
-        receiver.init("core",handler,list);
+        receiver.init(name,handler,list);
         Thread thread = new Thread(receiver);
         thread.start();
     }
