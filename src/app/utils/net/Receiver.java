@@ -68,9 +68,8 @@ public class Receiver implements Runnable {
                         checkBeat((SocketChannel) sk.channel());
                         byte[] data = SimpleUtils.receiveDataInNIO((SocketChannel) sk.channel());
                         if(data.length > 0){
-                            BaseEntity entity = (BaseEntity) JSONTool.getObject(data, UniversalEntity.class);
                             //log.info(null,"收到:{}",entity.toString());
-                            callBack.invoke((SocketChannel) sk.channel(),entity);
+                            callBack.invoke((SocketChannel) sk.channel(),data);
                         }
                     }
                     iterator.remove();

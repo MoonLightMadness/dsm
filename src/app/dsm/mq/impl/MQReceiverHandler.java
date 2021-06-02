@@ -1,6 +1,7 @@
 package app.dsm.mq.impl;
 
 import app.dsm.base.BaseEntity;
+import app.dsm.base.JSONTool;
 import app.dsm.base.impl.UniversalEntity;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
@@ -41,8 +42,9 @@ public class MQReceiverHandler extends CallBack {
 
 
     @Override
-    public void invoke(SocketChannel channel, BaseEntity entity) {
-        UniversalEntity uni = (UniversalEntity) entity;
+    public void invoke(SocketChannel channel, byte[] data) {
+
+        UniversalEntity uni = (UniversalEntity) JSONTool.getObject(data, UniversalEntity.class);
         //消费者注册
         if(uni.getMessage().startsWith("register")){
             register(channel, uni.getMessage());
@@ -50,7 +52,7 @@ public class MQReceiverHandler extends CallBack {
         //添加消息
         if(uni.getMessage().startsWith("message")){
             ListIterator iter = list.listIterator();
-            iter.add(entity);
+            iter.add(uni);
         }
 
     }

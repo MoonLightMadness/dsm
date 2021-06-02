@@ -28,9 +28,9 @@ public class CoreMessageHandler extends CallBack {
     }
 
     @Override
-    public void invoke(SocketChannel channel, BaseEntity entity) {
+    public void invoke(SocketChannel channel, byte[] data) {
         //log.info(null,"开始处理");
-        UniversalEntity universalEntity = (UniversalEntity) entity;
+        UniversalEntity universalEntity = (UniversalEntity) JSONTool.getObject(data, UniversalEntity.class);
         String cmd = universalEntity.getMessage();
         cmd = cmd.toLowerCase(Locale.ROOT);
         if(cmd.startsWith(CoreCommandEnum.SET_NAME.getMessage())){
