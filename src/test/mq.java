@@ -28,7 +28,7 @@ public class mq {
         try {
             //开启消息队列服务
             MQReceiver receiver = new MQReceiver();
-            receiver.init("event.mq",new MQReceiverHandler());
+            receiver.init("event.mq","core",new MQReceiverHandler());
             new Thread(receiver).start();
             Thread.sleep(100);
             //注册一个消费者

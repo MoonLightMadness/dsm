@@ -112,7 +112,7 @@ public class core {
         Thread thread = new Thread(core);
         thread.start();
         MQReceiver receiver = new MQReceiver();
-        receiver.init("event.mq",new MQReceiverHandler());
+        receiver.init("event.mq","core",new MQReceiverHandler());
         new Thread(receiver).start();
         try {
             Thread.sleep(5000);

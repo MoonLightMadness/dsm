@@ -37,7 +37,7 @@ public class MQReceiver implements Runnable {
 
     private SocketChannel coreChannel;
 
-    public void init(String name,MQReceiverHandler handler){
+    public void init(String name,String coreName,MQReceiverHandler handler){
         this.name = name;
         this.handler = handler;
         handler.init(new ArrayList<BaseEntity>());
@@ -45,7 +45,7 @@ public class MQReceiver implements Runnable {
         log = LogSystemFactory.getLogSystem();
         //读取core地址
         UniversalConfigReader reader =new  UniversalConfigReader();
-        reader.setName("core");
+        reader.setName(coreName);
         aboutCore = new String[2];
         aboutCore = reader.read();
         try {
@@ -100,7 +100,7 @@ public class MQReceiver implements Runnable {
 
     public static void main(String[] args) {
         MQReceiver receiver = new MQReceiver();
-        receiver.init("event.mq",new MQReceiverHandler());
+        receiver.init("event.mq","core",new MQReceiverHandler());
         new Thread(receiver).start();
         try {
             while (true) {
