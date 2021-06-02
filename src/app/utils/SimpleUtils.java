@@ -382,7 +382,8 @@ public class SimpleUtils {
                 break;
             }
         }
-        return xb.getBytes();
+        byte[] res = xb.getBytes();
+        return res;
     }
 
     public static String stringFormatter(String[] titles, String[]... args) {

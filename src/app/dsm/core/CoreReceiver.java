@@ -30,6 +30,7 @@ public class CoreReceiver implements Runnable{
         this.list=list;
         handler = new CoreMessageHandler();
         handler.init(list);
+        this.name = name;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package app.dsm.mq.impl;
 
 import app.dsm.base.BaseEntity;
+import app.dsm.base.JSONTool;
 import app.dsm.base.impl.UniversalEntity;
 import app.dsm.base.impl.UniversalEntityWrapper;
 import app.dsm.config.impl.UniversalConfigReader;
@@ -50,7 +51,7 @@ public class MQReceiver implements Runnable {
         try {
             coreChannel = SocketChannel.open(new InetSocketAddress(aboutCore[0], Integer.parseInt(aboutCore[1])));
             Thread.sleep(100);
-            Sender.send(coreChannel,SimpleUtils.serializableToBytes(constructSetNameEntity()));
+            Sender.send(coreChannel, JSONTool.toJson(constructSetNameEntity()));
         } catch (IOException | InterruptedException e) {
             log.error(null,e.getMessage());
         }
@@ -85,7 +86,7 @@ public class MQReceiver implements Runnable {
                 }
                 //向core发送
 
-                Sender.send(coreChannel,SimpleUtils.serializableToBytes(constructBeatEntity()));
+                Sender.send(coreChannel,JSONTool.toJson(constructBeatEntity()));
                 try {
                     Thread.sleep(interval);
                 } catch (InterruptedException e) {

@@ -1,6 +1,8 @@
 package app.utils.net;
 
 import app.dsm.base.BaseEntity;
+import app.dsm.base.JSONTool;
+import app.dsm.base.impl.UniversalEntity;
 import app.dsm.core.ChannelInfo;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
@@ -66,7 +68,7 @@ public class Receiver implements Runnable {
                         checkBeat((SocketChannel) sk.channel());
                         byte[] data = SimpleUtils.receiveDataInNIO((SocketChannel) sk.channel());
                         if(data.length > 0){
-                            BaseEntity entity = (BaseEntity) SimpleUtils.bytesToSerializableObject(data);
+                            BaseEntity entity = (BaseEntity) JSONTool.getObject(data, UniversalEntity.class);
                             //log.info(null,"收到:{}",entity.toString());
                             callBack.invoke((SocketChannel) sk.channel(),entity);
                         }

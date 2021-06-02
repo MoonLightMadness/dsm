@@ -21,9 +21,11 @@ public class UniversalEntity implements BaseEntity {
     private String timestamp=null;
     private String hashCode=null;
 
+    public UniversalEntity(){}
+
     @Override
     public String toString() {
-        return "UniversalEntity{" +
+        return "UniversalEntity<" +
                 "guid='" + guid + '\'' +
                 ", authLevel='" + authLevel + '\'' +
                 ", src='" + src + '\'' +
@@ -33,8 +35,8 @@ public class UniversalEntity implements BaseEntity {
                 ", messageType='" + messageType + '\'' +
                 ", compressCode='" + compressCode + '\'' +
                 ", timestamp='" + timestamp + '\'' +
-                ", hashCode='" + hashCode + '\'' +
-                '}';
+                ", hashCode='" + hashCode  +
+                '>';
     }
 
     /**

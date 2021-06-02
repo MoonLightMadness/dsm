@@ -1,7 +1,10 @@
 package test;
 
+import app.dsm.base.JSONTool;
 import app.dsm.base.impl.UniversalEntity;
 import app.dsm.base.impl.UniversalEntityWrapper;
+import app.dsm.mq.impl.MQReceiver;
+import app.dsm.mq.impl.MQReceiverHandler;
 import app.utils.SimpleUtils;
 import app.utils.net.Sender;
 import org.junit.Test;
@@ -24,10 +27,10 @@ public class mq {
     public void test1(){
         try {
             //开启消息队列服务
-//            MQReceiver receiver = new MQReceiver();
-//            receiver.init("event.mq",new MQReceiverHandler());
-//            new Thread(receiver).start();
-//            Thread.sleep(100);
+            MQReceiver receiver = new MQReceiver();
+            receiver.init("event.mq",new MQReceiverHandler());
+            new Thread(receiver).start();
+            Thread.sleep(100);
             //注册一个消费者
             SocketChannel socketChannel1 = SocketChannel.open(new InetSocketAddress(InetAddress.getLocalHost(),9003));
             UniversalEntity entity1 = UniversalEntityWrapper.getOne(String.valueOf(System.currentTimeMillis()),
@@ -38,7 +41,7 @@ public class mq {
                     "register event1^event2",
                     "null",
                     "00001");
-            Sender.send(socketChannel1, SimpleUtils.serializableToBytes(entity1));
+            Sender.send(socketChannel1, JSONTool.toJson(entity1));
             Thread.sleep(100);
             //向消息队列发送信息
             SocketChannel socketChannel2 = SocketChannel.open(new InetSocketAddress(InetAddress.getLocalHost(),9003));
@@ -50,7 +53,7 @@ public class mq {
                     "message",
                     "event1",
                     "00001");
-            Sender.send(socketChannel2, SimpleUtils.serializableToBytes(entity2));
+            Sender.send(socketChannel2, JSONTool.toJson(entity2));
             Thread.sleep(1000);
             socketChannel1.configureBlocking(false);
             ByteBuffer buffer = ByteBuffer.allocate(1024);
@@ -58,8 +61,8 @@ public class mq {
             UniversalEntity entity3 = (UniversalEntity) SimpleUtils.bytesToSerializableObject(buffer.array());
             System.out.println(entity3.toString());
             Thread.sleep(4000);
-            Sender.send(socketChannel1, SimpleUtils.serializableToBytes(entity1));
-            Sender.send(socketChannel2, SimpleUtils.serializableToBytes(entity2));
+            Sender.send(socketChannel1, JSONTool.toJson(entity1));
+            Sender.send(socketChannel2, JSONTool.toJson(entity2));
             Thread.sleep(500);
             buffer.clear();
             socketChannel1.read(buffer);

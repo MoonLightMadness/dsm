@@ -1,6 +1,7 @@
 package app.dsm.core;
 
 import app.dsm.base.BaseEntity;
+import app.dsm.base.JSONTool;
 import app.dsm.base.impl.UniversalEntity;
 import app.dsm.base.impl.UniversalEntityWrapper;
 import app.log.LogSystem;
@@ -101,7 +102,7 @@ public class CoreMessageHandler extends CallBack {
     }
 
     private void send(SocketChannel channel,BaseEntity entity){
-        byte[] data = SimpleUtils.serializableToBytes(entity);
+        byte[] data = JSONTool.toJson(entity);
         Sender.send(channel,data);
         log.info(null,"已发送:{}",entity.toString());
     }

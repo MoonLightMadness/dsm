@@ -1,5 +1,6 @@
 package test;
 
+import app.dsm.base.JSONTool;
 import app.dsm.base.impl.UniversalEntity;
 import app.dsm.base.impl.UniversalEntityWrapper;
 import app.dsm.core.Core;
@@ -66,7 +67,7 @@ public class core {
                     "set_name test "+socketChannel.getLocalAddress().toString(),
                     "null",
                     "00001");
-            byte[] data = SimpleUtils.serializableToBytes(entity);
+            byte[] data = JSONTool.toJson(entity);
             ByteBuffer buffer = ByteBuffer.allocate(data.length);
             buffer.put(data);
             buffer.flip();
@@ -83,16 +84,20 @@ public class core {
                     "get_ip test",
                     "null",
                     "00001");
-            byte[] data1 = SimpleUtils.serializableToBytes(entity1);
+            byte[] data1 = JSONTool.toJson(entity1);
             ByteBuffer buffer1 = ByteBuffer.allocate(data1.length);
             buffer1.put(data1);
             buffer1.flip();
             socketChannel1.write(buffer1);
-            Thread.sleep(3000);
-            buffer.clear();
-            socketChannel1.read(buffer);
-            buffer.flip();
-            UniversalEntity entity2 = (UniversalEntity) SimpleUtils.bytesToSerializableObject(buffer.array());
+            Thread.sleep(100);
+//            buffer.clear();
+//            socketChannel1.read(buffer);
+//            buffer.flip();
+//            System.out.println(new String(buffer.array()));
+            socketChannel1.configureBlocking(false);
+            byte[] res = SimpleUtils.receiveDataInNIO(socketChannel1);
+            UniversalEntity entity2 = (UniversalEntity) JSONTool.getObject(buffer.array(),UniversalEntity.class);
+
             System.out.println(entity2.toString());
 
         } catch (InterruptedException e) {
