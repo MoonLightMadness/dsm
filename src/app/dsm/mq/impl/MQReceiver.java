@@ -41,7 +41,7 @@ public class MQReceiver implements Runnable {
         this.name = name;
         this.handler = handler;
         handler.init(new ArrayList<BaseEntity>());
-        list = new ArrayList<ChannelInfo>();
+        list = new ArrayList<>();
         log = LogSystemFactory.getLogSystem();
         //读取core地址
         UniversalConfigReader reader =new  UniversalConfigReader();
