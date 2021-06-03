@@ -1,11 +1,15 @@
 package app.dsm.compress.impl;
 
+import app.dsm.compress.Fnode;
 import app.dsm.compress.MatchMethod;
+import app.utils.special.RTimer;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @ClassName : app.dsm.compress.impl.LZSS_MT
@@ -21,10 +25,13 @@ public class LZSS_MT implements Runnable {
 
     MatchMethod matchMethod;
 
+    List<Fnode> fnodes;
+
     public void init(String text, StringBuilder sb) {
         this.text = text;
         this.sb = sb;
         matchMethod = new KMP();
+        fnodes = new ArrayList<>();
     }
 
     @Override
@@ -33,21 +40,23 @@ public class LZSS_MT implements Runnable {
         initCheck(text);
         //一些常数
         //滑动窗口最大长度
-        int windowMax = 2333;
+        int windowMax = 2048;
         //初始化滑动窗口、前项缓冲区、指针长度
         int window = 0, buffer = text.length() - 1, pointer = 0;
         int[] res;
         int count = 0;
+        //RTimer rTimer = new RTimer();
+        //rTimer.start();
         while (pointer <= buffer) {
             //找到最长匹配字符串
             res = findLongestMatchString(text, window, windowMax, buffer, pointer);
             //如果找到了匹配字符串
             if (res[0] != -1) {
                 res[0]+=window;
-                //System.out.println(res[0]+" "+res[1]);
                 //将匹配项添加到结果集中
                 appendMatch(sb, text, res);
                 pointer += res[1] ;
+                fnodes.add(new Fnode(res[0], res[1]));
             } else {
                 //如果没有匹配到字符串
                 appendNoMatch(sb, text, pointer);
@@ -59,6 +68,8 @@ public class LZSS_MT implements Runnable {
             }
             count++;
         }
+        //System.out.println(rTimer.end());
+        //System.out.println(count);
     }
 
     public String decode(String text) {
@@ -97,7 +108,7 @@ public class LZSS_MT implements Runnable {
         int[] res = new int[]{-1, 1};
 
         //前项缓冲最大容量
-        int maxBufferPointer = 512;
+        int maxBufferPointer = 256;
 
         ZHL zhl = new ZHL();
         int front = pointer + maxBufferPointer;

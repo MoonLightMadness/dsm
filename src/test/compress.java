@@ -9,6 +9,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @ClassName : test.compress
@@ -202,24 +205,24 @@ public class compress {
             }
             time = System.currentTimeMillis();
             String decode = compressor.decode(encode.toString());
-            //compressor.save(encode.toString());
+            //compressor.save(decode.toString());
             if (test.length() == decode.length()) {
-                log.info(this.getClass().getName(), "文件名:{},文件大小:{}字节,压缩后大小{},压缩时间:{},压缩率:{},解压缩时间:{},解压缩大小:{}",
+                log.info(this.getClass().getName(), "文件名:{},文件大小:{}字节,压缩后大小{},压缩时间:{},压缩比:{},解压缩时间:{},解压缩大小:{}",
                         file.getName(),
                         String.valueOf(test.length()),
                         String.valueOf(encode.toString().length()),
                         String.valueOf(encode_end_time),
-                        (100 - ((encode.length() * 1.0f) / test.length() * 100)) + "%",
+                        (test.length()/(encode.length()*1.0f ))+ "",
                         String.valueOf(System.currentTimeMillis() - time),
                         String.valueOf(decode.length())
                 );
             } else {
-                log.error(this.getClass().getName(), "文件名:{},文件大小:{}字节,压缩后大小{},压缩时间:{},压缩率:{},解压缩时间:{}",
+                log.error(this.getClass().getName(), "文件名:{},文件大小:{}字节,压缩后大小{},压缩时间:{},压缩比:{},解压缩时间:{}",
                         file.getName(),
                         String.valueOf(test.length()),
                         String.valueOf(encode.toString().length()),
                         String.valueOf(encode_end_time),
-                        (100 - ((encode.length() * 1.0f) / test.length() * 100)) + "%",
+                        (test.length()/(encode.length()*1.0f ))+ "",
                         String.valueOf(System.currentTimeMillis() - time));
             }
         }
@@ -227,12 +230,12 @@ public class compress {
 
     private String readFile(File f) {
         try {
-            FileReader reader = new FileReader(f);
-            char[] buffer = new char[(int) f.length()];
-            int size = reader.read(buffer);
-            reader.close();
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f), "utf-8"));
+            CharBuffer cb = CharBuffer.allocate((int)f.length());
+            int size = br.read(cb);
+            br.close();
             char[] res = new char[size];
-            System.arraycopy(buffer, 0, res, 0, size);
+            System.arraycopy(cb.array(), 0, res, 0, size);
             return String.valueOf(res);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
