@@ -113,7 +113,7 @@ public class MQReceiver implements Runnable {
 
     private BaseEntity constructBeatEntity(){
         UniversalConfigReader reader =new  UniversalConfigReader();
-        reader.setName("event.mq");
+        reader.setName(name);
         String[] res = reader.read();
         StringBuilder sb = new StringBuilder();
         sb.append("/").append(res[0]).append(":").append(res[1]);
@@ -130,7 +130,7 @@ public class MQReceiver implements Runnable {
 
     private BaseEntity constructSetNameEntity(){
         UniversalConfigReader reader =new  UniversalConfigReader();
-        reader.setName("event.mq");
+        reader.setName(name);
         String[] res = reader.read();
         StringBuilder sb = new StringBuilder();
         sb.append("/").append(res[0]).append(":").append(res[1]);
