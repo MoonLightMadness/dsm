@@ -1,10 +1,10 @@
-package app.dsm.mq.impl;
+package app.dsm.service.impl;
 
 import app.dsm.base.BaseEntity;
 import app.dsm.base.impl.UniversalEntity;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
-import app.dsm.mq.entity.Consumer;
+import app.dsm.service.entity.Consumer;
 import app.utils.SimpleUtils;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.ListIterator;
  * @Date 2021-05-13 14:57:24
  * @Author ZhangHL
  */
-public class MQSender implements Runnable {
+public class ServiceSender implements Runnable {
 
     private List<BaseEntity> list;
 
@@ -53,7 +53,7 @@ public class MQSender implements Runnable {
                             continue;
                         }
                         if (con.getInterest().contains(type)) {
-                            MQSender.send(con.getChannel(), SimpleUtils.serializableToBytes(uni));
+                            ServiceSender.send(con.getChannel(), SimpleUtils.serializableToBytes(uni));
                             isSend = true;
                         }
                     }

@@ -4,8 +4,8 @@ import app.dsm.base.JSONTool;
 import app.dsm.base.impl.UniversalEntity;
 import app.dsm.base.impl.UniversalEntityWrapper;
 import app.dsm.core.Core;
-import app.dsm.mq.impl.MQReceiver;
-import app.dsm.mq.impl.MQReceiverHandler;
+import app.dsm.service.impl.Service;
+import app.dsm.service.impl.ServiceMessageHandler;
 import app.utils.SimpleUtils;
 import org.junit.Test;
 
@@ -111,8 +111,8 @@ public class core {
         core.init("core");
         Thread thread = new Thread(core);
         thread.start();
-        MQReceiver receiver = new MQReceiver();
-        receiver.init("event.mq","core",new MQReceiverHandler());
+        Service receiver = new Service();
+        receiver.init("event.mq","core",new ServiceMessageHandler());
         new Thread(receiver).start();
         try {
             Thread.sleep(5000);

@@ -3,8 +3,8 @@ package test;
 import app.dsm.base.JSONTool;
 import app.dsm.base.impl.UniversalEntity;
 import app.dsm.base.impl.UniversalEntityWrapper;
-import app.dsm.mq.impl.MQReceiver;
-import app.dsm.mq.impl.MQReceiverHandler;
+import app.dsm.service.impl.Service;
+import app.dsm.service.impl.ServiceMessageHandler;
 import app.utils.SimpleUtils;
 import app.utils.net.Sender;
 import org.junit.Test;
@@ -27,8 +27,8 @@ public class mq {
     public void test1(){
         try {
             //开启消息队列服务
-            MQReceiver receiver = new MQReceiver();
-            receiver.init("event.mq","core",new MQReceiverHandler());
+            Service receiver = new Service();
+            receiver.init("event.mq","core",new ServiceMessageHandler());
             new Thread(receiver).start();
             Thread.sleep(100);
             //注册一个消费者

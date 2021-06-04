@@ -1,11 +1,11 @@
-package app.dsm.mq.impl;
+package app.dsm.service.impl;
 
 import app.dsm.base.BaseEntity;
 import app.dsm.base.JSONTool;
 import app.dsm.base.impl.UniversalEntity;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
-import app.dsm.mq.entity.Consumer;
+import app.dsm.service.entity.Consumer;
 import app.utils.net.impl.CallBack;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.util.ListIterator;
  * @Date 2021-05-28 14:11:10
  * @Author ZhangHL
  */
-public class MQReceiverHandler extends CallBack {
+public class ServiceMessageHandler extends CallBack {
 
     private List<BaseEntity> list;
 
@@ -29,13 +29,13 @@ public class MQReceiverHandler extends CallBack {
 
     private List<Consumer> consumers;
 
-    private MQSender sender;
+    private ServiceSender sender;
 
     public void init(List list) {
         this.list = list;
         log = LogSystemFactory.getLogSystem();
         consumers = new ArrayList<>();
-        sender=new MQSender();
+        sender=new ServiceSender();
         sender.init(list,consumers,1);
         new Thread(sender).start();
     }

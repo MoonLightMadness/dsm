@@ -1,4 +1,4 @@
-package app.dsm.mq.entity;
+package app.dsm.service.entity;
 
 import java.nio.channels.SocketChannel;
 

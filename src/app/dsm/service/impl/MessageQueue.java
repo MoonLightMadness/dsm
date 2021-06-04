@@ -1,7 +1,7 @@
-package app.dsm.mq.impl;
+package app.dsm.service.impl;
 
 import app.dsm.base.BaseEntity;
-import app.dsm.mq.IMessageQueue;
+import app.dsm.service.IMessageQueue;
 
 import java.util.PriorityQueue;
 import java.util.Queue;

@@ -1,6 +1,5 @@
-package app.dsm.mq.impl;
+package app.dsm.service.impl;
 
-import app.dsm.base.BaseEntity;
 import app.utils.net.impl.CallBack;
 
 import java.nio.channels.SocketChannel;

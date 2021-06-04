@@ -1,4 +1,4 @@
-package app.dsm.mq;
+package app.dsm.service;
 
 import app.dsm.base.BaseEntity;
 
