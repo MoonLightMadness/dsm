@@ -26,6 +26,8 @@ public class Service implements Runnable {
 
     private String name;
 
+    private String coreName;
+
     private ServiceMessageHandler handler;
 
     private List<ChannelInfo> list;
@@ -38,6 +40,7 @@ public class Service implements Runnable {
 
     public void init(String name, String coreName, ServiceMessageHandler handler){
         this.name = name;
+        this.coreName = coreName;
         this.handler = handler;
         handler.init(new ArrayList<BaseEntity>());
         list = new ArrayList<>();
@@ -112,8 +115,8 @@ public class Service implements Runnable {
         sb.append("/").append(res[0]).append(":").append(res[1]);
         UniversalEntity entity = UniversalEntityWrapper.getOne("0",
                 "0",
-                "mq",
-                "core",
+                name,
+                coreName,
                 "1",
                 sb.toString(),
                 "beat",
@@ -129,8 +132,8 @@ public class Service implements Runnable {
         sb.append("/").append(res[0]).append(":").append(res[1]);
         UniversalEntity entity = UniversalEntityWrapper.getOne("0",
                 "0",
-                "mq",
-                "core",
+                name,
+                coreName,
                 "1",
                 "set_name "+name+" "+sb.toString(),
                 "set",
