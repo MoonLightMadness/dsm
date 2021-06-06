@@ -144,10 +144,42 @@ public class compress {
     public void test() {
         LogSystem log = LogSystemFactory.getLogSystem();
         log.immediatelySaveMode(true);
-        File directory = new File("./assets");
+        File directory = new File("C:\\Users\\qq237\\Desktop\\assets");
         File[] files = directory.listFiles();
         run(files, log);
     }
+    @Test
+    public void paper_test() {
+        LogSystem log = LogSystemFactory.getLogSystem();
+        log.immediatelySaveMode(true);
+        File directory = new File("C:\\Users\\qq237\\Desktop\\assets");
+        File[] files = directory.listFiles();
+        for(File f : files){
+            String test = readFile(f);
+            int len = test.length();
+            LZSS_MT mt =new LZSS_MT();
+            StringBuilder sb = new StringBuilder();
+            mt.init(test,sb);
+            long time = System.currentTimeMillis();
+            mt.doEncode();
+            time = System.currentTimeMillis() - time;
+            long encode_end_time = time;
+            time = System.currentTimeMillis();
+            String encode = sb.toString();
+            //String decode = mt.decode(encode.toString());
+            //compressor.save(decode.toString());
+            log.info(this.getClass().getName(), "文件名:{},文件大小:{}字节,压缩后大小{},压缩时间:{},压缩比:{}",
+                    f.getName(),
+                    String.valueOf(test.length()),
+                    String.valueOf(encode.toString().length()),
+                    String.valueOf(encode_end_time),
+                    (test.length()/(encode.length()*1.0f ))+ ""
+            );
+            mt.getHuff().clear();
+        }
+
+    }
+
 
     private void run(File[] files, LogSystem log) {
         for (File file : files) {
