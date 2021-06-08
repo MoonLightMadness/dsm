@@ -72,6 +72,7 @@ public class Receiver implements Runnable {
                             generateChannelInfo(remote);
                             log.info(null,"接入:{}",remote.getRemoteAddress().toString());
                         }else {
+                            log.info(null, "{}校验未通过",remote.getRemoteAddress().toString());
                             remote = null;
                         }
                     }
@@ -148,7 +149,8 @@ public class Receiver implements Runnable {
 
     private boolean checkStrategy(SocketChannel channel){
         try {
-            String ip = channel.getRemoteAddress().toString().split("/")[1].split(":")[0];
+            String ip = channel.getRemoteAddress().toString().split("/")[1].split(":")[0].trim();
+            log.info(null, "校验ip为{}",ip);
             int res = strategy.verify(ip);
             if(res == 1){
                 return true;

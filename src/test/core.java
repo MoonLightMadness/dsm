@@ -107,15 +107,15 @@ public class core {
 
     @Test
     public void test3(){
-        Core core = new Core();
-        core.init("core");
-        Thread thread = new Thread(core);
-        thread.start();
+//        Core core = new Core();
+//        core.init("core");
+//        Thread thread = new Thread(core);
+//        thread.start();
         Service receiver = new Service();
         receiver.init("event.mq","core",new ServiceMessageHandler());
         new Thread(receiver).start();
         try {
-            Thread.sleep(5000);
+            Thread.sleep(1000);
             SocketChannel socketChannel1 = SocketChannel.open(new InetSocketAddress(InetAddress.getLocalHost(),9002));
             Thread.sleep(400);
             UniversalEntity entity1 = UniversalEntityWrapper.getOne(String.valueOf(System.currentTimeMillis()),
@@ -160,7 +160,7 @@ public class core {
                     "get_ip mq",
                     "null",
                     "00001");
-            byte[] data1 = SimpleUtils.serializableToBytes(entity1);
+            byte[] data1 = JSONTool.toJson(entity1);
             ByteBuffer buffer1 = ByteBuffer.allocate(data1.length);
             buffer1.put(data1);
             buffer1.flip();
@@ -168,7 +168,7 @@ public class core {
             Thread.sleep(1000);
             ByteBuffer buffer = ByteBuffer.allocate(1024);
             socketChannel1.read(buffer);
-            UniversalEntity entity3 = (UniversalEntity) SimpleUtils.bytesToSerializableObject(buffer.array());
+            UniversalEntity entity3 = (UniversalEntity) JSONTool.getObject(buffer.array(),UniversalEntity.class);
             System.out.println(entity3.toString());
         } catch (UnknownHostException e) {
             e.printStackTrace();

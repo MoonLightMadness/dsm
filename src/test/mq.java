@@ -56,17 +56,13 @@ public class mq {
             Sender.send(socketChannel2, JSONTool.toJson(entity2));
             Thread.sleep(1000);
             socketChannel1.configureBlocking(false);
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
-            socketChannel1.read(buffer);
-            UniversalEntity entity3 = (UniversalEntity) SimpleUtils.bytesToSerializableObject(buffer.array());
+            UniversalEntity entity3 = (UniversalEntity) JSONTool.getObject(SimpleUtils.receiveDataInNIO(socketChannel1),UniversalEntity.class);
             System.out.println(entity3.toString());
             Thread.sleep(4000);
             Sender.send(socketChannel1, JSONTool.toJson(entity1));
             Sender.send(socketChannel2, JSONTool.toJson(entity2));
             Thread.sleep(500);
-            buffer.clear();
-            socketChannel1.read(buffer);
-            entity3 = (UniversalEntity) SimpleUtils.bytesToSerializableObject(buffer.array());
+            entity3 = (UniversalEntity) JSONTool.getObject(SimpleUtils.receiveDataInNIO(socketChannel1),UniversalEntity.class);
             System.out.println(entity3.toString());
             Thread.sleep(5000);
 
