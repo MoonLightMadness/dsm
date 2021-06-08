@@ -4,6 +4,8 @@ import app.dsm.base.BaseEntity;
 import app.dsm.base.JSONTool;
 import app.dsm.base.impl.UniversalEntity;
 import app.dsm.core.ChannelInfo;
+import app.dsm.verify.IStrategy;
+import app.dsm.verify.impl.Strategy;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
@@ -37,10 +39,14 @@ public class Receiver implements Runnable {
 
     private LogSystem log;
 
+    private IStrategy strategy;
+
     public void init(String name,ICallBack callBack,List<ChannelInfo> info) {
         this.name = name;
         this.callBack=callBack;
         this.info=info;
+        strategy = new Strategy();
+        strategy.read();
         log = LogSystemFactory.getLogSystem();
     }
 
@@ -59,10 +65,13 @@ public class Receiver implements Runnable {
                     SelectionKey sk = iterator.next();
                     if (sk.isAcceptable()) {
                         SocketChannel remote = ((ServerSocketChannel) sk.channel()).accept();
-                        remote.configureBlocking(false);
-                        remote.register(selector, SelectionKey.OP_READ);
-                        generateChannelInfo(remote);
-                        log.info(null,"接入:{}",remote.getRemoteAddress().toString());
+                        //策略校验通过则接收
+                        if(checkStrategy(remote)){
+                            remote.configureBlocking(false);
+                            remote.register(selector, SelectionKey.OP_READ);
+                            generateChannelInfo(remote);
+                            log.info(null,"接入:{}",remote.getRemoteAddress().toString());
+                        }
                     }
                     if (sk.isReadable()) {
                         checkBeat((SocketChannel) sk.channel());
@@ -133,5 +142,18 @@ public class Receiver implements Runnable {
         } catch (IOException e) {
             log.error(null, e.getMessage());
         }
+    }
+
+    private boolean checkStrategy(SocketChannel channel){
+        try {
+            String ip = channel.getRemoteAddress().toString().split("/")[1].split(":")[0];
+            int res = strategy.verify(ip);
+            if(res == 1){
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

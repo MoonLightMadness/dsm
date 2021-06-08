@@ -1,5 +1,7 @@
 package app.dsm.core;
 
+import app.dsm.verify.IStrategy;
+import app.dsm.verify.impl.Strategy;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 
@@ -22,6 +24,7 @@ public class Core implements Runnable {
 
     private String name;
 
+
     /**
      * 初始化
      * @param name 名字
@@ -35,6 +38,7 @@ public class Core implements Runnable {
 
     @Override
     public void run() {
+
         startReceive();
 
         sync();
