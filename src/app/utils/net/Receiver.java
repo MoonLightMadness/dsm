@@ -71,6 +71,8 @@ public class Receiver implements Runnable {
                             remote.register(selector, SelectionKey.OP_READ);
                             generateChannelInfo(remote);
                             log.info(null,"接入:{}",remote.getRemoteAddress().toString());
+                        }else {
+                            remote = null;
                         }
                     }
                     if (sk.isReadable()) {
