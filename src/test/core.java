@@ -126,15 +126,15 @@ public class core {
                     "get_ip mq",
                     "null",
                     "00001");
-            byte[] data1 = SimpleUtils.serializableToBytes(entity1);
+            byte[] data1 = JSONTool.toJson(entity1);
             ByteBuffer buffer1 = ByteBuffer.allocate(data1.length);
             buffer1.put(data1);
             buffer1.flip();
             socketChannel1.write(buffer1);
             Thread.sleep(1000);
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
-            socketChannel1.read(buffer);
-            UniversalEntity entity3 = (UniversalEntity) SimpleUtils.bytesToSerializableObject(buffer.array());
+//            ByteBuffer buffer = ByteBuffer.allocate(1024);
+//            socketChannel1.read(buffer);
+            UniversalEntity entity3 = (UniversalEntity) JSONTool.getObject(SimpleUtils.receiveDataInNIO(socketChannel1),UniversalEntity.class);
             System.out.println(entity3.toString());
             while (true) {
                 Thread.sleep(1);

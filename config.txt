@@ -7,3 +7,5 @@ event.mq.port=9003
 strategy.loopback.ip = 127.0.0.1
 
 strategy.local.ip = 192.168.0.157
+
+strategy.temp.ip = 192.168.56.1
