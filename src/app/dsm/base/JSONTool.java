@@ -43,4 +43,9 @@ public class JSONTool {
         }
         return null;
     }
+
+    public static String getProperty(String key,byte[] data){
+        JSONObject obj = (JSONObject) JSONObject.parse(new String(data));
+        return  obj.getString(key);
+    }
 }
