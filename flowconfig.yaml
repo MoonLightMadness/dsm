@@ -1,15 +1,3 @@
 test_car_make:
-  stage1:
-    sub1: app.dsm.flow.sample.BodyMaker
-    sub2: app.dsm.flow.sample.AdvancedBodyMaker
-  stage2:
-    sub1: app.dsm.flow.sample.DoorMaker
-  stage3:
-    sub1: app.dsm.flow.sample.WheelMaker
-service_compress_code:
-  stage1:
-    sub1: app.dsm.security.flow.MQSender
-  stage2:
-    sub1: app.dsm.security.flow.CodeReceiver
-  stage3:
-    sub1: app.dsm.security.flow.CodeVerifier
+  value: ./flows/test_car_make/test_car_make.yaml
+

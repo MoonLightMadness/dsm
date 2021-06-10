@@ -1,0 +1,10 @@
+chain1:
+  class: app.dsm.flow.sample2.CarMaker
+  method1: makeBody
+  method2: makeDoor
+  methid3: makeWheel
+chain2:
+  class: app.dsm.flow.sample2.CarMaker
+  method1: makeAdvanceBody
+  method2: makeDoor
+  methid3: makeWheel
