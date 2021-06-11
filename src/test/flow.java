@@ -2,6 +2,7 @@ package test;
 
 import app.dsm.flow.FlowChain;
 import app.dsm.flow.FlowEngineX;
+import app.dsm.flow.constant.FlowMode;
 import app.dsm.flow.sample2.Car;
 import app.utils.SimpleUtils;
 import app.utils.special.RTimer;
@@ -41,10 +42,12 @@ public class flow {
     }
     @Test
     public void test2(){
+        RTimer rTimer = new RTimer();
+        rTimer.start();
         Car c1 = new Car();
         FlowEngineX fex = new FlowEngineX();
-        String id = fex.startFlow("test_car_make",c1);
-        RTimer rTimer = new RTimer();
+        String id = fex.startFlow("test_car_make", FlowMode.IK.getMessage(),c1);
+        System.out.println(rTimer.end());
         rTimer.start();
         System.out.println(SimpleUtils.getTimeStamp());
         try {

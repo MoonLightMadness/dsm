@@ -24,6 +24,18 @@ public class FlowEngineX {
         return id;
     }
 
+    public String startFlow(String name,String mode,Object... args){
+        FlowChain fc = getChainByName(name);
+        fc.setArgs(args);
+        fc.setMode(mode);
+        String id = UUID.randomUUID().toString();
+        FlowTaskEntity fte = new FlowTaskEntity(id,fc);
+        tasks.add(fte);
+        new Thread(fc).start();
+        return id;
+    }
+
+
     public boolean checkFlow(String id){
         for (FlowTaskEntity fte : tasks) {
             if(fte.getId().equals(id)){

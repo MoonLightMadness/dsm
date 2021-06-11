@@ -1,3 +1,5 @@
 test_car_make:
   value: ./flows/test_car_make/test_car_make.yaml
 
+bilibili_daily_update:
+  value: ./flows/bilibili_daily_update/bilibili_daily_update.yaml

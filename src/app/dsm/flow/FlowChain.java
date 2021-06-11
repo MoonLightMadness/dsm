@@ -6,7 +6,7 @@ import app.log.LogSystemFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlowChain implements Runnable{
+public class FlowChain implements Runnable {
 
     private LogSystem log = LogSystemFactory.getLogSystem();
 
@@ -16,7 +16,9 @@ public class FlowChain implements Runnable{
 
     private Object[] mt_args;
 
-    public void init(){
+    private String mode = "default";
+
+    public void init() {
         nodes = new ArrayList<>();
     }
 
@@ -24,30 +26,30 @@ public class FlowChain implements Runnable{
         nodes.add(node);
     }
 
-    public void start(Object... args){
+    public void start(Object... args) {
         FlowNode temp = null;
         Object obj = null;
         try {
-            for (FlowNode node : nodes){
-                if(obj == null || !obj.getClass().getName().equals(node.getClassName())){
+            for (FlowNode node : nodes) {
+                if (obj == null || !obj.getClass().getName().equals(node.getClassName())) {
                     obj = Class.forName(node.getClassName()).newInstance();
                 }
-                if(node.check(obj, args)==1){
+                if (node.check(obj, args) == 1) {
                     temp = node;
                     node.invoke(obj, args);
                     break;
                 }
             }
-            if(temp!=null){
+            if (temp != null) {
                 flow(temp, obj, args);
             }
             this.nodes = null;
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error(null, e.getMessage());
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            log.error(null, e.getMessage());
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            log.error(null, e.getMessage());
         }
     }
 
@@ -56,22 +58,30 @@ public class FlowChain implements Runnable{
         start(mt_args);
     }
 
-    public void setArgs(Object... args){
+    public void setArgs(Object... args) {
         mt_args = args;
     }
 
-    public boolean checkFinish(){
-        if(nodes == null){
+    public boolean checkFinish() {
+        if (nodes == null) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
 
-    private void flow(FlowNode node, Object obj, Object... args){
-        while ((node = node.getNext())!=null){
-            if(node.check(obj, args)==1){
-                node.invoke(obj, args);
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    private void flow(FlowNode node, Object obj, Object... args) {
+        while ((node = node.getNext()) != null) {
+            if (node.check(obj, args) == 1) {
+                int res = node.invoke(obj, args);
+                if (res == -1 && mode.equals("IK")) {
+                    log.error(null, "流程因异常关闭--关闭点:{}--Class:{}", node.getName(), node.getClassName());
+                    break;
+                }
             }
         }
     }

@@ -2,6 +2,8 @@ package app.dsm.flow.sample2;
 
 import app.dsm.flow.sample2.Car;
 
+import java.lang.reflect.InvocationTargetException;
+
 public class CarMaker {
 
     public int makeBodyCheck(Object obj){
@@ -27,8 +29,11 @@ public class CarMaker {
         ((Car)obj).setWheel("wheel");
     }
 
-    public void makeDoor(Object obj) {
-        ((Car)obj).setDoor("door");
+    public void makeDoor(Object obj) throws IllegalAccessException {
+            throw new IllegalAccessException("This is a test");
+            //((Car)obj).setDoor("door");
+
+       // int a = 3 / 0;
     }
 
 }

@@ -13,8 +13,8 @@ public class FlowNode {
 
     private String name;
 
-    public void invoke(Object obj,Object... args){
-        unit.invoke(obj, args);
+    public int invoke(Object obj,Object... args){
+        return unit.invoke(obj, args);
     }
 
     public int check(Object obj,Object... args){
