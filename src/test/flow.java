@@ -2,7 +2,9 @@ package test;
 
 import app.dsm.flow.FlowChain;
 import app.dsm.flow.FlowEngineX;
-import app.dsm.flow.sample.Car;
+import app.dsm.flow.sample2.Car;
+import app.utils.SimpleUtils;
+import app.utils.special.RTimer;
 import org.junit.Test;
 import org.yaml.snakeyaml.Yaml;
 
@@ -39,10 +41,21 @@ public class flow {
     }
     @Test
     public void test2(){
-        FlowEngineX fex = new FlowEngineX();
-        FlowChain fc = fex.getChainByName("test_car_make");
         Car c1 = new Car();
-        fc.start(c1);
+        FlowEngineX fex = new FlowEngineX();
+        String id = fex.startFlow("test_car_make",c1);
+        RTimer rTimer = new RTimer();
+        rTimer.start();
+        System.out.println(SimpleUtils.getTimeStamp());
+        try {
+            while (!fex.checkFlow(id)){
+                Thread.sleep(1);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(SimpleUtils.getTimeStamp());
+        System.out.println(rTimer.end());
         System.out.println(c1.getBody());
         System.out.println(c1.getDoor());
         System.out.println(c1.getWheel());

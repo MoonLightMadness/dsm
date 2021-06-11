@@ -6,7 +6,7 @@ import app.log.LogSystemFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlowChain {
+public class FlowChain implements Runnable{
 
     private LogSystem log = LogSystemFactory.getLogSystem();
 
@@ -14,12 +14,13 @@ public class FlowChain {
 
     private String name;
 
+    private Object[] mt_args;
+
     public void init(){
         nodes = new ArrayList<>();
     }
 
     public void add(FlowNode node) {
-
         nodes.add(node);
     }
 
@@ -40,6 +41,7 @@ public class FlowChain {
             if(temp!=null){
                 flow(temp, obj, args);
             }
+            this.nodes = null;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -49,7 +51,24 @@ public class FlowChain {
         }
     }
 
-    private void flow(FlowNode node,Object obj,Object... args){
+    @Override
+    public void run() {
+        start(mt_args);
+    }
+
+    public void setArgs(Object... args){
+        mt_args = args;
+    }
+
+    public boolean checkFinish(){
+        if(nodes == null){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    private void flow(FlowNode node, Object obj, Object... args){
         while ((node = node.getNext())!=null){
             if(node.check(obj, args)==1){
                 node.invoke(obj, args);

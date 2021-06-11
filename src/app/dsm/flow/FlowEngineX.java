@@ -1,19 +1,44 @@
 package app.dsm.flow;
 
+import app.dsm.flow.vo.FlowTaskEntity;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class FlowEngineX {
 
 
+    private List<FlowTaskEntity> tasks = new ArrayList<>();
 
-    public FlowChain getChainByName(String name){
+    public String startFlow(String name,Object... args){
+        FlowChain fc = getChainByName(name);
+        fc.setArgs(args);
+        String id = UUID.randomUUID().toString();
+        FlowTaskEntity fte = new FlowTaskEntity(id,fc);
+        tasks.add(fte);
+        new Thread(fc).start();
+        return id;
+    }
+
+    public boolean checkFlow(String id){
+        for (FlowTaskEntity fte : tasks) {
+            if(fte.getId().equals(id)){
+                fte.setFinished(fte.getFc().checkFinish());
+                return fte.isFinished();
+            }
+        }
+        return false;
+    }
+
+    public void removeFinishedTask(){
+        tasks.removeIf(FlowTaskEntity::isFinished);
+    }
+
+    private FlowChain getChainByName(String name){
 
         File f = new File("./flowconfig.yaml");
         Yaml yaml = new Yaml();

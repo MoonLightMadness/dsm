@@ -1,6 +1,6 @@
 package app.dsm.flow.sample2;
 
-import app.dsm.flow.sample.Car;
+import app.dsm.flow.sample2.Car;
 
 public class CarMaker {
 
