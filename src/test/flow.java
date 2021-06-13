@@ -45,13 +45,15 @@ public class flow {
         RTimer rTimer = new RTimer();
         rTimer.start();
         Car c1 = new Car();
+        Car c2 = new Car();
         FlowEngineX fex = new FlowEngineX();
         String id = fex.startFlow("test_car_make", FlowMode.IK.getMessage(),c1);
+        String id2 = fex.startFlow("test_car_make", FlowMode.IK.getMessage(),c2);
         System.out.println(rTimer.end());
         rTimer.start();
         System.out.println(SimpleUtils.getTimeStamp());
         try {
-            while (!fex.checkFlow(id)){
+            while (!fex.checkFlow(id2)){
                 Thread.sleep(1);
             }
         } catch (InterruptedException e) {

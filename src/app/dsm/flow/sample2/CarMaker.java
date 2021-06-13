@@ -10,7 +10,7 @@ public class CarMaker {
         return 1;
     }
     public int makeAdvanceBodyCheck(Object obj){
-        return -1;
+        return 1;
     }
     public int makeDoorCheck(Object obj){
         return 1;
@@ -30,7 +30,7 @@ public class CarMaker {
     }
 
     public void makeDoor(Object obj) throws IllegalAccessException {
-            throw new IllegalAccessException("This is a test");
+            //throw new IllegalAccessException("This is a test");
             //((Car)obj).setDoor("door");
 
        // int a = 3 / 0;
