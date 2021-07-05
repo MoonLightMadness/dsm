@@ -118,14 +118,14 @@ public class DBforBili  {
         rs.close();
         statement.close();
         return list;
-    }
-    public List<Extracted> read(String date) throws SQLException {
-        List<Extracted> list=new ArrayList<Extracted>();
-        String s="Select * From Info Where UpdateDate='"+date+"'";
-        Statement statement=conn.createStatement();
-        ResultSet rs=statement.executeQuery(s);
-        while (rs.next()){
-            Extracted e=new Extracted(rs.getString(1),
+        }
+        public List<Extracted> read(String date) throws SQLException {
+            List<Extracted> list=new ArrayList<Extracted>();
+            String s="Select * From Info Where UpdateDate='"+date+"'";
+            Statement statement=conn.createStatement();
+            ResultSet rs=statement.executeQuery(s);
+            while (rs.next()){
+                Extracted e=new Extracted(rs.getString(1),
                     rs.getString(2),
                     rs.getString(3),
                     rs.getString(4),
