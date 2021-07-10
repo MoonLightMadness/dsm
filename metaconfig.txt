@@ -1,1 +1,3 @@
 local_path = .\config\test\test.txt
+
+local_path = .\config\test\test2.txt

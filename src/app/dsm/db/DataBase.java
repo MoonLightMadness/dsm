@@ -12,7 +12,7 @@ public interface DataBase<T> {
      * @author Zhang huai lan
      * @version V1.0
      **/
-    void init(String... args);
+    void init(String args);
     /**
      * 获取数据
      * @author Zhang huai lan

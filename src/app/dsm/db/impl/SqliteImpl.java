@@ -1,6 +1,8 @@
 package app.dsm.db.impl;
 
+import app.dsm.config.Argument;
 import app.dsm.config.ConfigReader;
+import app.dsm.config.Configer;
 import app.dsm.config.impl.DatabaseConfigReader;
 import app.dsm.db.DataBase;
 import app.log.LogSystem;
@@ -17,7 +19,6 @@ import java.util.List;
  * @Author ZhangHL
  */
 public class SqliteImpl<T> implements DataBase<T> {
-    private ConfigReader configReader;
 
     private Connection connection;
 
@@ -27,12 +28,15 @@ public class SqliteImpl<T> implements DataBase<T> {
 
     private LogSystem log;
 
+    private Configer configer;
+
     @Override
-    public void init(String... args){
+    public void init(String args){
         log= LogSystemFactory.getLogSystem();
+        configer = new Configer();
         //log.info(this.getClass().getName(),"初始化数据库连接");
-        configReader=new DatabaseConfigReader();
-        String dbName=configReader.read()[0];
+        //TODO 参数读取器
+        String dbName=configer.readConfig(Argument.getValue(args,"database"));
         //log.info(this.getClass().getName(),"连接到数据库:{}",dbName);
         try {
             Class.forName("org.sqlite.JDBC");

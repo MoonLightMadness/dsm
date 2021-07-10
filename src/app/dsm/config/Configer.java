@@ -28,6 +28,10 @@ public class Configer {
 
     private LogSystem log = LogSystemFactory.getLogSystem();
 
+    public Configer(){
+        this.init("./metaconfig.txt");
+    }
+
     /**
      * 初始化
      * 在指定路径下创建配置目录
@@ -36,7 +40,7 @@ public class Configer {
      */
     public void init(String path) {
         //检查元配置文件
-        File f = new File("./metaconfig.txt");
+        File f = new File(path);
         try {
             if (f.exists()) {
                 readLocalPath(f);
@@ -45,6 +49,7 @@ public class Configer {
                 f.createNewFile();
             }
         } catch (IOException e) {
+            log.error(null,e.getMessage());
             e.printStackTrace();
         }
     }
