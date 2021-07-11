@@ -1,0 +1,3 @@
+# for test
+# DataType:String
+test_property2 = test_hello_world222

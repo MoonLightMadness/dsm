@@ -1,3 +1,5 @@
 # for test
 # DataType:String
 test_property = test_hello_world
+
+bili_database = Entertainment.db

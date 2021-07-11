@@ -13,8 +13,8 @@ import app.dsm.db.impl.SqliteFactory;
 public class DBUtils {
     public static String getSK(String accessKey){
         String sk = null;
-        DataBase dataBase= SqliteFactory.getInstance();
-        dataBase.init();
+        DataBase dataBase= SqliteFactory.getInstance(null);
+        dataBase.init(null);
         SqlReader reader=new SqlReader();
         reader.init();
         sk = (String) dataBase.get(reader.get(SpecialContants.GET_SK,accessKey));
@@ -23,8 +23,8 @@ public class DBUtils {
 
     public static String getServiceNameByAK(String accessKey){
         String name = null;
-        DataBase dataBase= SqliteFactory.getInstance();
-        dataBase.init();
+        DataBase dataBase= SqliteFactory.getInstance(null);
+        dataBase.init(null);
         SqlReader reader=new SqlReader();
         reader.init();
         name = (String) dataBase.get(reader.get(SpecialContants.GET_NAME_BY_AK,accessKey));

@@ -35,7 +35,6 @@ public class SqliteImpl<T> implements DataBase<T> {
         log= LogSystemFactory.getLogSystem();
         configer = new Configer();
         //log.info(this.getClass().getName(),"初始化数据库连接");
-        //TODO 参数读取器
         String dbName=configer.readConfig(Argument.getValue(args,"database"));
         //log.info(this.getClass().getName(),"连接到数据库:{}",dbName);
         try {

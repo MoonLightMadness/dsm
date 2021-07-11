@@ -9,7 +9,7 @@ package app.dsm.db.impl;
 public class SqliteFactory {
     private static SqliteImpl sqlite;
 
-    public static SqliteImpl getInstance(String... args){
+    public static SqliteImpl getInstance(String args){
         if(sqlite==null){
             sqlite=new SqliteImpl();
             sqlite.init(args);
