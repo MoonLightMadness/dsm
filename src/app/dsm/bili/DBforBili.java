@@ -12,6 +12,10 @@ public class DBforBili  {
     private Connection conn;
     public DBforBili() throws SQLException, ClassNotFoundException {
         linkToDb();
+        if(!conn.isClosed()){
+            conn.close();
+            linkToDb();
+        }
     }
     public void linkToDb() throws SQLException, ClassNotFoundException {
         Class.forName("org.sqlite.JDBC");
@@ -69,7 +73,7 @@ public class DBforBili  {
      * @throws SQLException sqlexception异常
      */
     public void writeTodayTags(String url,String tags) throws SQLException {
-        tags = tags.replaceAll("\'"," ");
+        tags = tags.replaceAll("'"," ");
         tags = tags.replaceAll("\""," ");
         String s="Update Info Set Tags='"+tags+"' Where Url='"+url+"' And updateDate='"+SimpleUtils.getTimeStamp2(TimeFormatter.DAY_LEVEL)+"'";
         Statement statement=conn.createStatement();
@@ -153,6 +157,8 @@ public class DBforBili  {
             String res = rs.getString(1);
             list.add(res);
         }
+        rs.close();
+        statement.close();
         return list;
     }
     public void close() throws SQLException {

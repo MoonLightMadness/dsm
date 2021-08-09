@@ -78,4 +78,9 @@ public class simpleUtils {
         bytes[1] = '\0';
         System.out.println(bytes.length);
     }
+
+    @Test
+    public void test9() {
+        System.out.println(SimpleUtils.readFile("./metaconfig.txt"));
+    }
 }

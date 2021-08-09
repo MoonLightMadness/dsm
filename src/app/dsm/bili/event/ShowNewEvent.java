@@ -5,6 +5,7 @@ import app.dsm.bili.STATECODE;
 import app.dsm.bili.Tool;
 import app.dsm.statemachine.impl.Event;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 
 /**
@@ -22,7 +23,7 @@ public class ShowNewEvent extends Event {
                 System.out.println("Today's work has been done");
                 //Analyse
                 System.out.println("Today's new:\n");
-                System.out.println(Tool.newToday());
+                System.out.println(new String(Tool.newToday().getBytes(StandardCharsets.UTF_8)));
                 return 1;
             }
         } catch (SQLException throwables) {

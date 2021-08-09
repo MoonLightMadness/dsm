@@ -67,7 +67,7 @@ public class Configer {
                     String temp;
                     while ((temp = br.readLine())!=null){
                         if(temp.trim().startsWith(propertyName)){
-                            return temp.split("=")[1].trim();
+                            return temp.substring(temp.indexOf("=")+1).trim();
                         }
                     }
                     br.close();

@@ -1,6 +1,8 @@
 package app.utils;
 
 
+import app.log.LogSystem;
+import app.log.LogSystemFactory;
 import app.utils.datastructure.XByteBuffer;
 
 import java.io.*;
@@ -11,6 +13,8 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 简单工具类
@@ -21,6 +25,10 @@ import java.util.*;
  * @Author ZhangHL
  */
 public class SimpleUtils {
+
+    private static LogSystem log = LogSystemFactory.getLogSystem();
+
+
     /**
      * 判断字符串是否为空
      *
@@ -422,6 +430,63 @@ public class SimpleUtils {
             sb.append(" ");
         }
         return sb.toString();
+    }
+
+    /**
+     * 使用正则匹配(使用\n作为分隔符)
+     *
+     * @param text    文本
+     * @param pattern 模式
+     * @return {@link String}
+     */
+    public static String match(String text,String pattern,int index){
+        StringBuilder name=new StringBuilder();
+        Pattern p = Pattern.compile(pattern);
+        Matcher m=p.matcher(text);
+        while (m.find()){
+            name.append(m.group(index)).append("\n");
+        }
+        return name.toString();
+    }
+
+    public static byte[] readFile(String path){
+        File file = new File(path);
+        if(!file.exists()){
+            log.error(null,"can not find {}",path);
+            return null;
+        }
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            byte[] content = new byte[fis.available()];
+            fis.read(content);
+            fis.close();
+            return content;
+        } catch (FileNotFoundException e) {
+            log.error(null,e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void writeFile(String path,byte[] content){
+        File file = new File(path);
+        StringBuilder sb = new StringBuilder();
+        if(!file.exists()){
+            log.error(null,"can not find {}",path);
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(file,true);
+            fos.write(content);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            log.error(null,e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

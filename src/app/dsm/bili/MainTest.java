@@ -1,5 +1,6 @@
 package app.dsm.bili;
 
+import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
 import org.junit.Test;
 
@@ -28,11 +29,19 @@ public class MainTest {
 //            System.out.println("Today's new:\n");
 //            System.out.println(Tool.newToday());
 //        }
-        Daily daily = new Daily();
-        daily.init();
-        System.out.println(daily.updateData());
-        System.out.println(daily.updateTags());
-        System.out.println(daily.showNew());
+        try {
+            while (true){
+                Daily daily = new Daily();
+                daily.init();
+                System.out.println(daily.updateData());
+                System.out.println(daily.updateTags());
+                System.out.println(daily.showNew());
+                LogSystemFactory.getLogSystem().info(null,"Done");
+                Thread.sleep(24*60*60*1000);
+            }
+        }catch (InterruptedException e) {
+            LogSystemFactory.getLogSystem().error(null,e.getMessage());
+        }
 
 
     }

@@ -8,7 +8,7 @@ package app.utils.special;
  * @date 2021/06/01
  */
 public class RTimer {
-    private long time = 1;
+    private long time = 0;
 
     private long total = 0;
     /**
@@ -40,4 +40,10 @@ public class RTimer {
     }
 
 
+    /**
+     * 清除总计数
+     */
+    public  void clear(){
+        total = 0;
+    }
 }
