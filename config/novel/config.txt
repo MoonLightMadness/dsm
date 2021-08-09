@@ -1,0 +1,14 @@
+
+novel_search_site = https://www.bbtxt8.com/s?q=
+novel_download_site_basic = https://www.bbtxt8.com/
+novel_download_site = https://www.biquge7.com/book/
+search_infoPattern = <div class="bookinfo">(.*?)</a></div>
+search_namePattern1 = <h4 class="bookname">(.*?)</h4>
+search_namePattern2 = <a href="(.*?)">(.*?)</a>
+search_catPattern = <div class="cat">(.*?)</div>
+search_authorPattern = <div class="author">(.*?)</div>
+search_uptimePattern = <div class="uptime">(.*?)</div>
+
+download_chapterPattern = <dd>(.*?)</dd>
+download_info = <a href ="(.*?)">(.*?)</a>
+download_contentPattern = <div id="content" class="showtxt">(.*?)</div>
