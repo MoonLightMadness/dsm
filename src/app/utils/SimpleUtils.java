@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.chrono.IsoChronology;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -487,6 +488,41 @@ public class SimpleUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 计算从0000-01-01到给定时间段的天数
+     * @param year  一年
+     * @param month 月
+     * @param day   一天
+     * @return @return long
+     * @author zhl
+     * @date 2021/08/09
+     * @version V1.0
+     */
+    public static long calEpochDay(long year, long month, long day){
+        long y = year;
+        long m = month;
+        long total = 0;
+        total += 365 * y;
+        if (y >= 0) {
+            total += (y + 3) / 4 - (y + 99) / 100 + (y + 399) / 400;
+        } else {
+            total -= y / -4 - y / -100 + y / -400;
+        }
+        total += ((367 * m - 362) / 12);
+        total += day - 1;
+        if (m > 2) {
+            total--;
+            if (isLeapYear(year) == false) {
+                total--;
+            }
+        }
+        return total;
+    }
+
+    private static boolean isLeapYear(long prolepticYear) {
+        return ((prolepticYear & 3) == 0) && ((prolepticYear % 100) != 0 || (prolepticYear % 400) == 0);
     }
 
 }

@@ -8,6 +8,9 @@ import app.utils.TimeFormatter;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 /**
  * @ClassName : test.simpleUtils
  * @Description :
@@ -82,5 +85,13 @@ public class simpleUtils {
     @Test
     public void test9() {
         System.out.println(SimpleUtils.readFile("./metaconfig.txt"));
+    }
+
+    @Test
+    public void test10() {
+        LocalDate start = LocalDate.parse("2021-08-09") ;
+        LocalDate end = LocalDate.parse("2021-09-10");
+        long interval = start.until(end, ChronoUnit.DAYS);
+        System.out.println(interval);
     }
 }
