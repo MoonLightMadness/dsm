@@ -85,13 +85,13 @@ public class LogSystem {
             LogConstantArg.AUTO_SAVE_MAX_COUNT=1000;
         }
     }
-    public void ok(String src, String msg, String... args){
-        this.add(log.ok(src,msg,args));
+    public void ok(String msg, String... args){
+        this.add(log.ok(msg,args));
     }
-    public void error(String src, String msg, String... args){
-        this.add(log.error(src, msg, args));
+    public void error(String msg, String... args){
+        this.add(log.error(msg, args));
     }
-    public  void info(String src, String msg, String... args){
-        this.add(log.info(src, msg, args));
+    public  void info(String msg, String... args){
+        this.add(log.info(msg, args));
     }
 }

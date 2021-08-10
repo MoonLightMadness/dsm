@@ -22,6 +22,6 @@ public class starter {
     @Test
     public void test2(){
         LogSystem log = LogSystemFactory.getLogSystem();
-        log.info(null,"{}test{}test{}","1","2","3");
+        log.info("{}test{}test{}","1","2","3");
     }
 }
