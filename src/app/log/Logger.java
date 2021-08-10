@@ -10,7 +10,7 @@ package app.log;
  */
 public class Logger {
 
-    public LogEntity<String> info(String msg, String... args){
+    public LogEntity<String> info(String msg, Object... args){
         msg=messageHandler2(msg,args);
         String className=Thread.currentThread().getStackTrace()[3].getClassName();
         String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
@@ -19,7 +19,7 @@ public class Logger {
         return LogEntityWrapper.normal(fileName+"("+className+"."+methodName+"."+line+")",msg);
     }
 
-    public LogEntity<String> ok(String msg, String... args){
+    public LogEntity<String> ok(String msg, Object... args){
         msg=messageHandler2(msg,args);
         String className=Thread.currentThread().getStackTrace()[3].getClassName();
         String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
@@ -28,7 +28,7 @@ public class Logger {
         return LogEntityWrapper.ok(fileName+"("+className+"."+methodName+"."+line+")",msg);
     }
 
-    public LogEntity<String> error(String msg, String... args){
+    public LogEntity<String> error(String msg, Object... args){
         msg=messageHandler2(msg,args);
         String className=Thread.currentThread().getStackTrace()[3].getClassName();
         String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
@@ -68,6 +68,15 @@ public class Logger {
         while (pointer != -1 && counter < args.length){
             pointer = msg.indexOf("{");
             msg = msg.replaceFirst("\\{",args[counter++]);
+            msg = msg.replaceFirst("\\}","");
+        }
+        return msg;
+    }
+    private String messageHandler2(String msg,Object... args){
+        int pointer = 0,counter=0;
+        while (pointer != -1 && counter < args.length){
+            pointer = msg.indexOf("{");
+            msg = msg.replaceFirst("\\{",args[counter++].toString());
             msg = msg.replaceFirst("\\}","");
         }
         return msg;
