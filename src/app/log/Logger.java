@@ -11,7 +11,7 @@ package app.log;
 public class Logger {
 
     public LogEntity<String> info(String src, String msg, String... args){
-        msg=messageHandler(msg,args);
+        msg=messageHandler2(msg,args);
         String className=Thread.currentThread().getStackTrace()[3].getClassName();
         String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
         String fileName=Thread.currentThread().getStackTrace()[3].getFileName();
@@ -20,7 +20,7 @@ public class Logger {
     }
 
     public LogEntity<String> ok(String src, String msg, String... args){
-        msg=messageHandler(msg,args);
+        msg=messageHandler2(msg,args);
         String className=Thread.currentThread().getStackTrace()[3].getClassName();
         String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
         String fileName=Thread.currentThread().getStackTrace()[3].getFileName();
@@ -29,7 +29,7 @@ public class Logger {
     }
 
     public LogEntity<String> error(String src, String msg, String... args){
-        msg=messageHandler(msg,args);
+        msg=messageHandler2(msg,args);
         String className=Thread.currentThread().getStackTrace()[3].getClassName();
         String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
         String fileName=Thread.currentThread().getStackTrace()[3].getFileName();
@@ -61,5 +61,15 @@ public class Logger {
             sb.append(msg);
         }
         return sb.toString();
+    }
+
+    private String messageHandler2(String msg,String... args){
+        int pointer = 0,counter=0;
+        while (pointer != -1 && counter < args.length){
+            pointer = msg.indexOf("{");
+            msg = msg.replaceFirst("\\{",args[counter++]);
+            msg = msg.replaceFirst("\\}","");
+        }
+        return msg;
     }
 }
