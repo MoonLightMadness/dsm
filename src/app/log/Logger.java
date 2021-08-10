@@ -63,15 +63,7 @@ public class Logger {
         return sb.toString();
     }
 
-    private String messageHandler2(String msg,String... args){
-        int pointer = 0,counter=0;
-        while (pointer != -1 && counter < args.length){
-            pointer = msg.indexOf("{");
-            msg = msg.replaceFirst("\\{",args[counter++]);
-            msg = msg.replaceFirst("\\}","");
-        }
-        return msg;
-    }
+
     private String messageHandler2(String msg,Object... args){
         int pointer = 0,counter=0;
         while (pointer != -1 && counter < args.length){
