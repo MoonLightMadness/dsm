@@ -1,15 +1,21 @@
 package app.utils;
 
 
+import app.dsm.exception.ServiceException;
+import app.dsm.exception.UniversalErrorCodeEnum;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.datastructure.XByteBuffer;
+import lombok.SneakyThrows;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.chrono.IsoChronology;
@@ -76,11 +82,11 @@ public class SimpleUtils {
      * @param offset 位移 -n代表前推 n表示后推
      * @return {@link String}
      */
-    public static String getTimeStamp(String format,int level,int offset){
+    public static String getTimeStamp(String format, int level, int offset) {
         String today = getTimeStamp2(format);
         try {
             long d = new SimpleDateFormat(format).parse(today).getTime();
-            d += (level*offset);
+            d += (level * offset);
             Date date = new Date(d);
             return new SimpleDateFormat(format).format(date);
         } catch (ParseException e) {
@@ -88,6 +94,7 @@ public class SimpleUtils {
         }
         return null;
     }
+
     /**
      * 序列化
      *
@@ -144,7 +151,7 @@ public class SimpleUtils {
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
             ObjectInputStream ois = new ObjectInputStream(bais);
             Object obj;
-            while ((obj = ois.readObject())!=null){
+            while ((obj = ois.readObject()) != null) {
                 bais.close();
                 ois.close();
                 return obj;
@@ -369,13 +376,13 @@ public class SimpleUtils {
             buffer.clear();
             try {
                 size = socketChannel.read(buffer);
-                if(size == standard){
+                if (size == standard) {
                     buffer.flip();
                     xb.append(buffer.array());
-                }else {
+                } else {
                     byte[] rb = new byte[size];
                     buffer.flip();
-                    System.arraycopy(buffer.array(),0,rb,0,size);
+                    System.arraycopy(buffer.array(), 0, rb, 0, size);
                     xb.append(rb);
                 }
                 //count += size;
@@ -403,22 +410,22 @@ public class SimpleUtils {
         for (int i = 0; i < count; i++) {
             String[] ss = args[i];
             for (String s : ss) {
-                if (s!=null) {
+                if (s != null) {
                     temp = s.length();
                 }
-                if(max[i]<temp){
+                if (max[i] < temp) {
                     max[i] = temp;
                 }
             }
-            temp=0;
+            temp = 0;
         }
         for (int i = 0; i < titles.length; i++) {
-            sb.append(titles[i]).append(getSpaces(max[i]-titles[i].length()+5));
+            sb.append(titles[i]).append(getSpaces(max[i] - titles[i].length() + 5));
         }
         sb.append("\n");
-        for (int i =0;i<args[0].length;i++){
+        for (int i = 0; i < args[0].length; i++) {
             for (int j = 0; j < titles.length; j++) {
-                sb.append(args[j][i]).append(getSpaces(max[j]-args[j][i].length()+5));
+                sb.append(args[j][i]).append(getSpaces(max[j] - args[j][i].length() + 5));
             }
             sb.append("\n");
         }
@@ -440,20 +447,20 @@ public class SimpleUtils {
      * @param pattern 模式
      * @return {@link String}
      */
-    public static String match(String text,String pattern,int index){
-        StringBuilder name=new StringBuilder();
+    public static String match(String text, String pattern, int index) {
+        StringBuilder name = new StringBuilder();
         Pattern p = Pattern.compile(pattern);
-        Matcher m=p.matcher(text);
-        while (m.find()){
+        Matcher m = p.matcher(text);
+        while (m.find()) {
             name.append(m.group(index)).append("\n");
         }
         return name.toString();
     }
 
-    public static byte[] readFile(String path){
+    public static byte[] readFile(String path) {
         File file = new File(path);
-        if(!file.exists()){
-            log.error(null,"can not find {}",path);
+        if (!file.exists()) {
+            log.error(null, "can not find {}", path);
             return null;
         }
         try {
@@ -463,7 +470,7 @@ public class SimpleUtils {
             fis.close();
             return content;
         } catch (FileNotFoundException e) {
-            log.error(null,e.getMessage());
+            log.error(null, e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -471,19 +478,19 @@ public class SimpleUtils {
         return null;
     }
 
-    public static void writeFile(String path,byte[] content){
+    public static void writeFile(String path, byte[] content) {
         File file = new File(path);
         StringBuilder sb = new StringBuilder();
-        if(!file.exists()){
-            log.error(null,"can not find {}",path);
+        if (!file.exists()) {
+            log.error(null, "can not find {}", path);
         }
         try {
-            FileOutputStream fos = new FileOutputStream(file,true);
+            FileOutputStream fos = new FileOutputStream(file, true);
             fos.write(content);
             fos.flush();
             fos.close();
         } catch (FileNotFoundException e) {
-            log.error(null,e.getMessage());
+            log.error(null, e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -492,6 +499,7 @@ public class SimpleUtils {
 
     /**
      * 计算从0000-01-01到给定时间段的天数
+     *
      * @param year  一年
      * @param month 月
      * @param day   一天
@@ -500,7 +508,7 @@ public class SimpleUtils {
      * @date 2021/08/09
      * @version V1.0
      */
-    public static long calEpochDay(long year, long month, long day){
+    public static long calEpochDay(long year, long month, long day) {
         long y = year;
         long m = month;
         long total = 0;
@@ -523,6 +531,40 @@ public class SimpleUtils {
 
     private static boolean isLeapYear(long prolepticYear) {
         return ((prolepticYear & 3) == 0) && ((prolepticYear % 100) != 0 || (prolepticYear % 400) == 0);
+    }
+
+    /**
+     * 复制一个新的对象
+     * @param obj obj
+     * @return @return {@link Object }
+     * @author zhl
+     * @date 2021-08-11 10:12
+     * @version V1.0
+     */
+    @SneakyThrows
+    public static Object duplicate(Object obj) {
+        try {
+            log.info("属性复制开始，入参:{}", obj);
+            Class clazz = obj.getClass();
+            Constructor constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            Object newer = constructor.newInstance();
+            Field[] fields = obj.getClass().getDeclaredFields();
+            for(Field field : fields){
+                field.setAccessible(true);
+                if(field.get(obj).getClass().isPrimitive() || (field.get(obj).getClass() == String.class)){
+                    field.set(newer,field.get(obj));
+                }else {
+                    field.set(newer,duplicate(field.get(obj)));
+                }
+            }
+            return newer;
+        } catch (InstantiationException | IllegalAccessException e) {
+            log.error("属性复制失败，原因:{}", e);
+            throw new ServiceException(UniversalErrorCodeEnum.UEC_010002.getCode(), UniversalErrorCodeEnum.UEC_010002.getMsg());
+
+        }
+
     }
 
 }

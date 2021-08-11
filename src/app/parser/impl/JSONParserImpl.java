@@ -49,7 +49,6 @@ public class JSONParserImpl implements JSONParse {
             log.error("JSON字符串属性解析失败，原因:{}",e);
             throw new ServiceException(UniversalErrorCodeEnum.UEC_010001.getCode(), UniversalErrorCodeEnum.UEC_010001.getMsg());
         }
-
     }
 
 

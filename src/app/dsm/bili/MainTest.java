@@ -1,6 +1,6 @@
 package app.dsm.bili;
 
-import app.log.LogSystemFactory;
+import app.log.*;
 import app.utils.SimpleUtils;
 import org.junit.Test;
 

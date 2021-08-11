@@ -11,7 +11,7 @@ package app.log;
 public class Logger {
 
     public LogEntity<String> info(String msg, Object... args){
-        msg=messageHandler2(msg,args);
+        msg=messageHandler(msg,args);
         String className=Thread.currentThread().getStackTrace()[3].getClassName();
         String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
         String fileName=Thread.currentThread().getStackTrace()[3].getFileName();
@@ -20,7 +20,7 @@ public class Logger {
     }
 
     public LogEntity<String> ok(String msg, Object... args){
-        msg=messageHandler2(msg,args);
+        msg=messageHandler(msg,args);
         String className=Thread.currentThread().getStackTrace()[3].getClassName();
         String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
         String fileName=Thread.currentThread().getStackTrace()[3].getFileName();
@@ -29,7 +29,7 @@ public class Logger {
     }
 
     public LogEntity<String> error(String msg, Object... args){
-        msg=messageHandler2(msg,args);
+        msg=messageHandler(msg,args);
         String className=Thread.currentThread().getStackTrace()[3].getClassName();
         String methodName=Thread.currentThread().getStackTrace()[3].getMethodName();
         String fileName=Thread.currentThread().getStackTrace()[3].getFileName();
@@ -38,7 +38,7 @@ public class Logger {
     }
 
 
-    private String messageHandler(String msg,String... args){
+    private String messageHandler(String msg,Object... args){
         int argsLen=args.length;
         StringBuilder sb=new StringBuilder();
         if(argsLen>0){
@@ -52,7 +52,7 @@ public class Logger {
                 pointer=msg.indexOf('{');
                 if(pointer!=-1){
                     sb.append(msg, 0, pointer);
-                    sb.append(args[i]);
+                    sb.append(args[i].toString());
                     msg=msg.substring(pointer+2);
                 }
             }
@@ -70,6 +70,18 @@ public class Logger {
             pointer = msg.indexOf("{");
             msg = msg.replaceFirst("\\{",args[counter++].toString());
             msg = msg.replaceFirst("\\}","");
+        }
+        return msg;
+    }
+
+    private String messageHandler2(String msg,String... args) {
+        int pointer = 0;
+        int counter = 0;
+        while (pointer == -1){
+            pointer = msg.indexOf('{');
+            msg.replaceFirst("\\{",args[counter]);
+            msg.replaceFirst("\\|","");
+            counter++;
         }
         return msg;
     }
