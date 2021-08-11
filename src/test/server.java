@@ -10,6 +10,7 @@ import app.dsm.server.impl.SelectorIOImpl;
 import app.dsm.server.impl.ServerImpl;
 import app.utils.SimpleUtils;
 import app.utils.listener.IListener;
+import app.utils.listener.ThreadListener;
 import app.utils.net.Sender;
 import lombok.Data;
 import org.junit.Test;
@@ -57,8 +58,11 @@ public class server {
     }
 }
 
-class testClass implements IListener{
+class testClass implements ThreadListener {
 
+    private Object obj;
+
+    private String[] args;
     @Override
     public void invoke(Object obj, String... args) {
         ListenerAdapter listenerAdapter = (ListenerAdapter) obj;
@@ -76,6 +80,17 @@ class testClass implements IListener{
             }
         }
         System.out.println(new String(data));
+    }
+
+    @Override
+    public void setArgs(Object obj, String... args) {
+        this.obj = obj;
+        this.args = args;
+    }
+
+    @Override
+    public void run() {
+        invoke(obj,args);
     }
 }
 @Data

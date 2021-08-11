@@ -12,6 +12,7 @@ import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
 import app.utils.listener.IListener;
+import app.utils.listener.ThreadListener;
 import lombok.Data;
 import lombok.SneakyThrows;
 
@@ -30,7 +31,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
     private LogSystem log = LogSystemFactory.getLogSystem();
 
-    private IListener iListener;
+    private ThreadListener threadListener;
 
     private ServerContainer serverContainer;
 
@@ -57,8 +58,8 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
     }
 
     @Override
-    public void setListener(IListener iListener) {
-        this.iListener = iListener;
+    public void setListener(ThreadListener threadListener) {
+        this.threadListener = threadListener;
     }
 
     @Override
@@ -121,7 +122,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
             listenerAdapter.setChannel(((SocketChannel)key.channel()));
             listenerAdapter.setSelectorIO(this);
             log.info("Server读取远程服务器发来数据完成，开始触发订阅方法");
-            iListener.invoke(listenerAdapter);
+            new Thread(threadListener).start();
             log.info("订阅方法触发完成");
         }catch (Exception e) {
             log.error("Server读取远程服务器发来数据失败，原因：{}",e);
