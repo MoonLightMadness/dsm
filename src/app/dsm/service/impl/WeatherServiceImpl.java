@@ -81,10 +81,14 @@ public class WeatherServiceImpl implements WeatherService {
     @Override
     public void cancle(IListener iListener) {
         ListIterator iterator = listeners.listIterator();
-        while (iterator.hasNext()) {
-            if(iterator.next() == iListener){
-                iterator.remove();
+        try {
+            while (iterator.hasNext()) {
+                if(iterator.next() == iListener){
+                    iterator.remove();
+                }
             }
+        }catch (Exception e) {
+            log.error("删除失败，原因：{}",e);
         }
     }
 
@@ -99,9 +103,13 @@ public class WeatherServiceImpl implements WeatherService {
     @Override
     public void invoke() {
         ListIterator iterator = listeners.listIterator();
-        while (iterator.hasNext()){
-            IListener listener = (IListener) iterator.next();
-            listener.invoke(weather);
+        try {
+            while (iterator.hasNext()){
+                IListener listener = (IListener) iterator.next();
+                listener.invoke(weather);
+            }
+        }catch (Exception e) {
+            log.error("触发失败，原因：{}",e);
         }
     }
 }
