@@ -1,19 +1,25 @@
 package test;
 
+import app.dsm.base.JSONTool;
 import app.dsm.server.SelectorIO;
 import app.dsm.server.Server;
 import app.dsm.server.adapter.ListenerAdapter;
+import app.dsm.server.container.ServerContainer;
+import app.dsm.server.container.ServerEntity;
 import app.dsm.server.impl.SelectorIOImpl;
 import app.dsm.server.impl.ServerImpl;
 import app.utils.SimpleUtils;
 import app.utils.listener.IListener;
 import app.utils.net.Sender;
+import lombok.Data;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.ListIterator;
 
 public class server {
 
@@ -27,13 +33,15 @@ public class server {
         server.open(testClass);
 
 
-        String s = "hello";
+        Pojo pojo = new Pojo();
+        pojo.setOption("setname");
+        pojo.setAttachment("pojo");
         try {
             Thread.sleep(500);
             SocketChannel socketChannel = SocketChannel.open();
             socketChannel.bind(new InetSocketAddress("127.0.0.1",9001));
             socketChannel.connect(new InetSocketAddress("127.0.0.1",9000));
-            Sender.send(socketChannel,s.getBytes(StandardCharsets.UTF_8));
+            Sender.send(socketChannel, JSONTool.toJson(pojo));
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -55,6 +63,24 @@ class testClass implements IListener{
     public void invoke(Object obj, String... args) {
         ListenerAdapter listenerAdapter = (ListenerAdapter) obj;
         byte[] data = listenerAdapter.getData();
+        if(JSONTool.getProperty("option",data) .equals("setname")){
+            SelectorIOImpl selectorIO = listenerAdapter.getSelectorIO();
+            ServerContainer container = selectorIO.getServerContainer();
+            List<ServerEntity> serverEntities = container.getServers();
+            ListIterator<ServerEntity> iterator = serverEntities.listIterator();
+            while (iterator.hasNext()){
+                ServerEntity serverEntity = iterator.next();
+                if(serverEntity.getSocketChannel() == listenerAdapter.getChannel()){
+                    serverEntity.setName(JSONTool.getProperty("attachment",data));
+                }
+            }
+        }
         System.out.println(new String(data));
     }
+}
+@Data
+class Pojo{
+    private String option;
+
+    private String attachment;
 }

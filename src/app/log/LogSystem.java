@@ -67,7 +67,9 @@ public class LogSystem {
                 Iterator<LogEntity<String>> iterator = list.iterator();
                 while (iterator.hasNext()){
                     LogEntity<String> entity = iterator.next();
-                    writer.write(entity.toString()+"\n");
+                    if(entity != null){
+                        writer.write(entity.toString()+"\n");
+                    }
                     iterator.remove();
                 }
                 writer.close();

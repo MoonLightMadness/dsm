@@ -40,7 +40,6 @@ public interface SelectorIO extends Runnable{
     /**
      * 远端服务器注册
      * @param socketChannel 套接字通道
-     * @param opt
      * @return
      * @author zhl
      * @date 2021-08-11 20:58

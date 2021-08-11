@@ -119,6 +119,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
             ListenerAdapter listenerAdapter = new ListenerAdapter();
             listenerAdapter.setData(SimpleUtils.receiveDataInNIO((SocketChannel) key.channel()));
             listenerAdapter.setChannel(((SocketChannel)key.channel()));
+            listenerAdapter.setSelectorIO(this);
             log.info("Server读取远程服务器发来数据完成，开始触发订阅方法");
             iListener.invoke(listenerAdapter);
             log.info("订阅方法触发完成");
