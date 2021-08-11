@@ -8,7 +8,7 @@ package app.log;
  */
 public class LogSystemFactory {
 
-    private static LogSystem logSystem;
+    private static volatile LogSystem logSystem;
 
     /**
      * 获取logSystem实例
@@ -19,11 +19,13 @@ public class LogSystemFactory {
      * @Date 22:36 2021/4/29
      * @Version V1.0
      **/
-    public static LogSystem getLogSystem(){
+    public static synchronized LogSystem getLogSystem(){
         if(logSystem==null){
-            logSystem=new LogSystem();
-            logSystem.init();
-            logSystem.immediatelySaveMode(true);
+            synchronized (LogSystemFactory.class){
+                logSystem=new LogSystem();
+                logSystem.init();
+                logSystem.immediatelySaveMode(true);
+            }
         }
         return logSystem;
     }

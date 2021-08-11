@@ -9,6 +9,6 @@ public interface IListener {
      * @date 2021-08-11 08:29
      * @version V1.0
      */
-    void invoke();
+    void invoke(Object obj,String... args);
 
 }

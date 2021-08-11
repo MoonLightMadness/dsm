@@ -21,4 +21,13 @@ public interface IRegister {
      * @version V1.0
      */
     void cancle(IListener iListener);
+
+    /**
+     * 通知订阅者
+     * @return
+     * @author zhl
+     * @date 2021-08-11 14:22
+     * @version V1.0
+     */
+    void invoke();
 }
