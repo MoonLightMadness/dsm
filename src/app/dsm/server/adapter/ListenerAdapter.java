@@ -10,7 +10,7 @@ import lombok.Data;
 import java.nio.channels.SocketChannel;
 
 @Data
-public class ListenerAdapter implements Runnable{
+public class ListenerAdapter implements Runnable {
 
     /**
      * 数据
@@ -48,12 +48,16 @@ public class ListenerAdapter implements Runnable{
     @Override
     public void run() {
         data = SimpleUtils.receiveDataInNIO(channel);
-        if(data.length > 0){
+        if (null == threadListener) {
+            log.error("未指定订阅方法,触发事件结束");
+            return;
+        }
+        if (data.length > 0) {
             log.info("异步接收数据完成，开始触发订阅方法");
             threadListener.setArgs(this);
             threadListener.invoke(this);
             log.info("订阅方法触发完成");
-        }else {
+        } else {
             log.error("收到无效数据");
         }
     }
