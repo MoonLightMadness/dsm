@@ -48,9 +48,13 @@ public class ListenerAdapter implements Runnable{
     @Override
     public void run() {
         data = SimpleUtils.receiveDataInNIO(channel);
-        log.info("异步接收数据完成，开始触发订阅方法");
-        threadListener.setArgs(this);
-        threadListener.run();
-        log.info("订阅方法触发完成");
+        if(data.length > 0){
+            log.info("异步接收数据完成，开始触发订阅方法");
+            threadListener.setArgs(this);
+            threadListener.invoke(this);
+            log.info("订阅方法触发完成");
+        }else {
+            log.error("收到无效数据");
+        }
     }
 }

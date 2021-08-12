@@ -40,8 +40,9 @@ public class server {
         try {
             Thread.sleep(500);
             SocketChannel socketChannel = SocketChannel.open();
-            socketChannel.bind(new InetSocketAddress("127.0.0.1",9001));
+            socketChannel.bind(new InetSocketAddress("127.0.0.1",9002));
             socketChannel.connect(new InetSocketAddress("127.0.0.1",9000));
+            Thread.sleep(500);
             Sender.send(socketChannel, JSONTool.toJson(pojo));
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();

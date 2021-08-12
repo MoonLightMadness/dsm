@@ -116,10 +116,12 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
     private void read(SelectionKey key){
         try {
-            log.info("Server读取远程服务器发来数据，开始，ip:{}",((SocketChannel)key.channel()).getRemoteAddress());
+            log.info("Server读取远程服务器发来数据，开始，ip:{}--{}",((SocketChannel)key.channel()).getRemoteAddress(),
+                    Thread.currentThread().getName());
             ListenerAdapter listenerAdapter = new ListenerAdapter();
             listenerAdapter.setChannel(((SocketChannel)key.channel()));
             listenerAdapter.setSelectorIO(this);
+            listenerAdapter.setThreadListener(threadListener);
             log.info("异步接收数据，开始");
             new Thread(listenerAdapter).start();
         }catch (Exception e) {

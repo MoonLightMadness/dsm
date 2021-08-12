@@ -57,7 +57,7 @@ public class LogSystem {
      * @Date 20:56 2021/3/31
      **/
     public void save(){
-        synchronized (this){
+        synchronized (LogSystem.class){
             File f=new File(LogConstantArg.logPath);
             try {
                 if(!f.exists()){
