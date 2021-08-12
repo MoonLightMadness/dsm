@@ -7,9 +7,14 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
-public class DataIOImpl implements DataIO {
+public class DataIOImpl implements DataIO,Runnable {
 
 
+
+    @Override
+    public void run() {
+
+    }
 
     @Override
     public byte[] receiveData(SocketChannel socketChannel) {

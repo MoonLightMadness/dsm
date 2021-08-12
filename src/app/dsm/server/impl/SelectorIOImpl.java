@@ -118,12 +118,10 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         try {
             log.info("Server读取远程服务器发来数据，开始，ip:{}",((SocketChannel)key.channel()).getRemoteAddress());
             ListenerAdapter listenerAdapter = new ListenerAdapter();
-            listenerAdapter.setData(SimpleUtils.receiveDataInNIO((SocketChannel) key.channel()));
             listenerAdapter.setChannel(((SocketChannel)key.channel()));
             listenerAdapter.setSelectorIO(this);
-            log.info("Server读取远程服务器发来数据完成，开始触发订阅方法");
-            new Thread(threadListener).start();
-            log.info("订阅方法触发完成");
+            log.info("异步接收数据，开始");
+            new Thread(listenerAdapter).start();
         }catch (Exception e) {
             log.error("Server读取远程服务器发来数据失败，原因：{}",e);
         }
