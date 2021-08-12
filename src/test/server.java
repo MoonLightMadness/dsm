@@ -89,10 +89,7 @@ class testClass implements ThreadListener {
         this.args = args;
     }
 
-    @Override
-    public void run() {
-        invoke(obj,args);
-    }
+
 }
 @Data
 class Pojo{

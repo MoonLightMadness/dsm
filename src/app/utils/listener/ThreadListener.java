@@ -1,6 +1,6 @@
 package app.utils.listener;
 
-public interface ThreadListener extends Runnable,IListener{
+public interface ThreadListener extends IListener{
 
     /**
      * 设置参数
