@@ -1,5 +1,6 @@
 package app.dsm.server.adapter;
 
+import app.dsm.server.container.ServerEntity;
 import app.dsm.server.impl.SelectorIOImpl;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
@@ -8,6 +9,7 @@ import app.utils.listener.ThreadListener;
 import lombok.Data;
 
 import java.nio.channels.SocketChannel;
+import java.util.List;
 
 @Data
 public class ListenerAdapter implements Runnable {
@@ -47,6 +49,15 @@ public class ListenerAdapter implements Runnable {
      */
     @Override
     public void run() {
+        //重置心跳
+        List<ServerEntity> list = selectorIO.getServerContainer().getServers();
+        for (ServerEntity entity : list){
+            if(entity.getSocketChannel() == channel){
+                entity.setBeat(0L);
+                log.info("心跳重置成功");
+                break;
+            }
+        }
         data = SimpleUtils.receiveDataInNIO(channel);
         if (null == threadListener) {
             log.error("未指定订阅方法,触发事件结束");
