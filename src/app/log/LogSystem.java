@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * 初始化请调用init()方法
@@ -38,7 +39,8 @@ public class LogSystem {
     private void add(LogEntity<String> log){
         try {
             synchronized (LogSystem.class){
-                list.add(log);
+                ListIterator<LogEntity<String>> iterator = list.listIterator();
+                iterator.add(log);
                 logCount++;
                 if(logCount>=LogConstantArg.AUTO_SAVE_MAX_COUNT){
                     this.save();
