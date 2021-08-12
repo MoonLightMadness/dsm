@@ -3,6 +3,7 @@ package app.utils;
 
 import app.dsm.exception.ServiceException;
 import app.dsm.exception.UniversalErrorCodeEnum;
+import app.dsm.server.annotation.Path;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.datastructure.XByteBuffer;
@@ -14,6 +15,7 @@ import org.junit.Test;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -546,6 +548,7 @@ public class SimpleUtils {
 
     /**
      * 复制一个新的对象
+     *
      * @param obj obj
      * @return @return {@link Object }
      * @author zhl
@@ -561,12 +564,12 @@ public class SimpleUtils {
             constructor.setAccessible(true);
             Object newer = constructor.newInstance();
             Field[] fields = obj.getClass().getDeclaredFields();
-            for(Field field : fields){
+            for (Field field : fields) {
                 field.setAccessible(true);
-                if(field.get(obj).getClass().isPrimitive() || (field.get(obj).getClass() == String.class)){
-                    field.set(newer,field.get(obj));
-                }else {
-                    field.set(newer,duplicate(field.get(obj)));
+                if (field.get(obj).getClass().isPrimitive() || (field.get(obj).getClass() == String.class)) {
+                    field.set(newer, field.get(obj));
+                } else {
+                    field.set(newer, duplicate(field.get(obj)));
                 }
             }
             return newer;
@@ -578,59 +581,59 @@ public class SimpleUtils {
 
     }
 
-    public static String getFilePathSeparator(){
+    public static String getFilePathSeparator() {
         return System.getProperty("file.separator");
     }
 
-    public static String scanPackage(String packageName){
+    public static String scanPackage(String packageName) {
         String workingPath = getJarSelfPath();
         String[] paths;
         //判断程序是否是以jar包形式启动的
-        if(workingPath.endsWith(".jar")){
+        if (workingPath.endsWith(".jar")) {
             paths = scanJarFile(workingPath).split("\n");
-        }else {
+        } else {
             workingPath = ".";
             paths = scanDirectory(workingPath).split("\n");
         }
         StringBuilder sb = new StringBuilder();
-        for(String path : paths){
-            if(path.startsWith(packageName)){
+        for (String path : paths) {
+            if (path.startsWith(packageName)) {
                 sb.append(path).append("\n");
             }
         }
         return sb.toString();
     }
 
-    public static String scanDirectory(String directory){
+    public static String scanDirectory(String directory) {
         File file = new File(directory);
         StringBuilder sb = new StringBuilder();
-        if(!file.exists()){
+        if (!file.exists()) {
             return sb.toString();
         }
-        if(file.isDirectory()){
+        if (file.isDirectory()) {
             String[] files = file.list();
             for (String f : files) {
-                sb.append(scanDirectory(directory+"/"+f));
+                sb.append(scanDirectory(directory + "/" + f));
             }
-        }else {
-            if(file.getPath().endsWith(".java")){
-                sb.append(file.getPath().replace(getFilePathSeparator(), ".").substring(6,file.getPath().lastIndexOf('.'))).append("\n");
+        } else {
+            if (file.getPath().endsWith(".java")) {
+                sb.append(file.getPath().replace(getFilePathSeparator(), ".").substring(6, file.getPath().lastIndexOf('.'))).append("\n");
             }
         }
         return sb.toString();
     }
 
-    public static String scanJarFile(String path){
+    public static String scanJarFile(String path) {
         File f = new File(path);
         StringBuilder sb = new StringBuilder();
         try {
             JarFile jarFile = new JarFile(f);
             Enumeration<JarEntry> entries = jarFile.entries();
-            while (entries.hasMoreElements()){
+            while (entries.hasMoreElements()) {
                 JarEntry entry = entries.nextElement();
                 File temp = new File(entry.getName());
-                if(entry.getName().endsWith(".class")){
-                    sb.append(temp.getPath().replace(getFilePathSeparator(), ".").substring(0,temp.getPath().lastIndexOf('.'))).append("\n");
+                if (entry.getName().endsWith(".class")) {
+                    sb.append(temp.getPath().replace(getFilePathSeparator(), ".").substring(0, temp.getPath().lastIndexOf('.'))).append("\n");
                 }
             }
         } catch (IOException e) {
@@ -642,43 +645,51 @@ public class SimpleUtils {
     /**
      * 获取以Jar形式包启动的自身路径(注意不是获取工作路径)
      * 该方法在以ide启动时会返回工作路径
+     *
      * @return @return {@link String }
      * @author zhl
      * @date 2021-08-12 23:10
      * @version V1.0
      */
-    public static String getJarSelfPath(){
-        URL url=SimpleUtils.class.getProtectionDomain().getCodeSource().getLocation();
-        String path=null;
-        try{
+    public static String getJarSelfPath() {
+        URL url = SimpleUtils.class.getProtectionDomain().getCodeSource().getLocation();
+        String path = null;
+        try {
             //转化为utf-8编码，支持中文
-            path= URLDecoder.decode(url.getPath(),"utf-8");
+            path = URLDecoder.decode(url.getPath(), "utf-8");
             return path;
-        }catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return null;
     }
 
     public static void main(String[] args) {
+        RTimer rTimer = new RTimer();
+        rTimer.start();
+        String[] clazzes = scanPackage("app.dsm.server").split("\n");
         try {
-            Class.forName("app.dsm.core.Core");
+            for (String clzz : clazzes) {
+                Class anno = Class.forName(clzz);
+                //如果有Path注解
+                if (anno.isAnnotationPresent(Path.class)) {
+                    Path path = (Path) anno.getDeclaredAnnotation(Path.class);
+                    System.out.println(clzz + " " + path.value());
+                    Method[] methods = anno.getDeclaredMethods();
+                    for (Method method : methods) {
+                        if (method.isAnnotationPresent(Path.class)) {
+                            Path mpath = method.getAnnotation(Path.class);
+                            System.out.println(method.getName() + " " + mpath.value());
+                        }
+                    }
+                }
+            }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-//        System.out.println(scanJarFile("./out/artifacts//dsm_simple_jar//dsm.jar"));
-//        System.out.println("-----------------------------------------------------------------");
-//        System.out.println(scanDirectory("."));
-        RTimer rTimer = new RTimer();
-        rTimer.start();
-        System.out.println(scanPackage("app.dsm.server"));
-        System.out.println(rTimer.end()+"ms");
+        System.out.println(rTimer.end() + "ms");
+
     }
-
-
-
-
-
 
 
 }
