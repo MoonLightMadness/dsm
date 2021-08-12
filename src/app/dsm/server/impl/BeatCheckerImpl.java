@@ -36,7 +36,7 @@ public class BeatCheckerImpl implements BeatChecker {
         log.info("心跳检测模块开启中...");
         List<Container> list = container.getList();
         try {
-            log.info("心跳检测模块开启完成");
+            log.info("心跳检测模块开启完成,运行于线程:{}",Thread.currentThread().getName());
             while (true){
                 ListIterator iter = list.listIterator();
                 while (iter.hasNext()){

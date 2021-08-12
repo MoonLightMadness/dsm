@@ -37,11 +37,13 @@ public class LogSystem {
      **/
     private void add(LogEntity<String> log){
         try {
-            list.add(log);
-            logCount++;
-            if(logCount>=LogConstantArg.AUTO_SAVE_MAX_COUNT){
-                this.save();
-                logCount=0;
+            synchronized (LogSystem.class){
+                list.add(log);
+                logCount++;
+                if(logCount>=LogConstantArg.AUTO_SAVE_MAX_COUNT){
+                    this.save();
+                    logCount=0;
+                }
             }
         }catch (Exception e){
             e.printStackTrace();

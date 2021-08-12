@@ -58,16 +58,25 @@ public class ListenerAdapter implements Runnable {
                 break;
             }
         }
-        data = SimpleUtils.receiveDataInNIO(channel);
+        try {
+            log.info("正在接收数据");
+            data = SimpleUtils.receiveDataInNIO(channel);
+        }catch (Exception e) {
+            log.error("接收数据失败，原因：{}",e);
+        }
         if (null == threadListener) {
             log.error("未指定订阅方法,触发事件结束");
             return;
         }
         if (data.length > 0) {
             log.info("异步接收数据完成，开始触发订阅方法");
-            threadListener.setArgs(this);
-            threadListener.invoke(this);
-            log.info("订阅方法触发完成");
+            try {
+                threadListener.setArgs(this);
+                threadListener.invoke(this);
+                log.info("订阅方法触发完成");
+            }catch (Exception e) {
+                log.error("订阅方法执行失败，原因：{}",e);
+            }
         } else {
             log.error("收到无效数据");
         }
