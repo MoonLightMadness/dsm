@@ -2,6 +2,8 @@ package app.dsm.server.service.impl;
 
 import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.annotation.Path;
+import app.dsm.server.vo.CalculatorReqVO;
+import app.dsm.server.vo.CalculatorRspVO;
 import app.dsm.server.vo.GetTimeRspVO;
 import app.dsm.server.service.ServerBaseService;
 import app.utils.SimpleUtils;
@@ -37,4 +39,12 @@ public class ServerBaseServiceImpl implements ServerBaseService {
         return getTimeRspVO;
     }
 
+    @Path(value = "/calculate")
+    @Override
+    public CalculatorRspVO calculate(CalculatorReqVO calculatorReqVO) {
+        CalculatorRspVO calculatorRspVO = new CalculatorRspVO();
+        long result = Long.parseLong(calculatorReqVO.getX()) + Long.parseLong(calculatorReqVO.getY());
+        calculatorRspVO.setResult(String.valueOf(result));
+        return calculatorRspVO;
+    }
 }

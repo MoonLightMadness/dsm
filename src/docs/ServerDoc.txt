@@ -3,4 +3,4 @@ path:/server/gettime
 input:
     null
 output:
-    serverTime(DateTime)
+    time (DateTime)

@@ -42,7 +42,7 @@ public class PathTrigger {
      * @date 2021-08-13 22:37
      * @version V1.0
      */
-    public Object trigger(String path){
+    public Object trigger(String path,Object arg){
         ListIterator<ReflectIndicator> iterator = Indicators.getIterator();
         while (iterator.hasNext()) {
             ReflectIndicator reflectIndicator = iterator.next();
@@ -50,9 +50,18 @@ public class PathTrigger {
                 try {
                     Class clazz = Class.forName(reflectIndicator.getClassPath());
                     Object obj = clazz.newInstance();
-                    Method method = obj.getClass().getMethod(reflectIndicator.getMethodName());
-                    method.setAccessible(true);
-                    return method.invoke(obj);
+                    Method method = null;
+                    Object result;
+                    if(arg == null){
+                        method = obj.getClass().getMethod(reflectIndicator.getMethodName(),null);
+                        method.setAccessible(true);
+                        result = method.invoke(obj,null);
+                    }else {
+                        method = obj.getClass().getMethod(reflectIndicator.getMethodName(),arg.getClass());
+                        method.setAccessible(true);
+                        result = method.invoke(obj, arg);
+                    }
+                    return new String(JSONTool.toJson(result));
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (InstantiationException e) {

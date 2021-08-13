@@ -7,6 +7,7 @@ import app.dsm.exception.UniversalErrorCodeEnum;
 import app.dsm.server.annotation.Path;
 import app.dsm.server.constant.Indicators;
 import app.dsm.server.trigger.PathTrigger;
+import app.dsm.server.vo.CalculatorReqVO;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.datastructure.ReflectIndicator;
@@ -691,14 +692,15 @@ public class SimpleUtils {
     public static void main(String[] args) {
         PathTrigger pathTrigger = new PathTrigger();
         pathTrigger.initialize();
-        pathTrigger.scanPackage("app");
-        System.out.println("app.dsm");
+        pathTrigger.scanPackage("app.dsm.server");
         RTimer timer = new RTimer();
         timer.start();
-        Object object = pathTrigger.trigger(".");
+        CalculatorReqVO calculatorReqVO = new CalculatorReqVO();
+        calculatorReqVO.setX("100");
+        calculatorReqVO.setY("9");
+        Object object = pathTrigger.trigger("/server/calculate",calculatorReqVO);
         System.out.println(timer.end());
         System.out.println(object);
-        System.out.println("app.dsm");
     }
 
 
