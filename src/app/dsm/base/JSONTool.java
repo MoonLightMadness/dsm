@@ -19,7 +19,7 @@ public class JSONTool {
     private static LogSystem log = LogSystemFactory.getLogSystem();
 
     public static byte[] toJson(Object obj){
-        String res = JSONObject.toJSONString(obj,false);
+        String res = JSONObject.toJSONString(obj,true);
         return res.getBytes(StandardCharsets.UTF_8);
     }
 

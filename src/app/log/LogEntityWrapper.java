@@ -11,19 +11,19 @@ import app.utils.SimpleUtils;
  */
 public class LogEntityWrapper {
 
-    public static <T> LogEntity<T> normal(String src,T t){
-        return new LogEntity<T>(SimpleUtils.isEmptyString(src) ?"未知来源":src,t, LogAbnormalCode.NORMAL.getCode());
+    public static  LogEntity normal(String src,String t){
+        return new LogEntity(SimpleUtils.isEmptyString(src) ?"未知来源":src,t, LogAbnormalCode.NORMAL.getCode());
     }
 
-    public static <T> LogEntity<T> ok(String src,T t){
-        return new LogEntity<T>(SimpleUtils.isEmptyString(src) ?"未知来源":src,t, LogAbnormalCode.OK.getCode());
+    public static  LogEntity ok(String src,String t){
+        return new LogEntity(SimpleUtils.isEmptyString(src) ?"未知来源":src,t, LogAbnormalCode.OK.getCode());
     }
 
-    public static <T> LogEntity<T> error(String src,T t){
-        return new LogEntity<T>(SimpleUtils.isEmptyString(src) ?"未知来源":src,t,LogAbnormalCode.ERROR.getCode());
+    public static  LogEntity error(String src,String t){
+        return new LogEntity(SimpleUtils.isEmptyString(src) ?"未知来源":src,t,LogAbnormalCode.ERROR.getCode());
     }
 
-    public static <T> LogEntity<T> unknown(String src,T t){
-        return new LogEntity<T>( SimpleUtils.isEmptyString(src) ?"未知来源":src,t,LogAbnormalCode.UNKNOWN.getCode());
+    public static  LogEntity unknown(String src,String t){
+        return new LogEntity( SimpleUtils.isEmptyString(src) ?"未知来源":src,t,LogAbnormalCode.UNKNOWN.getCode());
     }
 }

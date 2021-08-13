@@ -2,6 +2,9 @@ package app.log;
 
 
 
+import app.dsm.base.JSONTool;
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,7 +23,7 @@ import java.util.ListIterator;
  * @Author ZhangHL
  */
 public class LogSystem {
-    private List<LogEntity<String>> list;
+    private List<LogEntity> list;
     private  Logger log;
     private  int logCount=0;
     public void init(){
@@ -36,10 +39,12 @@ public class LogSystem {
      * @Author Zhang huai lan
      * @Date 20:55 2021/3/31
      **/
-    private void add(LogEntity<String> log){
+    private void add(LogEntity log){
         try {
             synchronized (LogSystem.class){
-                ListIterator<LogEntity<String>> iterator = list.listIterator();
+                ListIterator<LogEntity> iterator = list.listIterator();
+                //控制台输出
+                System.out.println(new String(JSONTool.toJson(log)));
                 iterator.add(log);
                 logCount++;
                 if(logCount>=LogConstantArg.AUTO_SAVE_MAX_COUNT){
@@ -68,9 +73,9 @@ public class LogSystem {
                     f.createNewFile();
                 }
                 OutputStreamWriter writer=new OutputStreamWriter(new FileOutputStream(f,true), StandardCharsets.UTF_8);
-                Iterator<LogEntity<String>> iterator = list.iterator();
+                Iterator<LogEntity> iterator = list.iterator();
                 while (iterator.hasNext()){
-                    LogEntity<String> entity = iterator.next();
+                    LogEntity entity = iterator.next();
                     if(entity != null){
                         writer.write(entity.toString()+"\n");
                     }
