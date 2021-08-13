@@ -6,8 +6,10 @@ import app.dsm.server.Server;
 import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.container.ServerContainer;
 import app.dsm.server.container.ServerEntity;
+import app.dsm.server.domain.BasePath;
 import app.dsm.server.impl.SelectorIOImpl;
 import app.dsm.server.impl.ServerImpl;
+import app.dsm.server.vo.GetTimeRspVO;
 import app.utils.SimpleUtils;
 import app.utils.listener.IListener;
 import app.utils.listener.ThreadListener;
@@ -31,7 +33,7 @@ public class server {
 
         Server server = new ServerImpl();
         server.initialize();
-        server.open(testClass);
+        server.open();
 
 
         Pojo pojo = new Pojo();
@@ -44,6 +46,41 @@ public class server {
             socketChannel.connect(new InetSocketAddress("127.0.0.1",9000));
             Thread.sleep(500);
             Sender.send(socketChannel, JSONTool.toJson(pojo));
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+
+            while (true) {
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test2(){
+        Server server = new ServerImpl();
+        server.initialize();
+        server.open();
+
+        ApiPojo apiPojo = new ApiPojo();
+        apiPojo.setPath("/server/calculate");
+        apiPojo.setX("100");
+        apiPojo.setY("10");
+
+        try {
+            Thread.sleep(500);
+            SocketChannel socketChannel = SocketChannel.open();
+            socketChannel.bind(new InetSocketAddress("127.0.0.1",9002));
+            socketChannel.connect(new InetSocketAddress("127.0.0.1",9003));
+            Thread.sleep(500);
+            Sender.send(socketChannel, JSONTool.toJson(apiPojo));
+            Thread.sleep(1000);
+            System.out.println(new String(SimpleUtils.receiveDataInNIO(socketChannel)));
+            socketChannel.close();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -96,4 +133,14 @@ class Pojo{
     private String option;
 
     private String attachment;
+}
+
+@Data
+class ApiPojo extends BasePath {
+
+    private String x;
+
+    private String y;
+
+
 }

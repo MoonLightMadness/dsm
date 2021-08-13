@@ -22,7 +22,7 @@ public interface Server {
      * @date 2021-08-11 20:37
      * @version V1.0
      */
-    void open(ThreadListener threadListener);
+    void open();
 
 
 

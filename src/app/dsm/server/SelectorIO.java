@@ -28,15 +28,6 @@ public interface SelectorIO extends Runnable{
      */
     void open(ServerSocketChannel serverSocketChannel);
 
-    /**
-     * 设置订阅者
-     * @param threadListener 服务订阅者
-     * @return
-     * @author zhl
-     * @date 2021-08-11 20:55
-     * @version V1.0
-     */
-    void setListener(ThreadListener threadListener);
 
     /**
      * 远端服务器注册

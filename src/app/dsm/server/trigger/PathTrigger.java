@@ -2,6 +2,7 @@ package app.dsm.server.trigger;
 
 import app.dsm.base.JSONTool;
 import app.dsm.server.constant.Indicators;
+import app.dsm.server.domain.BasePath;
 import app.utils.SimpleUtils;
 import app.utils.datastructure.ReflectIndicator;
 
@@ -57,7 +58,7 @@ public class PathTrigger {
                         method.setAccessible(true);
                         result = method.invoke(obj,null);
                     }else {
-                        method = obj.getClass().getMethod(reflectIndicator.getMethodName(),arg.getClass());
+                        method = obj.getClass().getMethod(reflectIndicator.getMethodName(), String.class);
                         method.setAccessible(true);
                         result = method.invoke(obj, arg);
                     }

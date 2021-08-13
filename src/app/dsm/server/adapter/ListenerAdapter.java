@@ -72,6 +72,7 @@ public class ListenerAdapter implements Runnable {
             log.info("异步接收数据完成，开始触发订阅方法");
             try {
                 threadListener.setArgs(this);
+                ((ApiListenerAdapter)threadListener).setListenerAdapter(this);
                 threadListener.invoke(this);
                 log.info("订阅方法触发完成");
             }catch (Exception e) {

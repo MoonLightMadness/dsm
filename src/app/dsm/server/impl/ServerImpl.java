@@ -43,17 +43,16 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void open(ThreadListener threadListener) {
-        openServer(threadListener);
+    public void open() {
+        openServer();
     }
 
-    private void openServer(ThreadListener threadListener){
+    private void openServer(){
         try {
             log.info("开启服务器");
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.bind(new InetSocketAddress(configer.readConfig("ip"), Integer.parseInt(configer.readConfig("port"))));
             serverSocketChannel.configureBlocking(false);
-            selectorIO.setListener(threadListener);
             selectorIO.open(serverSocketChannel);
             //开启线程
             new Thread(selectorIO).start();

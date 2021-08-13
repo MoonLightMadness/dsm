@@ -5,6 +5,7 @@ import app.dsm.exception.UniversalErrorCodeEnum;
 import app.dsm.server.BeatChecker;
 import app.dsm.server.DataIO;
 import app.dsm.server.SelectorIO;
+import app.dsm.server.adapter.ApiListenerAdapter;
 import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.container.ServerContainer;
 import app.dsm.server.container.ServerEntity;
@@ -43,6 +44,8 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         serverContainer.initialize();
         beatChecker = new BeatCheckerImpl();
         beatChecker.startBeat(serverContainer,1000,60);
+        threadListener = new ApiListenerAdapter();
+        ((ApiListenerAdapter)threadListener).initialize();
         new Thread(beatChecker).start();
     }
 
@@ -57,10 +60,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         }
     }
 
-    @Override
-    public void setListener(ThreadListener threadListener) {
-        this.threadListener = threadListener;
-    }
+
 
     @Override
     public void register(SocketChannel socketChannel) {
