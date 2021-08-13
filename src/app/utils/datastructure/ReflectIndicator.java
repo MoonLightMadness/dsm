@@ -9,7 +9,7 @@ import lombok.Data;
  * @Author ZhangHL
  */
 @Data
-public class ReflecIndicator {
+public class ReflectIndicator {
 
     /**
      * 类全路径
@@ -18,7 +18,7 @@ public class ReflecIndicator {
 
 
     /**
-     * 相对路径
+     * 相对路径(抽象路径)
      */
     private String relativePath;
 

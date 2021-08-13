@@ -4,32 +4,26 @@ package app.utils;
 import app.dsm.exception.ServiceException;
 import app.dsm.exception.UniversalErrorCodeEnum;
 import app.dsm.server.annotation.Path;
+import app.dsm.server.constant.Indicators;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
+import app.utils.datastructure.ReflectIndicator;
 import app.utils.datastructure.XByteBuffer;
 import app.utils.special.RTimer;
-import com.sun.deploy.util.JarUtil;
 import lombok.SneakyThrows;
-import org.junit.Test;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.chrono.IsoChronology;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -585,9 +579,10 @@ public class SimpleUtils {
         return System.getProperty("file.separator");
     }
 
-    public static String scanPackage(String packageName) {
+    public static void scanPackage(String packageName) {
         String workingPath = getJarSelfPath();
         String[] paths;
+        Indicators.initialize();
         //判断程序是否是以jar包形式启动的
         if (workingPath.endsWith(".jar")) {
             paths = scanJarFile(workingPath).split("\n");
@@ -595,13 +590,41 @@ public class SimpleUtils {
             workingPath = ".";
             paths = scanDirectory(workingPath).split("\n");
         }
-        StringBuilder sb = new StringBuilder();
+        //寻找以packageName开头且有Path注解的类和方法
         for (String path : paths) {
             if (path.startsWith(packageName)) {
-                sb.append(path).append("\n");
+                Indicators.add(SimpleUtils.constructReflectIndicator(path));
             }
         }
-        return sb.toString();
+    }
+
+    public static List<ReflectIndicator> constructReflectIndicator(String className){
+        List<ReflectIndicator> list = new ArrayList<>();
+        ReflectIndicator temp;
+        try {
+            Class clazz = Class.forName(className);
+            if(clazz.isAnnotationPresent(Path.class)){
+                Path classPath = (Path) clazz.getDeclaredAnnotation(Path.class);
+                Method[] methods = clazz.getDeclaredMethods();
+                for (Method method : methods) {
+                    method.setAccessible(true);
+                    if(method.isAnnotationPresent(Path.class)){
+                        Path methodPath = method.getDeclaredAnnotation(Path.class);
+                        temp = new ReflectIndicator();
+                        temp.setClassPath(className);
+                        temp.setMethodName(method.getName());
+                        temp.setRelativePath(classPath.value()+methodPath.value());
+                        list.add(temp);
+                    }
+                }
+                return list;
+            }else {
+                return null;
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static String scanDirectory(String directory) {
@@ -665,29 +688,7 @@ public class SimpleUtils {
     }
 
     public static void main(String[] args) {
-        RTimer rTimer = new RTimer();
-        rTimer.start();
-        String[] clazzes = scanPackage("app.dsm.server").split("\n");
-        try {
-            for (String clzz : clazzes) {
-                Class anno = Class.forName(clzz);
-                //如果有Path注解
-                if (anno.isAnnotationPresent(Path.class)) {
-                    Path path = (Path) anno.getDeclaredAnnotation(Path.class);
-                    System.out.println(clzz + " " + path.value());
-                    Method[] methods = anno.getDeclaredMethods();
-                    for (Method method : methods) {
-                        if (method.isAnnotationPresent(Path.class)) {
-                            Path mpath = method.getAnnotation(Path.class);
-                            System.out.println(method.getName() + " " + mpath.value());
-                        }
-                    }
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        System.out.println(rTimer.end() + "ms");
+
 
     }
 
