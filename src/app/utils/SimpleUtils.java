@@ -1,10 +1,12 @@
 package app.utils;
 
 
+import app.dsm.base.JSONTool;
 import app.dsm.exception.ServiceException;
 import app.dsm.exception.UniversalErrorCodeEnum;
 import app.dsm.server.annotation.Path;
 import app.dsm.server.constant.Indicators;
+import app.dsm.server.trigger.PathTrigger;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.datastructure.ReflectIndicator;
@@ -15,6 +17,7 @@ import lombok.SneakyThrows;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -582,7 +585,6 @@ public class SimpleUtils {
     public static void scanPackage(String packageName) {
         String workingPath = getJarSelfPath();
         String[] paths;
-        Indicators.initialize();
         //判断程序是否是以jar包形式启动的
         if (workingPath.endsWith(".jar")) {
             paths = scanJarFile(workingPath).split("\n");
@@ -592,39 +594,36 @@ public class SimpleUtils {
         }
         //寻找以packageName开头且有Path注解的类和方法
         for (String path : paths) {
+            path = path.trim().replace(SimpleUtils.getFilePathSeparator(), ".");
             if (path.startsWith(packageName)) {
-                Indicators.add(SimpleUtils.constructReflectIndicator(path));
+                SimpleUtils.constructReflectIndicator(path);
             }
         }
     }
 
-    public static List<ReflectIndicator> constructReflectIndicator(String className){
-        List<ReflectIndicator> list = new ArrayList<>();
+    public static void constructReflectIndicator(String className) {
         ReflectIndicator temp;
+        Class clazz = null;
         try {
-            Class clazz = Class.forName(className);
-            if(clazz.isAnnotationPresent(Path.class)){
-                Path classPath = (Path) clazz.getDeclaredAnnotation(Path.class);
-                Method[] methods = clazz.getDeclaredMethods();
-                for (Method method : methods) {
-                    method.setAccessible(true);
-                    if(method.isAnnotationPresent(Path.class)){
-                        Path methodPath = method.getDeclaredAnnotation(Path.class);
-                        temp = new ReflectIndicator();
-                        temp.setClassPath(className);
-                        temp.setMethodName(method.getName());
-                        temp.setRelativePath(classPath.value()+methodPath.value());
-                        list.add(temp);
-                    }
-                }
-                return list;
-            }else {
-                return null;
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            clazz = Class.forName(className);
+        }catch (Exception e) {
+
         }
-        return null;
+        if (clazz != null && clazz.isAnnotationPresent(Path.class)) {
+            Path classPath = (Path) clazz.getDeclaredAnnotation(Path.class);
+            Method[] methods = clazz.getDeclaredMethods();
+            for (Method method : methods) {
+                method.setAccessible(true);
+                if (method.isAnnotationPresent(Path.class)) {
+                    Path methodPath = method.getDeclaredAnnotation(Path.class);
+                    temp = new ReflectIndicator();
+                    temp.setClassPath(className);
+                    temp.setMethodName(method.getName());
+                    temp.setRelativePath(classPath.value() + methodPath.value());
+                    Indicators.add(temp);
+                }
+            }
+        }
     }
 
     public static String scanDirectory(String directory) {
@@ -687,9 +686,19 @@ public class SimpleUtils {
         return null;
     }
 
+
+
     public static void main(String[] args) {
-
-
+        PathTrigger pathTrigger = new PathTrigger();
+        pathTrigger.initialize();
+        pathTrigger.scanPackage("app");
+        System.out.println("app.dsm");
+        RTimer timer = new RTimer();
+        timer.start();
+        Object object = pathTrigger.trigger(".");
+        System.out.println(timer.end());
+        System.out.println(object);
+        System.out.println("app.dsm");
     }
 
 

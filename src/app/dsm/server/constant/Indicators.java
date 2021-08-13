@@ -53,7 +53,6 @@ public class Indicators {
      */
     public static void add(List<ReflectIndicator> list){
         ListIterator<ReflectIndicator> iterator = reflectIndicators.listIterator();
-        ListIterator<ReflectIndicator> oringin = reflectIndicators.listIterator();
         while (iterator.hasNext()){
             ReflectIndicator temp = iterator.next();
             add(temp);
