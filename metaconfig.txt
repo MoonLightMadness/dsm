@@ -5,3 +5,5 @@ local_path = .\config\test\test2.txt
 local_path = .\config\novel\config.txt
 
 local_path = .\config\server\config.txt
+
+local_path = .\config\server\blacklist.txt

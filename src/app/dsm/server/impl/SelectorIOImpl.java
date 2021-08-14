@@ -1,5 +1,6 @@
 package app.dsm.server.impl;
 
+import app.dsm.config.Configer;
 import app.dsm.exception.ServiceException;
 import app.dsm.exception.UniversalErrorCodeEnum;
 import app.dsm.server.BeatChecker;
@@ -9,11 +10,13 @@ import app.dsm.server.adapter.ApiListenerAdapter;
 import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.container.ServerContainer;
 import app.dsm.server.container.ServerEntity;
+import app.dsm.server.filter.Filter;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
 import app.utils.listener.IListener;
 import app.utils.listener.ThreadListener;
+import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import lombok.Data;
 import lombok.SneakyThrows;
 
@@ -38,6 +41,8 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
     private BeatChecker beatChecker;
 
+    private Filter filter;
+
     @Override
     public void initialize(){
         serverContainer = new ServerContainer();
@@ -46,6 +51,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         beatChecker.startBeat(serverContainer,1000,60);
         threadListener = new ApiListenerAdapter();
         ((ApiListenerAdapter)threadListener).initialize();
+        filter = new Filter();
         new Thread(beatChecker).start();
     }
 
@@ -106,10 +112,14 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         try {
             log.info("远端服务器注册");
             SocketChannel channel = ((ServerSocketChannel) key.channel()).accept();
-            channel.configureBlocking(false);
-            register(channel);
-            serverContainer.add(channel);
-            log.info("远端服务器注册成功,{}",channel.getRemoteAddress());
+            if(filter.canPass(channel)){
+                channel.configureBlocking(false);
+                register(channel);
+                serverContainer.add(channel);
+                log.info("远端服务器注册成功,{}",channel.getRemoteAddress());
+            }else {
+                log.info("服务器校验不通过,抛弃该次请求");
+            }
         }catch (Exception e) {
             log.error("远端服务器注册失败，原因：{}",e);
             throw new ServiceException(UniversalErrorCodeEnum.UEC_010003.getCode(), UniversalErrorCodeEnum.UEC_010003.getMsg()+e);
