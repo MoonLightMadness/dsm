@@ -37,7 +37,7 @@ public class ApiListenerAdapter implements ThreadListener {
     @Override
     public void invoke(Object obj, String... args) {
         BasePath basePath = (BasePath) new JSONParserImpl().parser(listenerAdapter.getData(), BasePath.class);
-        result = pathTrigger.trigger(basePath.getPath(), new String(listenerAdapter.getData()));
+        result = pathTrigger.trigger(basePath.getPath(), new String(listenerAdapter.getData()),listenerAdapter);
         if(result != null){
             response(result);
         }

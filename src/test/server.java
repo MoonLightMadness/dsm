@@ -14,6 +14,7 @@ import app.utils.SimpleUtils;
 import app.utils.listener.IListener;
 import app.utils.listener.ThreadListener;
 import app.utils.net.Sender;
+import app.utils.special.RTimer;
 import lombok.Data;
 import org.junit.Test;
 
@@ -67,20 +68,23 @@ public class server {
         server.open();
 
         ApiPojo apiPojo = new ApiPojo();
-        apiPojo.setPath("/server/calculate");
-        apiPojo.setX("100");
-        apiPojo.setY("10");
+        apiPojo.setPath("/server/setname");
+        apiPojo.setName("apiPojo");
 
         try {
             Thread.sleep(500);
             SocketChannel socketChannel = SocketChannel.open();
             socketChannel.bind(new InetSocketAddress("127.0.0.1",9002));
-            socketChannel.connect(new InetSocketAddress("127.0.0.1",9003));
+            socketChannel.connect(new InetSocketAddress("127.0.0.1",9004));
+            socketChannel.configureBlocking(false);
             Thread.sleep(500);
             Sender.send(socketChannel, JSONTool.toJson(apiPojo));
             Thread.sleep(1000);
+            RTimer rTimer = new RTimer();
+            rTimer.start();
             System.out.println(new String(SimpleUtils.receiveDataInNIO(socketChannel)));
-            socketChannel.close();
+            System.out.println(rTimer.end());
+            //socketChannel.close();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -138,9 +142,9 @@ class Pojo{
 @Data
 class ApiPojo extends BasePath {
 
-    private String x;
+    private String name;
 
-    private String y;
+
 
 
 }

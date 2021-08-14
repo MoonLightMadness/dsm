@@ -689,19 +689,7 @@ public class SimpleUtils {
 
 
 
-    public static void main(String[] args) {
-        PathTrigger pathTrigger = new PathTrigger();
-        pathTrigger.initialize();
-        pathTrigger.scanPackage("app.dsm.server");
-        RTimer timer = new RTimer();
-        timer.start();
-        CalculatorReqVO calculatorReqVO = new CalculatorReqVO();
-        calculatorReqVO.setX("100");
-        calculatorReqVO.setY("9");
-        Object object = pathTrigger.trigger("/server/calculate",calculatorReqVO);
-        System.out.println(timer.end());
-        System.out.println(object);
-    }
+
 
 
 }

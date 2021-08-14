@@ -51,8 +51,8 @@ public class ListenerAdapter implements Runnable {
     public void run() {
         //重置心跳
         List<ServerEntity> list = selectorIO.getServerContainer().getServers();
-        for (ServerEntity entity : list){
-            if(entity.getSocketChannel() == channel){
+        for (ServerEntity entity : list) {
+            if (entity.getSocketChannel() == channel) {
                 entity.setBeat(0L);
                 log.info("心跳重置成功");
                 break;
@@ -61,22 +61,22 @@ public class ListenerAdapter implements Runnable {
         try {
             log.info("正在接收数据");
             data = SimpleUtils.receiveDataInNIO(channel);
-        }catch (Exception e) {
-            log.error("接收数据失败，原因：{}",e);
+        } catch (Exception e) {
+            log.error("接收数据失败，原因：{}", e);
         }
         if (null == threadListener) {
             log.error("未指定订阅方法,触发事件结束");
             return;
         }
-        if (data.length > 0) {
+        if (null != data && data.length > 0) {
             log.info("异步接收数据完成，开始触发订阅方法");
             try {
                 threadListener.setArgs(this);
-                ((ApiListenerAdapter)threadListener).setListenerAdapter(this);
+                ((ApiListenerAdapter) threadListener).setListenerAdapter(this);
                 threadListener.invoke(this);
                 log.info("订阅方法触发完成");
-            }catch (Exception e) {
-                log.error("订阅方法执行失败，原因：{}",e);
+            } catch (Exception e) {
+                log.error("订阅方法执行失败，原因：{}", e);
             }
         } else {
             log.error("收到无效数据");

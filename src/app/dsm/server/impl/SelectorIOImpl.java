@@ -84,6 +84,8 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
                     //远端服务请求连接
                     if(key.isAcceptable()){
                         accept(key);
+                        keys.remove();
+                        continue;
                     }
                     //远端服务器发来数据
                     if(key.isReadable()){

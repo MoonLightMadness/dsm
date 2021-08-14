@@ -1,11 +1,13 @@
 package app.dsm.server.trigger;
 
 import app.dsm.base.JSONTool;
+import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.constant.Indicators;
 import app.dsm.server.domain.BasePath;
 import app.utils.SimpleUtils;
 import app.utils.datastructure.ReflectIndicator;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ListIterator;
@@ -43,7 +45,7 @@ public class PathTrigger {
      * @date 2021-08-13 22:37
      * @version V1.0
      */
-    public Object trigger(String path,Object arg){
+    public Object trigger(String path, String arg, ListenerAdapter adapter){
         ListIterator<ReflectIndicator> iterator = Indicators.getIterator();
         while (iterator.hasNext()) {
             ReflectIndicator reflectIndicator = iterator.next();
@@ -51,6 +53,9 @@ public class PathTrigger {
                 try {
                     Class clazz = Class.forName(reflectIndicator.getClassPath());
                     Object obj = clazz.newInstance();
+                    Field listener = obj.getClass().getDeclaredField("listenerAdapter");
+                    listener.setAccessible(true);
+                    listener.set(obj,adapter);
                     Method method = null;
                     Object result;
                     if(arg == null){
@@ -72,6 +77,8 @@ public class PathTrigger {
                 } catch (InvocationTargetException e) {
                     e.printStackTrace();
                 } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (NoSuchFieldException e) {
                     e.printStackTrace();
                 }
             }
