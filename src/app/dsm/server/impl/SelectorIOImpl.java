@@ -25,7 +25,9 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
 @Data
@@ -43,6 +45,11 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
     private Filter filter;
 
+    /**
+     * 正在接收数据的远端服务器
+     */
+    private List<SocketChannel> receivingChannels;
+
     @Override
     public void initialize(){
         serverContainer = new ServerContainer();
@@ -52,6 +59,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         threadListener = new ApiListenerAdapter();
         ((ApiListenerAdapter)threadListener).initialize();
         filter = new Filter();
+        receivingChannels = new ArrayList<>();
         new Thread(beatChecker).start();
     }
 
@@ -94,7 +102,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
                         continue;
                     }
                     //远端服务器发来数据
-                    if(key.isReadable()){
+                    if(key.isReadable() && checkReceiving(key)){
                         read(key);
                     }
                     //丢弃该key
@@ -130,6 +138,9 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         try {
             log.info("Server读取远程服务器发来数据，开始，ip:{}--{}",((SocketChannel)key.channel()).getRemoteAddress(),
                     Thread.currentThread().getName());
+            //将该key的channel加入到正在接收数据的channel集合中
+            ListIterator<SocketChannel> iterator = receivingChannels.listIterator();
+            iterator.add((SocketChannel) key.channel());
             ListenerAdapter listenerAdapter = new ListenerAdapter();
             listenerAdapter.setChannel(((SocketChannel)key.channel()));
             listenerAdapter.setSelectorIO(this);
@@ -139,6 +150,26 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         }catch (Exception e) {
             log.error("Server读取远程服务器发来数据失败，原因：{}",e);
         }
+    }
+
+    /**
+     * 检测该远程请求是否正在接收数据
+     * @param key
+     * @return 空闲 -> true,正在接收 -> false
+     * @author zhl
+     * @date 2021-08-14 15:02
+     * @version V1.0
+     */
+    private boolean checkReceiving(SelectionKey key){
+        ListIterator<SocketChannel> iterator = receivingChannels.listIterator();
+        if(iterator.hasNext()){
+            SocketChannel channel = iterator.next();
+            SocketChannel remoter = (SocketChannel) key.channel();
+            if(channel == remoter){
+                return false;
+            }
+        }
+        return true;
     }
 
 

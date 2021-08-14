@@ -8,8 +8,10 @@ import app.utils.SimpleUtils;
 import app.utils.listener.ThreadListener;
 import lombok.Data;
 
+import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.util.List;
+import java.util.ListIterator;
 
 @Data
 public class ListenerAdapter implements Runnable {
@@ -61,6 +63,8 @@ public class ListenerAdapter implements Runnable {
         try {
             log.info("正在接收数据");
             data = SimpleUtils.receiveDataInNIO(channel);
+            //接收完毕将该channel从集合中移除
+            removeFromReceiving(channel);
         } catch (Exception e) {
             log.error("接收数据失败，原因：{}", e);
         }
@@ -80,6 +84,18 @@ public class ListenerAdapter implements Runnable {
             }
         } else {
             log.error("收到无效数据");
+        }
+    }
+
+    private void removeFromReceiving(SocketChannel socketChannel){
+        List<SocketChannel> list = selectorIO.getReceivingChannels();
+        ListIterator<SocketChannel> iterator = list.listIterator();
+        while (iterator.hasNext()){
+            SocketChannel temp = iterator.next();
+            if(temp == socketChannel){
+                iterator.remove();
+                return;
+            }
         }
     }
 }

@@ -63,9 +63,15 @@ public class server {
 
     @Test
     public void test2(){
+        RTimer rTimer = new RTimer();
+        rTimer.start();
+
         Server server = new ServerImpl();
         server.initialize();
         server.open();
+
+        System.out.println(rTimer.end());
+        rTimer.start();
 
         ApiPojo apiPojo = new ApiPojo();
         apiPojo.setPath("/server/setname");
@@ -77,11 +83,14 @@ public class server {
             socketChannel.bind(new InetSocketAddress("127.0.0.1",9002));
             socketChannel.connect(new InetSocketAddress("127.0.0.1",9004));
             socketChannel.configureBlocking(false);
-            Thread.sleep(500);
+            //Thread.sleep(1000);
             Sender.send(socketChannel, JSONTool.toJson(apiPojo));
-            Thread.sleep(1000);
-            RTimer rTimer = new RTimer();
-            rTimer.start();
+            Thread.sleep(100);
+            Sender.send(socketChannel, JSONTool.toJson(apiPojo));
+            Thread.sleep(100);
+            Sender.send(socketChannel, JSONTool.toJson(apiPojo));
+            Thread.sleep(100);
+//
             System.out.println(new String(SimpleUtils.receiveDataInNIO(socketChannel)));
             System.out.println(rTimer.end());
             //socketChannel.close();
