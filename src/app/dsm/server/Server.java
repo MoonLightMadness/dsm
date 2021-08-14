@@ -1,6 +1,7 @@
 package app.dsm.server;
 
 import app.utils.listener.IListener;
+import app.utils.listener.ThreadListener;
 
 public interface Server {
 
@@ -21,7 +22,7 @@ public interface Server {
      * @date 2021-08-11 20:37
      * @version V1.0
      */
-    void open(IListener iListener);
+    void open();
 
 
 

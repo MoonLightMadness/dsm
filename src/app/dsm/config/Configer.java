@@ -4,6 +4,8 @@ import app.log.LogSystem;
 import app.log.LogSystemFactory;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Configer {
 
@@ -45,7 +47,7 @@ public class Configer {
             if (f.exists()) {
                 readLocalPath(f);
             } else {
-                log.info(null,"元配置文件不存在，新建元配置文件");
+                log.info("元配置文件不存在，新建元配置文件");
                 f.createNewFile();
             }
         } catch (IOException e) {
@@ -58,7 +60,7 @@ public class Configer {
         for (String path : local_directory){
             File f = new File(path);
             if (!f.exists()) {
-                log.error(null,"在指定的路径上找不到该文件--path:{}",path);
+                log.error("在指定的路径上找不到该文件--path:{}",path);
                 return null;
             }
             try {
@@ -83,10 +85,37 @@ public class Configer {
         return null;
     }
 
+    public List<String> readConfigList(String propertyName) {
+        List<String> result = new ArrayList<>();
+        for (String path : local_directory){
+            File f = new File(path);
+            if (!f.exists()) {
+                log.error("在指定的路径上找不到该文件--path:{}",path);
+                return null;
+            }
+            try {
+                synchronized (Configer.class){
+                    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                    String temp;
+                    while ((temp = br.readLine())!=null){
+                        if(temp.trim().startsWith(propertyName)){
+                            result.add(temp.substring(temp.indexOf("=")+1).trim());
+                        }
+                    }
+                    br.close();
+                }
+            } catch (IOException e) {
+                log.error(null,e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
     public void writeConfig(int mode,String path,String dataType,String brief){
         File f = new File(path);
         if(!f.exists()){
-            log.error(null,"在指定的路径上找不到该文件");
+            log.error("在指定的路径上找不到该文件");
             return;
         }
         try {
@@ -107,7 +136,7 @@ public class Configer {
                 bw.close();
             }
         } catch (IOException e) {
-            log.error(null,e.getMessage());
+            log.error(e.getMessage());
             e.printStackTrace();
         }
 
@@ -141,10 +170,10 @@ public class Configer {
             }
             local_directory = sb.toString().split("\n");
         } catch (FileNotFoundException e) {
-            log.error(null,e.getMessage());
+            log.error(e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
-            log.error(null,e.getMessage());
+            log.error(e.getMessage());
             e.printStackTrace();
         }
     }

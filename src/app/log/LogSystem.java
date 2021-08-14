@@ -2,6 +2,9 @@ package app.log;
 
 
 
+import app.dsm.base.JSONTool;
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * 初始化请调用init()方法
@@ -19,7 +23,7 @@ import java.util.List;
  * @Author ZhangHL
  */
 public class LogSystem {
-    private List<LogEntity<String>> list;
+    private List<LogEntity> list;
     private  Logger log;
     private  int logCount=0;
     public void init(){
@@ -35,13 +39,18 @@ public class LogSystem {
      * @Author Zhang huai lan
      * @Date 20:55 2021/3/31
      **/
-    private void add(LogEntity<String> log){
+    private void add(LogEntity log){
         try {
-            list.add(log);
-            logCount++;
-            if(logCount>=LogConstantArg.AUTO_SAVE_MAX_COUNT){
-                this.save();
-                logCount=0;
+            synchronized (LogSystem.class){
+                ListIterator<LogEntity> iterator = list.listIterator();
+                //控制台输出
+                System.out.println(new String(JSONTool.toJson(log)));
+                iterator.add(log);
+                logCount++;
+                if(logCount>=LogConstantArg.AUTO_SAVE_MAX_COUNT){
+                    this.save();
+                    logCount=0;
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -57,16 +66,16 @@ public class LogSystem {
      * @Date 20:56 2021/3/31
      **/
     public void save(){
-        synchronized (this){
+        synchronized (LogSystem.class){
             File f=new File(LogConstantArg.logPath);
             try {
                 if(!f.exists()){
                     f.createNewFile();
                 }
                 OutputStreamWriter writer=new OutputStreamWriter(new FileOutputStream(f,true), StandardCharsets.UTF_8);
-                Iterator<LogEntity<String>> iterator = list.iterator();
+                Iterator<LogEntity> iterator = list.iterator();
                 while (iterator.hasNext()){
-                    LogEntity<String> entity = iterator.next();
+                    LogEntity entity = iterator.next();
                     if(entity != null){
                         writer.write(entity.toString()+"\n");
                     }

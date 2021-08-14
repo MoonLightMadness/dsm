@@ -36,13 +36,17 @@ public class BeatCheckerImpl implements BeatChecker {
         log.info("心跳检测模块开启中...");
         List<Container> list = container.getList();
         try {
-            log.info("心跳检测模块开启完成");
+            log.info("心跳检测模块开启完成,运行于线程:{}",Thread.currentThread().getName());
             while (true){
                 ListIterator iter = list.listIterator();
                 while (iter.hasNext()){
                     ServerEntity entity = (ServerEntity) iter.next();
                     if(entity.getBeat() == maxBeat){
-                        log.info("服务器{}--{}离线,时间:{}",entity.getName(),entity.getSocketChannel().getRemoteAddress(), LocalTime.now());
+                        try {
+                            log.info("服务器{}--{}离线,时间:{}",entity.getName(),entity.getSocketChannel().getRemoteAddress(), LocalTime.now());
+                        }catch (Exception e) {
+                            log.info("服务器:{} 关闭了连接",entity.getName());
+                        }
                         entity.getSocketChannel().close();
                         iter.remove();
                     }

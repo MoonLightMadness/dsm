@@ -8,6 +8,7 @@ import app.dsm.server.Server;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.listener.IListener;
+import app.utils.listener.ThreadListener;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -42,17 +43,16 @@ public class ServerImpl implements Server {
     }
 
     @Override
-    public void open(IListener iListener) {
-        openServer(iListener);
+    public void open() {
+        openServer();
     }
 
-    private void openServer(IListener iListener){
+    private void openServer(){
         try {
             log.info("开启服务器");
             serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.bind(new InetSocketAddress(configer.readConfig("ip"), Integer.parseInt(configer.readConfig("port"))));
             serverSocketChannel.configureBlocking(false);
-            selectorIO.setListener(iListener);
             selectorIO.open(serverSocketChannel);
             //开启线程
             new Thread(selectorIO).start();

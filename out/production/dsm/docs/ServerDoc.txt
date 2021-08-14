@@ -1,0 +1,6 @@
+1.获取服务器时间
+path:/server/gettime
+input:
+    null
+output:
+    time (DateTime)

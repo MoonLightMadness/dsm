@@ -1,17 +1,22 @@
 package app.dsm.server.impl;
 
+import app.dsm.config.Configer;
 import app.dsm.exception.ServiceException;
 import app.dsm.exception.UniversalErrorCodeEnum;
 import app.dsm.server.BeatChecker;
 import app.dsm.server.DataIO;
 import app.dsm.server.SelectorIO;
+import app.dsm.server.adapter.ApiListenerAdapter;
 import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.container.ServerContainer;
 import app.dsm.server.container.ServerEntity;
+import app.dsm.server.filter.Filter;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
 import app.utils.listener.IListener;
+import app.utils.listener.ThreadListener;
+import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import lombok.Data;
 import lombok.SneakyThrows;
 
@@ -20,7 +25,9 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
 @Data
@@ -30,11 +37,18 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
     private LogSystem log = LogSystemFactory.getLogSystem();
 
-    private IListener iListener;
+    private ThreadListener threadListener;
 
     private ServerContainer serverContainer;
 
     private BeatChecker beatChecker;
+
+    private Filter filter;
+
+    /**
+     * 正在接收数据的远端服务器
+     */
+    private List<SocketChannel> receivingChannels;
 
     @Override
     public void initialize(){
@@ -42,6 +56,10 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         serverContainer.initialize();
         beatChecker = new BeatCheckerImpl();
         beatChecker.startBeat(serverContainer,1000,60);
+        threadListener = new ApiListenerAdapter();
+        ((ApiListenerAdapter)threadListener).initialize();
+        filter = new Filter();
+        receivingChannels = new ArrayList<>();
         new Thread(beatChecker).start();
     }
 
@@ -56,10 +74,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         }
     }
 
-    @Override
-    public void setListener(IListener iListener) {
-        this.iListener = iListener;
-    }
+
 
     @Override
     public void register(SocketChannel socketChannel) {
@@ -83,9 +98,11 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
                     //远端服务请求连接
                     if(key.isAcceptable()){
                         accept(key);
+                        keys.remove();
+                        continue;
                     }
                     //远端服务器发来数据
-                    if(key.isReadable()){
+                    if(key.isReadable() && checkReceiving(key)){
                         read(key);
                     }
                     //丢弃该key
@@ -103,10 +120,14 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         try {
             log.info("远端服务器注册");
             SocketChannel channel = ((ServerSocketChannel) key.channel()).accept();
-            channel.configureBlocking(false);
-            register(channel);
-            serverContainer.add(channel);
-            log.info("远端服务器注册成功,{}",channel.getRemoteAddress());
+            if(filter.canPass(channel)){
+                channel.configureBlocking(false);
+                register(channel);
+                serverContainer.add(channel);
+                log.info("远端服务器注册成功,{}",channel.getRemoteAddress());
+            }else {
+                log.info("服务器校验不通过,抛弃该次请求");
+            }
         }catch (Exception e) {
             log.error("远端服务器注册失败，原因：{}",e);
             throw new ServiceException(UniversalErrorCodeEnum.UEC_010003.getCode(), UniversalErrorCodeEnum.UEC_010003.getMsg()+e);
@@ -115,17 +136,40 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
     private void read(SelectionKey key){
         try {
-            log.info("Server读取远程服务器发来数据，开始，ip:{}",((SocketChannel)key.channel()).getRemoteAddress());
+            log.info("Server读取远程服务器发来数据，开始，ip:{}--{}",((SocketChannel)key.channel()).getRemoteAddress(),
+                    Thread.currentThread().getName());
+            //将该key的channel加入到正在接收数据的channel集合中
+            ListIterator<SocketChannel> iterator = receivingChannels.listIterator();
+            iterator.add((SocketChannel) key.channel());
             ListenerAdapter listenerAdapter = new ListenerAdapter();
-            listenerAdapter.setData(SimpleUtils.receiveDataInNIO((SocketChannel) key.channel()));
             listenerAdapter.setChannel(((SocketChannel)key.channel()));
             listenerAdapter.setSelectorIO(this);
-            log.info("Server读取远程服务器发来数据完成，开始触发订阅方法");
-            iListener.invoke(listenerAdapter);
-            log.info("订阅方法触发完成");
+            listenerAdapter.setThreadListener(threadListener);
+            log.info("异步接收数据，开始");
+            new Thread(listenerAdapter).start();
         }catch (Exception e) {
             log.error("Server读取远程服务器发来数据失败，原因：{}",e);
         }
+    }
+
+    /**
+     * 检测该远程请求是否正在接收数据
+     * @param key
+     * @return 空闲 -> true,正在接收 -> false
+     * @author zhl
+     * @date 2021-08-14 15:02
+     * @version V1.0
+     */
+    private boolean checkReceiving(SelectionKey key){
+        ListIterator<SocketChannel> iterator = receivingChannels.listIterator();
+        if(iterator.hasNext()){
+            SocketChannel channel = iterator.next();
+            SocketChannel remoter = (SocketChannel) key.channel();
+            if(channel == remoter){
+                return false;
+            }
+        }
+        return true;
     }
 
 
