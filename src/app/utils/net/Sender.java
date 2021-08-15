@@ -12,11 +12,17 @@ import java.nio.channels.SocketChannel;
  */
 public class Sender {
     public static void send(SocketChannel channel, byte[] data){
+        try {
+            channel.configureBlocking(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         ByteBuffer buffer = ByteBuffer.allocate(data.length);
         buffer.put(data);
         buffer.flip();
         try {
             channel.write(buffer);
+            channel.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

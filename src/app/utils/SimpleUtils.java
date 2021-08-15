@@ -398,6 +398,7 @@ public class SimpleUtils {
                 }
                 //count += size;
             } catch (Exception e) {
+                e.printStackTrace();
                 try {
                     socketChannel.close();
                 } catch (IOException ioException) {

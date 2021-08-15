@@ -1,5 +1,6 @@
 package app.dsm.server.adapter;
 
+import app.dsm.base.JSONTool;
 import app.dsm.server.container.ServerEntity;
 import app.dsm.server.impl.SelectorIOImpl;
 import app.log.LogSystem;
@@ -10,6 +11,7 @@ import lombok.Data;
 
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -63,6 +65,8 @@ public class ListenerAdapter implements Runnable {
         try {
             log.info("正在接收数据");
             data = SimpleUtils.receiveDataInNIO(channel);
+            System.out.println(new String(data));
+
             //接收完毕将该channel从集合中移除
             removeFromReceiving(channel);
         } catch (Exception e) {
@@ -72,6 +76,7 @@ public class ListenerAdapter implements Runnable {
             log.error("未指定订阅方法,触发事件结束");
             return;
         }
+        data = checkPost(data);
         if (null != data && data.length > 0) {
             log.info("异步接收数据完成，开始触发订阅方法");
             try {
@@ -96,6 +101,21 @@ public class ListenerAdapter implements Runnable {
                 iterator.remove();
                 return;
             }
+        }
+    }
+
+    private byte[] checkPost(byte[] data){
+        String sdata = new String(data);
+        String path = sdata.substring("HTTP ".length(),sdata.indexOf('H')-1);
+        StringBuilder sb = new StringBuilder();
+        if(sdata.trim().startsWith("POST")){
+            String result = sdata.substring(sdata.indexOf('{')+1,sdata.lastIndexOf('}'));
+            sb.append("{").append("\n");
+            sb.append("\"path\":").append("\"").append(path).append("\"").append(",").append("\n");
+            sb.append(result).append("}");
+            return sb.toString().getBytes(StandardCharsets.UTF_8);
+        }else {
+            return data;
         }
     }
 }
