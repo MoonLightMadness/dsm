@@ -1,6 +1,7 @@
 package test;
 
 import app.dsm.base.JSONTool;
+import app.dsm.config.Configer;
 import app.dsm.server.SelectorIO;
 import app.dsm.server.Server;
 import app.dsm.server.adapter.ListenerAdapter;
@@ -77,20 +78,16 @@ public class server {
         apiPojo.setPath("/server/setname");
         apiPojo.setName("apiPojo");
 
+        Configer configer = new Configer();
         try {
             Thread.sleep(500);
             SocketChannel socketChannel = SocketChannel.open();
             socketChannel.bind(new InetSocketAddress("127.0.0.1",9002));
-            socketChannel.connect(new InetSocketAddress("127.0.0.1",9004));
+            socketChannel.connect(new InetSocketAddress("127.0.0.1", Integer.parseInt(configer.readConfig("port"))));
             socketChannel.configureBlocking(false);
             //Thread.sleep(1000);
             Sender.send(socketChannel, JSONTool.toJson(apiPojo));
             Thread.sleep(100);
-            Sender.send(socketChannel, JSONTool.toJson(apiPojo));
-            Thread.sleep(100);
-            Sender.send(socketChannel, JSONTool.toJson(apiPojo));
-            Thread.sleep(100);
-//
             System.out.println(new String(SimpleUtils.receiveDataInNIO(socketChannel)));
             System.out.println(rTimer.end());
             //socketChannel.close();

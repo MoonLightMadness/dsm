@@ -96,17 +96,22 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
                 while (keys.hasNext()){
                     SelectionKey key = keys.next();
                     //远端服务请求连接
-                    if(key.isAcceptable()){
-                        accept(key);
-                        keys.remove();
-                        continue;
-                    }
-                    //远端服务器发来数据
-                    if(key.isReadable() && checkReceiving(key)){
-                        read(key);
+                    try {
+                        if(key.isAcceptable()){
+                            accept(key);
+                            keys.remove();
+                            continue;
+                        }
+                        //远端服务器发来数据
+                        if(key.isReadable() && checkReceiving(key)){
+                            read(key);
+                        }
+                    }catch (Exception e){
+                        log.error("出现错误:原因:{}",e);
                     }
                     //丢弃该key
                     keys.remove();
+
                 }
             }
         } catch (IOException e) {
