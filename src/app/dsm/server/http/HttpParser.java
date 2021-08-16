@@ -33,7 +33,7 @@ public class HttpParser {
         String body = null;
         //存在无数据的情况
         try {
-            data.substring(data.indexOf("{"),data.lastIndexOf("}")+1);
+            body = data.substring(data.indexOf("{"),data.lastIndexOf("}")+1);
         }catch (Exception e) {
             //e.printStackTrace();
         }

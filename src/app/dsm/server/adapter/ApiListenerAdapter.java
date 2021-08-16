@@ -30,6 +30,7 @@ import java.net.URL;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class ApiListenerAdapter implements ThreadListener {
@@ -45,15 +46,16 @@ public class ApiListenerAdapter implements ThreadListener {
     public void initialize() {
         pathTrigger = new PathTrigger();
         pathTrigger.initialize();
-        pathTrigger.scanPackage(new Configer().readConfig("package.name"));
+        List<String> packages = new Configer().readConfigList("package.name");
+        for (String str : packages){
+            pathTrigger.scanPackage(str);
+        }
     }
 
     @Override
     public void invoke(Object obj, String... args) {
         BasePath basePath = (BasePath) new JSONParserImpl().parser(listenerAdapter.getData(), BasePath.class);
         result = pathTrigger.trigger(basePath.getPath(), new String(listenerAdapter.getData()), listenerAdapter);
-        System.out.println(basePath.getPath());
-        System.out.println(result);
         if (result != null) {
             response(result);
         }

@@ -104,6 +104,30 @@ public class server {
             e.printStackTrace();
         }
     }
+    @Test
+    public void test3() {
+        float n1 = 4;
+        float n2 = 8;
+        System.out.println(invSqrt(n1));
+        System.out.println(invSqrt(n2));
+    }
+    //平方根倒数速算
+    public static float invSqrt(float x) {
+        float xhalf = 0.5f * x;
+
+        int i = Float.floatToIntBits(x);
+
+        i = 0x5f3759df - (i >> 1);
+
+        x = Float.intBitsToFloat(i);
+
+        //第一次牛顿迭代
+        x *= (1.5f - xhalf * x * x);
+
+
+        return x;
+
+    }
 }
 
 class testClass implements ThreadListener {

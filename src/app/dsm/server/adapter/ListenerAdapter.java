@@ -123,7 +123,6 @@ public class ListenerAdapter implements Runnable {
             sb.append("\"path\":").append("\"").append(entity.getRequestPath()).append("\"").append("\n");
             sb.append("}");
         }
-
         return sb.toString().getBytes(StandardCharsets.UTF_8);
 
     }
