@@ -30,7 +30,13 @@ public class HttpParser {
         HttpEntity entity = new HttpEntity();
         String mode = data.substring(0,data.indexOf(" "));
         String path = data.substring(data.indexOf(" ")+1,data.indexOf(" ",mode.length()+1));
-        String body = data.substring(data.indexOf("{"),data.lastIndexOf("}")+1);
+        String body = null;
+        //存在无数据的情况
+        try {
+            data.substring(data.indexOf("{"),data.lastIndexOf("}")+1);
+        }catch (Exception e) {
+            //e.printStackTrace();
+        }
         entity.setMode(mode);
         entity.setRequestPath(path);
         entity.setBody(body);

@@ -111,11 +111,19 @@ public class ListenerAdapter implements Runnable {
         String sdata = new String(data);
         HttpEntity entity = HttpParser.parse(sdata);
         StringBuilder sb = new StringBuilder();
-        String removeBracedStr = entity.getBody().substring(1,entity.getBody().length()-1);
-        sb.append("{").append("\n");
-        sb.append(removeBracedStr).append(",").append("\n");
-        sb.append("\"path\":").append("\"").append(entity.getRequestPath()).append("\"").append("\n");
-        sb.append("}");
+        String removeBracedStr = null;
+        if(null!=entity.getBody()){
+            removeBracedStr = entity.getBody().substring(1,entity.getBody().length()-1);
+            sb.append("{").append("\n");
+            sb.append(removeBracedStr).append(",").append("\n");
+            sb.append("\"path\":").append("\"").append(entity.getRequestPath()).append("\"").append("\n");
+            sb.append("}");
+        }else {
+            sb.append("{").append("\n");
+            sb.append("\"path\":").append("\"").append(entity.getRequestPath()).append("\"").append("\n");
+            sb.append("}");
+        }
+
         return sb.toString().getBytes(StandardCharsets.UTF_8);
 
     }
