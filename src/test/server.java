@@ -64,19 +64,19 @@ public class server {
 
     @Test
     public void test2(){
-        RTimer rTimer = new RTimer();
-        rTimer.start();
+//        RTimer rTimer = new RTimer();
+//        rTimer.start();
 
         Server server = new ServerImpl();
         server.initialize();
         server.open();
 
-        System.out.println(rTimer.end());
-        rTimer.start();
-
-        ApiPojo apiPojo = new ApiPojo();
-        apiPojo.setPath("/server/setname");
-        apiPojo.setName("apiPojo");
+//        System.out.println(rTimer.end());
+//        rTimer.start();
+//
+//        ApiPojo apiPojo = new ApiPojo();
+//        apiPojo.setPath("/server/setname");
+//        apiPojo.setName("apiPojo");
 
 //        Configer configer = new Configer();
 //        try {
