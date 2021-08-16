@@ -107,7 +107,7 @@ public class server {
     @Test
     public void test3() {
         float n1 = 4;
-        float n2 = 8;
+        float n2 = 777777777;
         System.out.println(invSqrt(n1));
         System.out.println(invSqrt(n2));
     }
