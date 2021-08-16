@@ -41,25 +41,25 @@ public class server {
         Pojo pojo = new Pojo();
         pojo.setOption("setname");
         pojo.setAttachment("pojo");
-        try {
-            Thread.sleep(500);
-            SocketChannel socketChannel = SocketChannel.open();
-            socketChannel.bind(new InetSocketAddress("127.0.0.1",9002));
-            socketChannel.connect(new InetSocketAddress("127.0.0.1",9000));
-            Thread.sleep(500);
-            Sender.send(socketChannel, JSONTool.toJson(pojo));
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        try {
-
-            while (true) {
-                Thread.sleep(1000);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(500);
+//            SocketChannel socketChannel = SocketChannel.open();
+//            socketChannel.bind(new InetSocketAddress("127.0.0.1",9002));
+//            socketChannel.connect(new InetSocketAddress("127.0.0.1",9000));
+//            Thread.sleep(500);
+//            Sender.send(socketChannel, JSONTool.toJson(pojo));
+//        } catch (IOException | InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//
+//            while (true) {
+//                Thread.sleep(1000);
+//            }
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Test
@@ -78,22 +78,22 @@ public class server {
         apiPojo.setPath("/server/setname");
         apiPojo.setName("apiPojo");
 
-        Configer configer = new Configer();
-        try {
-            Thread.sleep(500);
-            SocketChannel socketChannel = SocketChannel.open();
-            socketChannel.bind(new InetSocketAddress("127.0.0.1",9002));
-            socketChannel.connect(new InetSocketAddress("127.0.0.1", Integer.parseInt(configer.readConfig("port"))));
-            socketChannel.configureBlocking(false);
-            //Thread.sleep(1000);
-            Sender.send(socketChannel, JSONTool.toJson(apiPojo));
-            Thread.sleep(100);
-            System.out.println(new String(SimpleUtils.receiveDataInNIO(socketChannel)));
-            System.out.println(rTimer.end());
-            //socketChannel.close();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+//        Configer configer = new Configer();
+//        try {
+//            Thread.sleep(500);
+//            SocketChannel socketChannel = SocketChannel.open();
+//            socketChannel.bind(new InetSocketAddress("127.0.0.1",9002));
+//            socketChannel.connect(new InetSocketAddress("127.0.0.1", Integer.parseInt(configer.readConfig("port"))));
+//            socketChannel.configureBlocking(false);
+//            //Thread.sleep(1000);
+//            Sender.send(socketChannel, JSONTool.toJson(apiPojo));
+//            Thread.sleep(100);
+//            System.out.println(new String(SimpleUtils.receiveDataInNIO(socketChannel)));
+//            System.out.println(rTimer.end());
+//            //socketChannel.close();
+//        } catch (IOException | InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         try {
 

@@ -2,6 +2,8 @@ package app.dsm.server.adapter;
 
 import app.dsm.base.JSONTool;
 import app.dsm.server.container.ServerEntity;
+import app.dsm.server.domain.HttpEntity;
+import app.dsm.server.http.HttpParser;
 import app.dsm.server.impl.SelectorIOImpl;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
@@ -76,7 +78,8 @@ public class ListenerAdapter implements Runnable {
             log.error("未指定订阅方法,触发事件结束");
             return;
         }
-        data = checkPost(data);
+        //数据再组装
+        data = reConstruct(data);
         if (null != data && data.length > 0) {
             log.info("异步接收数据完成，开始触发订阅方法");
             try {
@@ -104,18 +107,16 @@ public class ListenerAdapter implements Runnable {
         }
     }
 
-    private byte[] checkPost(byte[] data){
+    private byte[] reConstruct(byte[] data){
         String sdata = new String(data);
-        String path = sdata.substring("HTTP ".length(),sdata.indexOf('H')-1);
+        HttpEntity entity = HttpParser.parse(sdata);
         StringBuilder sb = new StringBuilder();
-        if(sdata.trim().startsWith("POST")){
-            String result = sdata.substring(sdata.indexOf('{')+1,sdata.lastIndexOf('}'));
-            sb.append("{").append("\n");
-            sb.append("\"path\":").append("\"").append(path).append("\"").append(",").append("\n");
-            sb.append(result).append("}");
-            return sb.toString().getBytes(StandardCharsets.UTF_8);
-        }else {
-            return data;
-        }
+        String removeBracedStr = entity.getBody().substring(1,entity.getBody().length()-1);
+        sb.append("{").append("\n");
+        sb.append(removeBracedStr).append(",").append("\n");
+        sb.append("\"path\":").append("\"").append(entity.getRequestPath()).append("\"").append("\n");
+        sb.append("}");
+        return sb.toString().getBytes(StandardCharsets.UTF_8);
+
     }
 }
