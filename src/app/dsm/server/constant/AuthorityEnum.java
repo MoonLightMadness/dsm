@@ -31,10 +31,19 @@ public enum AuthorityEnum {
         this.msg = msg;
     }
 
-    public static HttpEnum getEnum(int code) {
-        for (HttpEnum ele : HttpEnum.values()) {
+    public static AuthorityEnum getEnum(int code) {
+        for (AuthorityEnum ele : AuthorityEnum.values()) {
             if (ele.code() .equals(code) ) {
                 return ele;
+            }
+        }
+        return null;
+    }
+
+    public static AuthorityEnum getByMsg(String msg){
+        for (AuthorityEnum ae : AuthorityEnum.values()){
+            if(ae.msg.equals(msg)){
+                return ae;
             }
         }
         return null;

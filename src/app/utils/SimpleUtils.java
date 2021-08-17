@@ -6,6 +6,7 @@ import app.dsm.exception.ServiceException;
 import app.dsm.exception.UniversalErrorCodeEnum;
 import app.dsm.server.annotation.Authority;
 import app.dsm.server.annotation.Path;
+import app.dsm.server.constant.AuthorityEnum;
 import app.dsm.server.constant.Indicators;
 import app.dsm.server.trigger.PathTrigger;
 import app.dsm.server.vo.CalculatorReqVO;
@@ -578,16 +579,15 @@ public class SimpleUtils {
     }
 
     public static void constructReflectIndicator(String className) {
-        ReflectIndicator temp;
+        ReflectIndicator temp = null;
         Class clazz = null;
         try {
             clazz = Class.forName(className);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
         if (clazz != null && clazz.isAnnotationPresent(Path.class)) {
             Path classPath = (Path) clazz.getDeclaredAnnotation(Path.class);
-
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
                 method.setAccessible(true);
@@ -597,6 +597,14 @@ public class SimpleUtils {
                     temp.setClassPath(className);
                     temp.setMethodName(method.getName());
                     temp.setRelativePath(classPath.value() + methodPath.value());
+                    //判断有无权限注解
+                    if (method.isAnnotationPresent(Authority.class)) {
+                        Authority authority = method.getDeclaredAnnotation(Authority.class);
+                        temp.setAuthority(authority.value());
+                    } else {
+                        //如果没有权限注解,则添加默认权限
+                        temp.setAuthority(AuthorityEnum.NORMAL.msg());
+                    }
                     Indicators.add(temp);
                 }
             }
@@ -662,10 +670,6 @@ public class SimpleUtils {
         }
         return null;
     }
-
-
-
-
 
 
 }

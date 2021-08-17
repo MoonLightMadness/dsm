@@ -27,4 +27,9 @@ public class ReflectIndicator {
      */
     private String methodName;
 
+    /**
+     * 权限
+     */
+    private String authority;
+
 }
