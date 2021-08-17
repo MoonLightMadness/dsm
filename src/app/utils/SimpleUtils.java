@@ -4,6 +4,7 @@ package app.utils;
 import app.dsm.base.JSONTool;
 import app.dsm.exception.ServiceException;
 import app.dsm.exception.UniversalErrorCodeEnum;
+import app.dsm.server.annotation.Authority;
 import app.dsm.server.annotation.Path;
 import app.dsm.server.constant.Indicators;
 import app.dsm.server.trigger.PathTrigger;
@@ -16,6 +17,7 @@ import app.utils.special.RTimer;
 import lombok.SneakyThrows;
 
 import java.io.*;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -585,6 +587,7 @@ public class SimpleUtils {
         }
         if (clazz != null && clazz.isAnnotationPresent(Path.class)) {
             Path classPath = (Path) clazz.getDeclaredAnnotation(Path.class);
+
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
                 method.setAccessible(true);

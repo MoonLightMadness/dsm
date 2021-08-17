@@ -1,6 +1,5 @@
 package app.dsm.server.annotation;
 
-
 import app.dsm.server.constant.AuthorityEnum;
 
 import java.lang.annotation.*;
@@ -11,6 +10,6 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE,ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-public @interface Path {
+public @interface Authority {
     String value();
 }
