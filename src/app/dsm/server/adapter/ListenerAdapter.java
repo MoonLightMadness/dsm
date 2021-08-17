@@ -9,6 +9,7 @@ import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
 import app.utils.listener.ThreadListener;
+import app.utils.special.RTimer;
 import lombok.Data;
 
 import java.net.Socket;
@@ -55,6 +56,9 @@ public class ListenerAdapter implements Runnable {
      */
     @Override
     public void run() {
+        log.info("进入ListenerAdapter线程,开始计时");
+        RTimer rTimer = new RTimer();
+        rTimer.start();
         //重置心跳
         List<ServerEntity> list = selectorIO.getServerContainer().getServers();
         for (ServerEntity entity : list) {
@@ -93,6 +97,7 @@ public class ListenerAdapter implements Runnable {
         } else {
             log.error("收到无效数据");
         }
+        log.info("ListenerAdapter线程结束，环节计时:{}",rTimer.end());
     }
 
     private void removeFromReceiving(SocketChannel socketChannel){
