@@ -10,6 +10,7 @@ import app.dsm.server.container.ServerEntity;
 import app.dsm.server.domain.BasePath;
 import app.dsm.server.impl.SelectorIOImpl;
 import app.dsm.server.impl.ServerImpl;
+import app.dsm.server.vo.CalculatorReqVO;
 import app.dsm.server.vo.GetTimeRspVO;
 import app.utils.SimpleUtils;
 import app.utils.listener.IListener;
@@ -127,6 +128,20 @@ public class server {
 
         return x;
 
+    }
+
+    @Test
+    public void copyTest(){
+        CalculatorReqVO calculatorReqVO = new CalculatorReqVO();
+        calculatorReqVO.setX("10");
+        calculatorReqVO.setY("100");
+        RTimer rTimer = new RTimer();
+        rTimer.start();
+        CalculatorReqVO c1 = (CalculatorReqVO) SimpleUtils.duplicate(calculatorReqVO);
+        System.out.println(rTimer.end());
+        c1.setX("99");
+        System.out.println(c1.getX());
+        System.out.println(calculatorReqVO.getX());
     }
 }
 

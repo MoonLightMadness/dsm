@@ -97,7 +97,7 @@ public class SimpleUtils {
         String today = getTimeStamp2(format);
         try {
             long d = new SimpleDateFormat(format).parse(today).getTime();
-            d += (level * offset);
+            d += ((long) level * offset);
             Date date = new Date(d);
             return new SimpleDateFormat(format).format(date);
         } catch (ParseException e) {
@@ -275,28 +275,6 @@ public class SimpleUtils {
         return new String(Base64.getDecoder().decode(base64Str.getBytes(StandardCharsets.UTF_8)));
     }
 
-    public static String ConfigRead(String filename, String header) {
-        String res = null;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
-            String temp;
-            while ((temp = br.readLine()) != null) {
-                temp = temp.toLowerCase(Locale.ROOT);
-                temp = temp.replaceAll(" ", "\0");
-                if (temp.startsWith(header)) {
-                    res = temp.substring(header.length());
-                }
-            }
-            br.close();
-        } catch (FileNotFoundException ffe) {
-            ffe.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return res;
-
-    }
-
 
     /**
      * 调用Shell <br>
@@ -376,13 +354,10 @@ public class SimpleUtils {
     }
 
     public static byte[] receiveDataInNIO(SocketChannel socketChannel) {
-        List<byte[]> recv = new ArrayList<>();
         int standard = 1024;
         XByteBuffer xb = new XByteBuffer();
         ByteBuffer buffer = ByteBuffer.allocate(standard);
-        int size = 0;
-        int count = 0;
-        byte[] temp;
+        int size;
         while (true) {
             buffer.clear();
             try {
@@ -396,7 +371,6 @@ public class SimpleUtils {
                     System.arraycopy(buffer.array(), 0, rb, 0, size);
                     xb.append(rb);
                 }
-                //count += size;
             } catch (Exception e) {
                 e.printStackTrace();
                 try {
@@ -410,8 +384,7 @@ public class SimpleUtils {
                 break;
             }
         }
-        byte[] res = xb.getBytes();
-        return res;
+        return xb.getBytes();
     }
 
     public static String stringFormatter(String[] titles, String[]... args) {
@@ -492,7 +465,6 @@ public class SimpleUtils {
 
     public static void writeFile(String path, byte[] content) {
         File file = new File(path);
-        StringBuilder sb = new StringBuilder();
         if (!file.exists()) {
             log.error(null, "can not find {}", path);
         }
@@ -534,7 +506,7 @@ public class SimpleUtils {
         total += day - 1;
         if (m > 2) {
             total--;
-            if (isLeapYear(year) == false) {
+            if (!isLeapYear(year)) {
                 total--;
             }
         }
