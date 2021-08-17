@@ -4,6 +4,7 @@ import app.dsm.base.JSONTool;
 import app.dsm.config.Configer;
 import app.dsm.server.SelectorIO;
 import app.dsm.server.domain.BasePath;
+import app.dsm.server.http.HttpResponseBuilder;
 import app.dsm.server.trigger.PathTrigger;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
@@ -77,35 +78,14 @@ public class ApiListenerAdapter implements ThreadListener {
         Sender.send(socketChannel, ret.getBytes(StandardCharsets.UTF_8));
     }
 
-//    POST / HTTP/1.1
-//    Content-Type: application/json
-//    User-Agent: PostmanRuntime/7.28.1
-//    Accept: */*
-//Postman-Token: 79577fc3-5568-4d1b-9afd-e4d7cb7a46e2
-//Host: 127.0.0.1:9004
-//Accept-Encoding: gzip, deflate, br
-//Connection: keep-alive
-//Content-Length: 36
-//
-//{
-//
-//    "path":"/server/gettime"
-//}
 
     private String getResponse(byte[] data) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("HTTP/1.1 200 OK").append("\n");
-        sb.append("Server: DSMServer/1.0").append("\n");
-        sb.append("Content-Type: Application/json").append("\n");
-        sb.append("Date: ").append(LocalDateTime.now().toString()).append("\n");
-        sb.append("Connection: Close").append("\n");
         Configer configer = new Configer();
-        sb.append("Server:").append(configer.readConfig("ip")).append(":").append(configer.readConfig("port")).append("\n");
-        sb.append("\r\n");
-        String sdata = new String(data);
-        sdata = sdata.substring(1,sdata.length()-1);
-        sb.append(sdata.replace("\\","")).append("\n");
-        return sb.toString();
+        HttpResponseBuilder httpBuilder = new HttpResponseBuilder();
+        httpBuilder.setCode("200").setServer("Server: DSMServer/1.0")
+                .setHost(configer.readConfig("ip")+" "+configer.readConfig("port"));
+        httpBuilder.setData(new String(data));
+        return httpBuilder.toString();
     }
 
     @Override
