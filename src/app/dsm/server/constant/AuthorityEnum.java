@@ -10,7 +10,12 @@ public enum AuthorityEnum {
     /**
      * 授权级别
      */
-    HIGH("002","HIGH")
+    HIGH("002","HIGH"),
+
+    /**
+     * 最高级别
+     */
+    SUPREME("999","SUPREME")
 
 
     ;
