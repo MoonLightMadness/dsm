@@ -113,7 +113,7 @@ public class ApiListenerAdapter implements ThreadListener {
     private String getResponse(byte[] data) {
         Configer configer = new Configer();
         HttpResponseBuilder httpBuilder = new HttpResponseBuilder();
-        httpBuilder.setCode("200").setServer("Server: DSMServer/1.0")
+        httpBuilder.setCode("200").setServer("DSMServer/1.0")
                 .setHost(configer.readConfig("ip") + " " + configer.readConfig("port"));
         httpBuilder.setData(new String(data));
         return httpBuilder.toString();

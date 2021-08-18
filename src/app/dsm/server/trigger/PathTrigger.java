@@ -67,7 +67,7 @@ public class PathTrigger {
                         method.setAccessible(true);
                         result = method.invoke(obj, arg);
                     }
-                    return new String(JSONTool.toJson(result));
+                    return result;
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (InstantiationException e) {
