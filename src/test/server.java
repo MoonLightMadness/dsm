@@ -30,71 +30,18 @@ import java.util.ListIterator;
 public class server {
 
 
-    @Test
-    public void test1(){
-        testClass testClass = new testClass();
-
-        Server server = new ServerImpl();
-        server.initialize();
-        server.open();
-
-
-        Pojo pojo = new Pojo();
-        pojo.setOption("setname");
-        pojo.setAttachment("pojo");
-//        try {
-//            Thread.sleep(500);
-//            SocketChannel socketChannel = SocketChannel.open();
-//            socketChannel.bind(new InetSocketAddress("127.0.0.1",9002));
-//            socketChannel.connect(new InetSocketAddress("127.0.0.1",9000));
-//            Thread.sleep(500);
-//            Sender.send(socketChannel, JSONTool.toJson(pojo));
-//        } catch (IOException | InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//
-//            while (true) {
-//                Thread.sleep(1000);
-//            }
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-    }
 
     @Test
     public void test2(){
 //        RTimer rTimer = new RTimer();
 //        rTimer.start();
 
+        Configer configer = new Configer();
+
         Server server = new ServerImpl();
-        server.initialize();
+        server.initialize(configer.readConfig("queen.ip"),configer.readConfig("queen.port"));
         server.open();
 
-//        System.out.println(rTimer.end());
-//        rTimer.start();
-//
-//        ApiPojo apiPojo = new ApiPojo();
-//        apiPojo.setPath("/server/setname");
-//        apiPojo.setName("apiPojo");
-
-//        Configer configer = new Configer();
-//        try {
-//            Thread.sleep(500);
-//            SocketChannel socketChannel = SocketChannel.open();
-//            socketChannel.bind(new InetSocketAddress("127.0.0.1",9002));
-//            socketChannel.connect(new InetSocketAddress("127.0.0.1", Integer.parseInt(configer.readConfig("port"))));
-//            socketChannel.configureBlocking(false);
-//            //Thread.sleep(1000);
-//            Sender.send(socketChannel, JSONTool.toJson(apiPojo));
-//            Thread.sleep(100);
-//            System.out.println(new String(SimpleUtils.receiveDataInNIO(socketChannel)));
-//            System.out.println(rTimer.end());
-//            //socketChannel.close();
-//        } catch (IOException | InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
         try {
 

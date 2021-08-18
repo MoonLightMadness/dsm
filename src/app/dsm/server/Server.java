@@ -13,7 +13,7 @@ public interface Server {
      * @date 2021-08-11 22:03
      * @version V1.0
      */
-    void initialize();
+    void initialize(String ip,String port);
 
     /**
      * 启动服务器
