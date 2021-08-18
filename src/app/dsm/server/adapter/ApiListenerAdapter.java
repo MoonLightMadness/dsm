@@ -51,9 +51,12 @@ public class ApiListenerAdapter implements ThreadListener {
 
     private LogSystem log = LogSystemFactory.getLogSystem();
 
+    private Configer configer;
+
     public void initialize() {
         pathTrigger = new PathTrigger();
         pathTrigger.initialize();
+        configer = new Configer();
         List<String> packages = new Configer().readConfigList("package.name");
         for (String str : packages) {
             pathTrigger.scanPackage(str);
@@ -67,8 +70,7 @@ public class ApiListenerAdapter implements ThreadListener {
         if(null != userAuthData.getUserId()||null !=userAuthData.getUserPassword()){
             SqliteImpl sqliteImpl = new SqliteImpl();
             sqliteImpl.initialize();
-            String command = "Select auth_level from auth_user_config where user_id=\""+userAuthData.getUserId()+"\" and user_password =\""+
-                    userAuthData.getUserPassword()+"\"";
+            String command = configer.readConfig("get.auth.level", userAuthData.getUserId(), userAuthData.getUserPassword());
             userAuthData.setAuthLevel((String) sqliteImpl.get(command));
         }else {
             userAuthData.setAuthLevel("NORMAL");

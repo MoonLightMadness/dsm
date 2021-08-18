@@ -7,3 +7,5 @@ local_path = .\config\novel\config.txt
 local_path = .\config\server\config.txt
 
 local_path = .\config\server\blacklist.txt
+
+local_path = .\config\server\mapper.txt

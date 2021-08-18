@@ -1,0 +1,1 @@
+get.auth.level = Select auth_level from auth_user_config where user_id='{}' and user_password= '{}'
