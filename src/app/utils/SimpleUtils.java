@@ -365,14 +365,16 @@ public class SimpleUtils {
             buffer.clear();
             try {
                 size = socketChannel.read(buffer);
-                if (size == standard) {
-                    buffer.flip();
-                    xb.append(buffer.array());
-                } else {
-                    byte[] rb = new byte[size];
-                    buffer.flip();
-                    System.arraycopy(buffer.array(), 0, rb, 0, size);
-                    xb.append(rb);
+                if(size > 0){
+                    if (size == standard) {
+                        buffer.flip();
+                        xb.append(buffer.array());
+                    } else{
+                        byte[] rb = new byte[size];
+                        buffer.flip();
+                        System.arraycopy(buffer.array(), 0, rb, 0, size);
+                        xb.append(rb);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

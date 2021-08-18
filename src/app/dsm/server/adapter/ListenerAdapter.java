@@ -12,6 +12,7 @@ import app.utils.listener.ThreadListener;
 import app.utils.special.RTimer;
 import lombok.Data;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
@@ -96,6 +97,11 @@ public class ListenerAdapter implements Runnable {
             }
         } else {
             log.error("收到无效数据");
+            try {
+                channel.close();
+            } catch (IOException e) {
+                log.error("关闭连接异常,原因;{}",e);
+            }
         }
         log.info("ListenerAdapter线程结束，环节计时:{}",rTimer.end());
     }
