@@ -2,15 +2,21 @@ package app.dsm.server.adapter;
 
 import app.dsm.base.JSONTool;
 import app.dsm.config.Configer;
+import app.dsm.db.impl.SqliteImpl;
 import app.dsm.server.SelectorIO;
+import app.dsm.server.authority.AuthSystem;
+import app.dsm.server.constant.Indicators;
 import app.dsm.server.domain.BasePath;
+import app.dsm.server.domain.UserAuthData;
 import app.dsm.server.http.HttpResponseBuilder;
 import app.dsm.server.trigger.PathTrigger;
+import app.dsm.server.vo.NoPowerBaseRspVO;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.parser.impl.JSONParserImpl;
 import app.utils.EntityUtils;
 import app.utils.SimpleUtils;
+import app.utils.datastructure.ReflectIndicator;
 import app.utils.listener.ThreadListener;
 import app.utils.net.Sender;
 
@@ -32,6 +38,7 @@ import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ListIterator;
 
 @Data
 public class ApiListenerAdapter implements ThreadListener {
@@ -48,7 +55,7 @@ public class ApiListenerAdapter implements ThreadListener {
         pathTrigger = new PathTrigger();
         pathTrigger.initialize();
         List<String> packages = new Configer().readConfigList("package.name");
-        for (String str : packages){
+        for (String str : packages) {
             pathTrigger.scanPackage(str);
         }
     }
@@ -56,10 +63,33 @@ public class ApiListenerAdapter implements ThreadListener {
     @Override
     public void invoke(Object obj, String... args) {
         BasePath basePath = (BasePath) new JSONParserImpl().parser(listenerAdapter.getData(), BasePath.class);
-        result = pathTrigger.trigger(basePath.getPath(), new String(listenerAdapter.getData()), listenerAdapter);
-        if (result != null) {
-            response(result);
+        UserAuthData userAuthData = (UserAuthData) new JSONParserImpl().parser(listenerAdapter.getData(), UserAuthData.class);
+        if(null != userAuthData.getUserId()||null !=userAuthData.getUserPassword()){
+            SqliteImpl sqliteImpl = new SqliteImpl();
+            sqliteImpl.initialize();
+            System.out.println(userAuthData.getUserId()+" "+userAuthData.getUserPassword());
+            String command = "Select auth_level from auth_user_config where user_id=\""+userAuthData.getUserId()+"\" and user_password =\""+
+                    userAuthData.getUserPassword()+"\"";
+            userAuthData.setAuthLevel((String) sqliteImpl.get(command));
+        }else {
+            userAuthData.setAuthLevel("NORMAL");
         }
+        ListIterator<ReflectIndicator> iterator = Indicators.getIterator();
+        while (iterator.hasNext()){
+            ReflectIndicator indicator = iterator.next();
+            if(indicator.getRelativePath().equals(basePath.getPath())){
+                if(AuthSystem.judge(indicator.getAuthority(),userAuthData.getAuthLevel())){
+                    result = pathTrigger.trigger(basePath.getPath(), new String(listenerAdapter.getData()), listenerAdapter);
+                    if (result != null) {
+                        response(result);
+                    }
+                }else {
+                    log.info("权限不足");
+                    response(new NoPowerBaseRspVO());
+                }
+            }
+        }
+
     }
 
     /**
@@ -83,7 +113,7 @@ public class ApiListenerAdapter implements ThreadListener {
         Configer configer = new Configer();
         HttpResponseBuilder httpBuilder = new HttpResponseBuilder();
         httpBuilder.setCode("200").setServer("Server: DSMServer/1.0")
-                .setHost(configer.readConfig("ip")+" "+configer.readConfig("port"));
+                .setHost(configer.readConfig("ip") + " " + configer.readConfig("port"));
         httpBuilder.setData(new String(data));
         return httpBuilder.toString();
     }

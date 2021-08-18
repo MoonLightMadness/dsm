@@ -71,8 +71,6 @@ public class ListenerAdapter implements Runnable {
         try {
             log.info("正在接收数据");
             data = SimpleUtils.receiveDataInNIO(channel);
-            System.out.println(new String(data));
-
             //接收完毕将该channel从集合中移除
             removeFromReceiving(channel);
         } catch (Exception e) {
@@ -82,9 +80,11 @@ public class ListenerAdapter implements Runnable {
             log.error("未指定订阅方法,触发事件结束");
             return;
         }
-        //数据再组装
-        data = reConstruct(data);
+
         if (null != data && data.length > 0) {
+            //数据再组装
+            data = reConstruct(data);
+            System.out.println(new String(data));
             log.info("异步接收数据完成，开始触发订阅方法");
             try {
                 threadListener.setArgs(this);

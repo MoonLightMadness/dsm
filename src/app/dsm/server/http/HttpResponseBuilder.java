@@ -112,8 +112,8 @@ public class HttpResponseBuilder {
         sb.append("Date: ").append(LocalDateTime.now()).append("\n");
         sb.append("Server: ").append(server).append("\n");
         sb.append("Host: ").append(host).append("\n");
-        sb.append("\n");
-        sb.append(data);
+        sb.append("\n").append("{\n");
+        sb.append(data).append("\n}");
         return sb.toString();
     }
 

@@ -52,10 +52,12 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
     @Override
     public void initialize(){
+        Configer configer = new Configer();
         serverContainer = new ServerContainer();
         serverContainer.initialize();
         beatChecker = new BeatCheckerImpl();
-        beatChecker.startBeat(serverContainer,1000,60);
+        beatChecker.startBeat(serverContainer,Long.parseLong(configer.readConfig("beat.time.unit"))
+                ,Integer.parseInt(configer.readConfig("beat.max")));
         threadListener = new ApiListenerAdapter();
         ((ApiListenerAdapter)threadListener).initialize();
         filter = new Filter();

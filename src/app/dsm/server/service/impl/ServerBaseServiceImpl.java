@@ -54,6 +54,7 @@ public class ServerBaseServiceImpl implements ServerBaseService {
     }
 
     @Path(value = "/calculate")
+    @Authority(value = "HIGH")
     @Override
     public CalculatorRspVO calculate(String args) {
         CalculatorReqVO calculatorReqVO = (CalculatorReqVO) new JSONParserImpl().parser(args.getBytes(StandardCharsets.UTF_8),CalculatorReqVO.class);
