@@ -13,7 +13,7 @@ public interface Server {
      * @date 2021-08-11 22:03
      * @version V1.0
      */
-    void initialize();
+    void initialize(String ip,String port);
 
     /**
      * 启动服务器
@@ -23,6 +23,14 @@ public interface Server {
      * @version V1.0
      */
     void open();
+
+    /**
+     * @return @return {@link SelectorIO }
+     * @author zhl
+     * @date 2021-08-19 10:22
+     * @version V1.0
+     */
+    SelectorIO getSelectorIo();
 
 
 

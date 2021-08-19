@@ -85,6 +85,61 @@ public class Configer {
         return null;
     }
 
+    public String readConfig(String propertyName,String... args) {
+        for (String path : local_directory){
+            File f = new File(path);
+            if (!f.exists()) {
+                log.error("在指定的路径上找不到该文件--path:{}",path);
+                return null;
+            }
+            try {
+                synchronized (Configer.class){
+                    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                    String temp;
+                    while ((temp = br.readLine())!=null){
+                        if(temp.trim().startsWith(propertyName)){
+                            return messageHandler(temp.substring(temp.indexOf("=")+1).trim(),args);
+                        }
+                    }
+                    br.close();
+                }
+            } catch (FileNotFoundException e) {
+                log.error(null,e.getMessage());
+                e.printStackTrace();
+            } catch (IOException e) {
+                log.error(null,e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        log.error("找不到属性:{}的值",propertyName);
+        return null;
+    }
+
+    private String messageHandler(String msg,String... args){
+        int argsLen=args.length;
+        StringBuilder sb=new StringBuilder();
+        if(argsLen>0){
+            int pointer=0;
+            /*============================================================
+             *  算法：
+             * 每次循环脱离一对{}
+             * 若参数大于占位符数时保留{}
+             *============================================================*/
+            for (int i = 0; i < argsLen; i++) {
+                pointer=msg.indexOf('{');
+                if(pointer!=-1){
+                    sb.append(msg, 0, pointer);
+                    sb.append(args[i].toString());
+                    msg=msg.substring(pointer+2);
+                }
+            }
+            sb.append(msg);
+        }else {
+            sb.append(msg);
+        }
+        return sb.toString();
+    }
+
     public List<String> readConfigList(String propertyName) {
         List<String> result = new ArrayList<>();
         for (String path : local_directory){

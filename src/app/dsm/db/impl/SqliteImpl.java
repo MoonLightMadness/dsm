@@ -7,10 +7,15 @@ import app.dsm.config.impl.DatabaseConfigReader;
 import app.dsm.db.DataBase;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
+import lombok.Data;
+import org.junit.Test;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @ClassName : app.dsm.db.impl.SqliteImpl
@@ -31,19 +36,19 @@ public class SqliteImpl<T> implements DataBase<T> {
     private Configer configer;
 
     @Override
-    public void init(String args){
+    public void initialize(){
         log= LogSystemFactory.getLogSystem();
         configer = new Configer();
         //log.info(this.getClass().getName(),"初始化数据库连接");
-        String dbName=configer.readConfig(Argument.getValue(args,"database"));
-        //log.info(this.getClass().getName(),"连接到数据库:{}",dbName);
+        String dbName=configer.readConfig("database");
+        //log.info("连接到数据库:{}",dbName);
         try {
             Class.forName("org.sqlite.JDBC");
-            connection= DriverManager.getConnection("jdbc:sqlite:"+dbName);
-            statement=connection.createStatement();
+            this.connection= DriverManager.getConnection("jdbc:sqlite:"+dbName);
+            this.statement=connection.createStatement();
             //设置超时
-            statement.setQueryTimeout(30);
-            //log.info(this.getClass().getName(),"数据库连接初始化完成");
+            this.statement.setQueryTimeout(30);
+            log.info("数据库连接初始化完成");
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
             log.error(this.getClass().getName(),e.getMessage());
@@ -63,6 +68,49 @@ public class SqliteImpl<T> implements DataBase<T> {
             throwables.printStackTrace();
         }
         return null;
+    }
+
+    public Object getObject(String command,String tableName,Class clazz){
+        try {
+            Object object = clazz.getDeclaredConstructor().newInstance();
+            Field[] fields = object.getClass().getDeclaredFields();
+            String[] names = getColumnNames(tableName);
+            synchronized (this){
+                resultSet= statement.executeQuery(command);
+                while (resultSet.next()){
+                    for (String name : names){
+                        for (Field field : fields){
+                            field.setAccessible(true);
+                            if(name.replace("_","").equals(field.getName().toLowerCase(Locale.ROOT))){
+                                String str = resultSet.getString(name);
+                                field.set(object,str);
+                            }
+                        }
+                    }
+                }
+            }
+            return object;
+        } catch (SQLException | NoSuchMethodException throwables) {
+            log.error("error:{}---sql:{}",throwables);
+            throwables.printStackTrace();
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String[] getColumnNames(String tableName){
+        String comm = "pragma table_info(\""+tableName+"\")";
+        StringBuilder sb = new StringBuilder();
+        try {
+            resultSet = statement.executeQuery(comm);
+            while (resultSet.next()){
+                sb.append(resultSet.getString("name")).append("\n");
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return sb.toString().split("\n");
     }
 
     @Override

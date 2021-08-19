@@ -1,15 +1,15 @@
-package app.utils.datastructure;
+package app.dsm.swarm.domain;
 
 import lombok.Data;
 
 /**
- * @ClassName : app.utils.datastructure.ReflecIndicator
+ * @ClassName : app.dsm.swarm.domain.IndicatorRemote
  * @Description :
- * @Date 2021-08-13 08:21:44
+ * @Date 2021-08-19 09:42:46
  * @Author ZhangHL
  */
 @Data
-public class ReflectIndicator {
+public class IndicatorRemote {
 
     /**
      * 类全路径
@@ -31,5 +31,10 @@ public class ReflectIndicator {
      * 权限
      */
     private String authority;
+
+    /**
+     * 角色
+     */
+    private String character;
 
 }

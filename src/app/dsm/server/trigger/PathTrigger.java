@@ -14,6 +14,9 @@ import java.util.ListIterator;
 
 public class PathTrigger {
 
+
+    private Indicators indicators;
+
     /**
      * 初始化
      * @return
@@ -21,8 +24,8 @@ public class PathTrigger {
      * @date 2021-08-13 22:31
      * @version V1.0
      */
-    public void initialize(){
-        Indicators.initialize();
+    public void initialize(Indicators indicators){
+        this.indicators = indicators;
     }
 
     /**
@@ -34,7 +37,7 @@ public class PathTrigger {
      * @version V1.0
      */
     public void scanPackage(String packageName){
-        SimpleUtils.scanPackage(packageName);
+        SimpleUtils.scanPackage(packageName,indicators);
     }
 
     /**
@@ -46,7 +49,7 @@ public class PathTrigger {
      * @version V1.0
      */
     public Object trigger(String path, String arg, ListenerAdapter adapter){
-        ListIterator<ReflectIndicator> iterator = Indicators.getIterator();
+        ListIterator<ReflectIndicator> iterator = adapter.getSelectorIO().getIndicators().getIterator();
         while (iterator.hasNext()) {
             ReflectIndicator reflectIndicator = iterator.next();
             if(reflectIndicator.getRelativePath().equals(path)){
@@ -67,7 +70,7 @@ public class PathTrigger {
                         method.setAccessible(true);
                         result = method.invoke(obj, arg);
                     }
-                    return new String(JSONTool.toJson(result));
+                    return result;
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (InstantiationException e) {

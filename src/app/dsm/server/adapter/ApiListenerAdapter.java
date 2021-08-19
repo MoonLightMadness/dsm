@@ -2,14 +2,21 @@ package app.dsm.server.adapter;
 
 import app.dsm.base.JSONTool;
 import app.dsm.config.Configer;
+import app.dsm.db.impl.SqliteImpl;
 import app.dsm.server.SelectorIO;
+import app.dsm.server.authority.AuthSystem;
+import app.dsm.server.constant.Indicators;
 import app.dsm.server.domain.BasePath;
+import app.dsm.server.domain.UserAuthData;
+import app.dsm.server.http.HttpResponseBuilder;
 import app.dsm.server.trigger.PathTrigger;
+import app.dsm.server.vo.NoPowerBaseRspVO;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.parser.impl.JSONParserImpl;
 import app.utils.EntityUtils;
 import app.utils.SimpleUtils;
+import app.utils.datastructure.ReflectIndicator;
 import app.utils.listener.ThreadListener;
 import app.utils.net.Sender;
 
@@ -30,6 +37,8 @@ import java.net.URL;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ListIterator;
 
 @Data
 public class ApiListenerAdapter implements ThreadListener {
@@ -42,21 +51,46 @@ public class ApiListenerAdapter implements ThreadListener {
 
     private LogSystem log = LogSystemFactory.getLogSystem();
 
-    public void initialize() {
+    private Configer configer;
+
+    public void initialize(Indicators indicators) {
         pathTrigger = new PathTrigger();
-        pathTrigger.initialize();
-        pathTrigger.scanPackage(new Configer().readConfig("package.name"));
+        pathTrigger.initialize(indicators);
+        configer = new Configer();
+        List<String> packages = new Configer().readConfigList("package.name");
+        for (String str : packages) {
+            pathTrigger.scanPackage(str);
+        }
     }
 
     @Override
     public void invoke(Object obj, String... args) {
         BasePath basePath = (BasePath) new JSONParserImpl().parser(listenerAdapter.getData(), BasePath.class);
-        result = pathTrigger.trigger(basePath.getPath(), new String(listenerAdapter.getData()), listenerAdapter);
-        System.out.println(basePath.getPath());
-        System.out.println(result);
-        if (result != null) {
-            response(result);
+        UserAuthData userAuthData = (UserAuthData) new JSONParserImpl().parser(listenerAdapter.getData(), UserAuthData.class);
+        if(null != userAuthData.getUserId()||null !=userAuthData.getUserPassword()){
+            SqliteImpl sqliteImpl = new SqliteImpl();
+            sqliteImpl.initialize();
+            String command = configer.readConfig("get.auth.level", userAuthData.getUserId(), userAuthData.getUserPassword());
+            userAuthData.setAuthLevel((String) sqliteImpl.get(command));
+        }else {
+            userAuthData.setAuthLevel("NORMAL");
         }
+        ListIterator<ReflectIndicator> iterator = listenerAdapter.getSelectorIO().getIndicators().getIterator();
+        while (iterator.hasNext()){
+            ReflectIndicator indicator = iterator.next();
+            if(indicator.getRelativePath().equals(basePath.getPath())){
+                if(AuthSystem.judge(indicator.getAuthority(),userAuthData.getAuthLevel())){
+                    result = pathTrigger.trigger(basePath.getPath(), new String(listenerAdapter.getData()), listenerAdapter);
+                    if (result != null) {
+                        response(result);
+                    }
+                }else {
+                    log.info("权限不足");
+                    response(new NoPowerBaseRspVO());
+                }
+            }
+        }
+
     }
 
     /**
@@ -75,35 +109,14 @@ public class ApiListenerAdapter implements ThreadListener {
         Sender.send(socketChannel, ret.getBytes(StandardCharsets.UTF_8));
     }
 
-//    POST / HTTP/1.1
-//    Content-Type: application/json
-//    User-Agent: PostmanRuntime/7.28.1
-//    Accept: */*
-//Postman-Token: 79577fc3-5568-4d1b-9afd-e4d7cb7a46e2
-//Host: 127.0.0.1:9004
-//Accept-Encoding: gzip, deflate, br
-//Connection: keep-alive
-//Content-Length: 36
-//
-//{
-//
-//    "path":"/server/gettime"
-//}
 
     private String getResponse(byte[] data) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("HTTP/1.1 200 OK").append("\n");
-        sb.append("Server: DSMServer/1.0").append("\n");
-        sb.append("Content-Type: Application/json").append("\n");
-        sb.append("Date: ").append(LocalDateTime.now().toString()).append("\n");
-        sb.append("Connection: Close").append("\n");
         Configer configer = new Configer();
-        sb.append("Server:").append(configer.readConfig("ip")).append(":").append(configer.readConfig("port")).append("\n");
-        sb.append("\r\n");
-        String sdata = new String(data);
-        sdata = sdata.substring(1,sdata.length()-1);
-        sb.append(sdata.replace("\\","")).append("\n");
-        return sb.toString();
+        HttpResponseBuilder httpBuilder = new HttpResponseBuilder();
+        httpBuilder.setCode("200").setServer("DSMServer/1.0")
+                .setHost(configer.readConfig("ip") + " " + configer.readConfig("port"));
+        httpBuilder.setData(new String(data));
+        return httpBuilder.toString();
     }
 
     @Override

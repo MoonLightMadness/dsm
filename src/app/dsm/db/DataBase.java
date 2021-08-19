@@ -8,11 +8,10 @@ package app.dsm.db;
 public interface DataBase<T> {
     /**
      * 初始化
-     * @param args 配置参数
      * @author Zhang huai lan
      * @version V1.0
      **/
-    void init(String args);
+    void initialize();
     /**
      * 获取数据
      * @author Zhang huai lan

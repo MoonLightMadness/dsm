@@ -1,0 +1,16 @@
+queen.ip = 127.0.0.1
+queen.port = 10010
+
+logger.ip = 127.0.0.1
+logger.port = 10011
+
+portal.ip = 127.0.0.1
+portal.port = 10012
+
+worker.bee.1.ip = 127.0.0.1
+worker.bee.1.port = 10013
+
+worker.bee.2.ip = 127.0.0.1
+worker.bee.2.port = 10014
+
+package.name = app.dsm.swarm

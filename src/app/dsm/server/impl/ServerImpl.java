@@ -32,10 +32,14 @@ public class ServerImpl implements Server {
 
     private SelectorIO selectorIO;
 
+    private String ip;
 
+    private String port;
 
     @Override
-    public void initialize(){
+    public void initialize(String ip,String port){
+        this.ip = ip;
+        this.port = port;
         log = LogSystemFactory.getLogSystem();
         configer = new Configer();
         selectorIO = new SelectorIOImpl();
@@ -51,7 +55,7 @@ public class ServerImpl implements Server {
         try {
             log.info("开启服务器");
             serverSocketChannel = ServerSocketChannel.open();
-            serverSocketChannel.bind(new InetSocketAddress(configer.readConfig("ip"), Integer.parseInt(configer.readConfig("port"))));
+            serverSocketChannel.bind(new InetSocketAddress(ip, Integer.parseInt(port)));
             serverSocketChannel.configureBlocking(false);
             selectorIO.open(serverSocketChannel);
             //开启线程
@@ -62,5 +66,14 @@ public class ServerImpl implements Server {
         }
     }
 
-
+    /**
+     * @return @return {@link SelectorIO }
+     * @author zhl
+     * @date 2021-08-19 10:22
+     * @version V1.0
+     */
+    @Override
+    public SelectorIO getSelectorIo() {
+        return selectorIO;
+    }
 }

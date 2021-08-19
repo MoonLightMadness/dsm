@@ -4,7 +4,9 @@ package app.utils;
 import app.dsm.base.JSONTool;
 import app.dsm.exception.ServiceException;
 import app.dsm.exception.UniversalErrorCodeEnum;
+import app.dsm.server.annotation.Authority;
 import app.dsm.server.annotation.Path;
+import app.dsm.server.constant.AuthorityEnum;
 import app.dsm.server.constant.Indicators;
 import app.dsm.server.trigger.PathTrigger;
 import app.dsm.server.vo.CalculatorReqVO;
@@ -16,6 +18,7 @@ import app.utils.special.RTimer;
 import lombok.SneakyThrows;
 
 import java.io.*;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -97,7 +100,7 @@ public class SimpleUtils {
         String today = getTimeStamp2(format);
         try {
             long d = new SimpleDateFormat(format).parse(today).getTime();
-            d += (level * offset);
+            d += ((long) level * offset);
             Date date = new Date(d);
             return new SimpleDateFormat(format).format(date);
         } catch (ParseException e) {
@@ -275,28 +278,6 @@ public class SimpleUtils {
         return new String(Base64.getDecoder().decode(base64Str.getBytes(StandardCharsets.UTF_8)));
     }
 
-    public static String ConfigRead(String filename, String header) {
-        String res = null;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
-            String temp;
-            while ((temp = br.readLine()) != null) {
-                temp = temp.toLowerCase(Locale.ROOT);
-                temp = temp.replaceAll(" ", "\0");
-                if (temp.startsWith(header)) {
-                    res = temp.substring(header.length());
-                }
-            }
-            br.close();
-        } catch (FileNotFoundException ffe) {
-            ffe.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return res;
-
-    }
-
 
     /**
      * 调用Shell <br>
@@ -376,27 +357,25 @@ public class SimpleUtils {
     }
 
     public static byte[] receiveDataInNIO(SocketChannel socketChannel) {
-        List<byte[]> recv = new ArrayList<>();
         int standard = 1024;
         XByteBuffer xb = new XByteBuffer();
         ByteBuffer buffer = ByteBuffer.allocate(standard);
-        int size = 0;
-        int count = 0;
-        byte[] temp;
+        int size;
         while (true) {
             buffer.clear();
             try {
                 size = socketChannel.read(buffer);
-                if (size == standard) {
-                    buffer.flip();
-                    xb.append(buffer.array());
-                } else {
-                    byte[] rb = new byte[size];
-                    buffer.flip();
-                    System.arraycopy(buffer.array(), 0, rb, 0, size);
-                    xb.append(rb);
+                if(size > 0){
+                    if (size == standard) {
+                        buffer.flip();
+                        xb.append(buffer.array());
+                    } else{
+                        byte[] rb = new byte[size];
+                        buffer.flip();
+                        System.arraycopy(buffer.array(), 0, rb, 0, size);
+                        xb.append(rb);
+                    }
                 }
-                //count += size;
             } catch (Exception e) {
                 e.printStackTrace();
                 try {
@@ -410,8 +389,7 @@ public class SimpleUtils {
                 break;
             }
         }
-        byte[] res = xb.getBytes();
-        return res;
+        return xb.getBytes();
     }
 
     public static String stringFormatter(String[] titles, String[]... args) {
@@ -492,7 +470,6 @@ public class SimpleUtils {
 
     public static void writeFile(String path, byte[] content) {
         File file = new File(path);
-        StringBuilder sb = new StringBuilder();
         if (!file.exists()) {
             log.error(null, "can not find {}", path);
         }
@@ -534,7 +511,7 @@ public class SimpleUtils {
         total += day - 1;
         if (m > 2) {
             total--;
-            if (isLeapYear(year) == false) {
+            if (!isLeapYear(year)) {
                 total--;
             }
         }
@@ -584,7 +561,7 @@ public class SimpleUtils {
         return System.getProperty("file.separator");
     }
 
-    public static void scanPackage(String packageName) {
+    public static void scanPackage(String packageName,Indicators indicator) {
         String workingPath = getJarSelfPath();
         String[] paths;
         //判断程序是否是以jar包形式启动的
@@ -598,17 +575,17 @@ public class SimpleUtils {
         for (String path : paths) {
             path = path.trim().replace(SimpleUtils.getFilePathSeparator(), ".");
             if (path.startsWith(packageName)) {
-                SimpleUtils.constructReflectIndicator(path);
+                SimpleUtils.constructReflectIndicator(path,indicator);
             }
         }
     }
 
-    public static void constructReflectIndicator(String className) {
-        ReflectIndicator temp;
+    public static void constructReflectIndicator(String className,Indicators indicator) {
+        ReflectIndicator temp = null;
         Class clazz = null;
         try {
             clazz = Class.forName(className);
-        }catch (Exception e) {
+        } catch (Exception e) {
 
         }
         if (clazz != null && clazz.isAnnotationPresent(Path.class)) {
@@ -622,7 +599,15 @@ public class SimpleUtils {
                     temp.setClassPath(className);
                     temp.setMethodName(method.getName());
                     temp.setRelativePath(classPath.value() + methodPath.value());
-                    Indicators.add(temp);
+                    //判断有无权限注解
+                    if (method.isAnnotationPresent(Authority.class)) {
+                        Authority authority = method.getDeclaredAnnotation(Authority.class);
+                        temp.setAuthority(authority.value());
+                    } else {
+                        //如果没有权限注解,则添加默认权限
+                        temp.setAuthority(AuthorityEnum.NORMAL.msg());
+                    }
+                    indicator.add(temp);
                 }
             }
         }
@@ -687,10 +672,6 @@ public class SimpleUtils {
         }
         return null;
     }
-
-
-
-
 
 
 }

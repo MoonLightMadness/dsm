@@ -2,13 +2,17 @@ package app.dsm.server.adapter;
 
 import app.dsm.base.JSONTool;
 import app.dsm.server.container.ServerEntity;
+import app.dsm.server.domain.HttpEntity;
+import app.dsm.server.http.HttpParser;
 import app.dsm.server.impl.SelectorIOImpl;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
 import app.utils.listener.ThreadListener;
+import app.utils.special.RTimer;
 import lombok.Data;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
@@ -53,6 +57,9 @@ public class ListenerAdapter implements Runnable {
      */
     @Override
     public void run() {
+        log.info("进入ListenerAdapter线程,开始计时");
+        RTimer rTimer = new RTimer();
+        rTimer.start();
         //重置心跳
         List<ServerEntity> list = selectorIO.getServerContainer().getServers();
         for (ServerEntity entity : list) {
@@ -65,8 +72,6 @@ public class ListenerAdapter implements Runnable {
         try {
             log.info("正在接收数据");
             data = SimpleUtils.receiveDataInNIO(channel);
-            System.out.println(new String(data));
-
             //接收完毕将该channel从集合中移除
             removeFromReceiving(channel);
         } catch (Exception e) {
@@ -76,8 +81,11 @@ public class ListenerAdapter implements Runnable {
             log.error("未指定订阅方法,触发事件结束");
             return;
         }
-        data = checkPost(data);
+
         if (null != data && data.length > 0) {
+            //数据再组装
+            data = reConstruct(data);
+            System.out.println(new String(data));
             log.info("异步接收数据完成，开始触发订阅方法");
             try {
                 threadListener.setArgs(this);
@@ -89,7 +97,13 @@ public class ListenerAdapter implements Runnable {
             }
         } else {
             log.error("收到无效数据");
+            try {
+                channel.close();
+            } catch (IOException e) {
+                log.error("关闭连接异常,原因;{}",e);
+            }
         }
+        log.info("ListenerAdapter线程结束，环节计时:{}",rTimer.end());
     }
 
     private void removeFromReceiving(SocketChannel socketChannel){
@@ -104,18 +118,23 @@ public class ListenerAdapter implements Runnable {
         }
     }
 
-    private byte[] checkPost(byte[] data){
+    private byte[] reConstruct(byte[] data){
         String sdata = new String(data);
-        String path = sdata.substring("HTTP ".length(),sdata.indexOf('H')-1);
+        HttpEntity entity = HttpParser.parse(sdata);
         StringBuilder sb = new StringBuilder();
-        if(sdata.trim().startsWith("POST")){
-            String result = sdata.substring(sdata.indexOf('{')+1,sdata.lastIndexOf('}'));
+        String removeBracedStr = null;
+        if(null!=entity.getBody()){
+            removeBracedStr = entity.getBody().substring(1,entity.getBody().length()-1);
             sb.append("{").append("\n");
-            sb.append("\"path\":").append("\"").append(path).append("\"").append(",").append("\n");
-            sb.append(result).append("}");
-            return sb.toString().getBytes(StandardCharsets.UTF_8);
+            sb.append(removeBracedStr).append(",").append("\n");
+            sb.append("\"path\":").append("\"").append(entity.getRequestPath()).append("\"").append("\n");
+            sb.append("}");
         }else {
-            return data;
+            sb.append("{").append("\n");
+            sb.append("\"path\":").append("\"").append(entity.getRequestPath()).append("\"").append("\n");
+            sb.append("}");
         }
+        return sb.toString().getBytes(StandardCharsets.UTF_8);
+
     }
 }
