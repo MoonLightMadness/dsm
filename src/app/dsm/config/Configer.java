@@ -111,6 +111,7 @@ public class Configer {
                 e.printStackTrace();
             }
         }
+        log.error("找不到属性:{}的值",propertyName);
         return null;
     }
 

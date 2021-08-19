@@ -53,9 +53,9 @@ public class ApiListenerAdapter implements ThreadListener {
 
     private Configer configer;
 
-    public void initialize() {
+    public void initialize(Indicators indicators) {
         pathTrigger = new PathTrigger();
-        pathTrigger.initialize();
+        pathTrigger.initialize(indicators);
         configer = new Configer();
         List<String> packages = new Configer().readConfigList("package.name");
         for (String str : packages) {
@@ -75,7 +75,7 @@ public class ApiListenerAdapter implements ThreadListener {
         }else {
             userAuthData.setAuthLevel("NORMAL");
         }
-        ListIterator<ReflectIndicator> iterator = Indicators.getIterator();
+        ListIterator<ReflectIndicator> iterator = listenerAdapter.getSelectorIO().getIndicators().getIterator();
         while (iterator.hasNext()){
             ReflectIndicator indicator = iterator.next();
             if(indicator.getRelativePath().equals(basePath.getPath())){

@@ -561,7 +561,7 @@ public class SimpleUtils {
         return System.getProperty("file.separator");
     }
 
-    public static void scanPackage(String packageName) {
+    public static void scanPackage(String packageName,Indicators indicator) {
         String workingPath = getJarSelfPath();
         String[] paths;
         //判断程序是否是以jar包形式启动的
@@ -575,12 +575,12 @@ public class SimpleUtils {
         for (String path : paths) {
             path = path.trim().replace(SimpleUtils.getFilePathSeparator(), ".");
             if (path.startsWith(packageName)) {
-                SimpleUtils.constructReflectIndicator(path);
+                SimpleUtils.constructReflectIndicator(path,indicator);
             }
         }
     }
 
-    public static void constructReflectIndicator(String className) {
+    public static void constructReflectIndicator(String className,Indicators indicator) {
         ReflectIndicator temp = null;
         Class clazz = null;
         try {
@@ -607,7 +607,7 @@ public class SimpleUtils {
                         //如果没有权限注解,则添加默认权限
                         temp.setAuthority(AuthorityEnum.NORMAL.msg());
                     }
-                    Indicators.add(temp);
+                    indicator.add(temp);
                 }
             }
         }

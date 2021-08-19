@@ -8,6 +8,7 @@ import app.dsm.server.DataIO;
 import app.dsm.server.SelectorIO;
 import app.dsm.server.adapter.ApiListenerAdapter;
 import app.dsm.server.adapter.ListenerAdapter;
+import app.dsm.server.constant.Indicators;
 import app.dsm.server.container.ServerContainer;
 import app.dsm.server.container.ServerEntity;
 import app.dsm.server.filter.Filter;
@@ -45,6 +46,8 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
     private Filter filter;
 
+    private Indicators indicators;
+
     /**
      * 正在接收数据的远端服务器
      */
@@ -52,6 +55,8 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
     @Override
     public void initialize(){
+        indicators = new Indicators();
+        indicators.initialize();
         Configer configer = new Configer();
         serverContainer = new ServerContainer();
         serverContainer.initialize();
@@ -59,7 +64,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         beatChecker.startBeat(serverContainer,Long.parseLong(configer.readConfig("beat.time.unit"))
                 ,Integer.parseInt(configer.readConfig("beat.max")));
         threadListener = new ApiListenerAdapter();
-        ((ApiListenerAdapter)threadListener).initialize();
+        ((ApiListenerAdapter)threadListener).initialize(indicators);
         filter = new Filter();
         receivingChannels = new ArrayList<>();
         new Thread(beatChecker).start();
