@@ -84,8 +84,9 @@ public class ListenerAdapter implements Runnable {
 
         if (null != data && data.length > 0) {
             //数据再组装
+            System.out.println(new String(data)+" "+data.length);
             data = reConstruct(data);
-            System.out.println(new String(data));
+
             log.info("异步接收数据完成，开始触发订阅方法");
             try {
                 threadListener.setArgs(this);
@@ -94,6 +95,7 @@ public class ListenerAdapter implements Runnable {
                 log.info("订阅方法触发完成");
             } catch (Exception e) {
                 log.error("订阅方法执行失败，原因：{}", e);
+                e.printStackTrace();
             }
         } else {
             log.error("收到无效数据");
