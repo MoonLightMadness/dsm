@@ -34,18 +34,15 @@ public class QueenBaseService {
         QueenRegisterReqVO queenRegisterReqVO = (QueenRegisterReqVO) new JSONParserImpl().parser(args.getBytes(StandardCharsets.UTF_8),QueenRegisterReqVO.class);
         String[] relativePaths = queenRegisterReqVO.getPaths().split("&&");
         try {
-            synchronized (Indicators.class){
-                for (String relativePath : relativePaths) {
-                    if(!SimpleUtils.isEmptyString(relativePath)){
-                        Indicators indicators = listenerAdapter.getSelectorIO().getIndicators();
-                        ReflectIndicator reflectIndicator = new ReflectIndicator();
-                        reflectIndicator.setRelativePath(relativePath);
-                        reflectIndicator.setApproachWay("1");
-                        reflectIndicator.setApproachIP(getIp.getApproachIP());
-                        reflectIndicator.setApproachPort(getIp.getApproachPort());
-                        indicators.add(reflectIndicator);
-                        System.out.println(reflectIndicator.getApproachIP()+"  "+reflectIndicator.getApproachPort());
-                    }
+            for (String relativePath : relativePaths) {
+                if(!SimpleUtils.isEmptyString(relativePath)){
+                    Indicators indicators = listenerAdapter.getSelectorIO().getIndicators();
+                    ReflectIndicator reflectIndicator = new ReflectIndicator();
+                    reflectIndicator.setRelativePath(relativePath);
+                    reflectIndicator.setApproachWay("1");
+                    reflectIndicator.setApproachIP(getIp.getApproachIP());
+                    reflectIndicator.setApproachPort(getIp.getApproachPort());
+                    indicators.add(reflectIndicator);
                 }
             }
         }catch (Exception e) {
