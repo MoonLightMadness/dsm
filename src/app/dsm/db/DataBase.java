@@ -46,4 +46,27 @@ public interface DataBase<T> {
      * @version V1.0
      **/
     void update(String command);
+
+    /**
+     * @param command   命令
+     * @param tableName 表名
+     * @param clazz     clazz
+     * @return @return {@link Object }
+     * @author zhl
+     * @date 2021-08-21 00:34
+     * @version V1.0
+     */
+    Object[] getObjects(String command,String tableName,Class clazz);
+
+
+    /**
+     * @param command   命令
+     * @param tableName 表名
+     * @param clazz     clazz
+     * @return @return {@link Object }
+     * @author zhl
+     * @date 2021-08-21 00:42
+     * @version V1.0
+     */
+    Object getOneObject(String command,String tableName,Class clazz);
 }

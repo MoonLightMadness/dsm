@@ -5,9 +5,11 @@ import app.dsm.config.ConfigReader;
 import app.dsm.config.Configer;
 import app.dsm.config.impl.DatabaseConfigReader;
 import app.dsm.db.DataBase;
+import app.dsm.db.exception.DBException;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import lombok.Data;
+import lombok.SneakyThrows;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -70,14 +72,16 @@ public class SqliteImpl<T> implements DataBase<T> {
         return null;
     }
 
-    public Object getObject(String command,String tableName,Class clazz){
+    @Override
+    public Object[] getObjects(String command,String tableName,Class clazz){
         try {
-            Object object = clazz.getDeclaredConstructor().newInstance();
-            Field[] fields = object.getClass().getDeclaredFields();
             String[] names = getColumnNames(tableName);
+            List<Object> list = new ArrayList<>();
             synchronized (this){
                 resultSet= statement.executeQuery(command);
                 while (resultSet.next()){
+                    Object object = clazz.getDeclaredConstructor().newInstance();
+                    Field[] fields = object.getClass().getDeclaredFields();
                     for (String name : names){
                         for (Field field : fields){
                             field.setAccessible(true);
@@ -87,9 +91,41 @@ public class SqliteImpl<T> implements DataBase<T> {
                             }
                         }
                     }
+                    list.add(object);
                 }
             }
-            return object;
+            return list.toArray();
+        } catch (SQLException | NoSuchMethodException throwables) {
+            log.error("error:{}---sql:{}",throwables);
+            throwables.printStackTrace();
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    @SneakyThrows
+    public Object getOneObject(String command,String tableName,Class clazz){
+        try {
+            Object object = clazz.getDeclaredConstructor().newInstance();
+            Field[] fields = object.getClass().getDeclaredFields();
+            String[] names = getColumnNames(tableName);
+            synchronized (this){
+                resultSet= statement.executeQuery(command);
+                while (resultSet.next()){
+                    System.out.println(resultSet.getFetchSize());
+                    for (String name : names){
+                        for (Field field : fields){
+                            if(name.replace("_","").equals(field.getName().toLowerCase(Locale.ROOT))){
+                                String str = resultSet.getString(name);
+                                field.set(object,str);
+                            }
+                        }
+                    }
+                    return object;
+                }
+            }
         } catch (SQLException | NoSuchMethodException throwables) {
             log.error("error:{}---sql:{}",throwables);
             throwables.printStackTrace();
