@@ -29,7 +29,7 @@ public class QueenBaseService {
     private LogSystem log = LogSystemFactory.getLogSystem();
 
     @Path("/register")
-    public void register(String args){
+    public BaseRspVO register(String args){
         BeeRegisterReqVO getIp = (BeeRegisterReqVO) new JSONParserImpl().parser(args.getBytes(StandardCharsets.UTF_8),BeeRegisterReqVO.class);
         QueenRegisterReqVO queenRegisterReqVO = (QueenRegisterReqVO) new JSONParserImpl().parser(args.getBytes(StandardCharsets.UTF_8),QueenRegisterReqVO.class);
         String[] relativePaths = queenRegisterReqVO.getPaths().split("&&");
@@ -48,7 +48,7 @@ public class QueenBaseService {
         }catch (Exception e) {
             e.printStackTrace();
         }
-        //return new BaseRspVO();
+        return new BaseRspVO();
     }
 
     @Path(value = "/invoke")
