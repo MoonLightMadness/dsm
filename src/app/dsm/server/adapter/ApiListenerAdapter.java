@@ -37,6 +37,7 @@ import java.net.URL;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -76,20 +77,21 @@ public class ApiListenerAdapter implements ThreadListener {
             userAuthData.setAuthLevel("NORMAL");
         }
         ListIterator<ReflectIndicator> iterator = listenerAdapter.getSelectorIO().getIndicators().getIterator();
-        synchronized (Indicators.class){
-            while (iterator.hasNext()){
-                ReflectIndicator indicator = iterator.next();
-                if(indicator.getRelativePath().equals(basePath.getPath())){
-                    if(AuthSystem.judge(indicator.getAuthority(),userAuthData.getAuthLevel())){
-                        result = pathTrigger.trigger(basePath.getPath(), new String(listenerAdapter.getData()), listenerAdapter);
-                        if (result != null) {
-                            response(result);
-                        }
-                    }else {
-                        log.info("权限不足");
-                        response(new NoPowerBaseRspVO());
+        while (iterator.hasNext()){
+            ReflectIndicator indicator = iterator.next();
+            if(indicator.getRelativePath().equals(basePath.getPath())){
+                if(AuthSystem.judge(indicator.getAuthority(),userAuthData.getAuthLevel())){
+                    result = pathTrigger.trigger(basePath.getPath(), new String(listenerAdapter.getData()), listenerAdapter);
+                    if (result != null) {
+                        response(result);
+                        return;
                     }
+                }else {
+                    log.info("权限不足");
+                    response(new NoPowerBaseRspVO());
+                    return;
                 }
+                return;
             }
         }
 

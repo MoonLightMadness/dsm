@@ -14,7 +14,7 @@ import java.util.ListIterator;
  */
 public class Indicators {
 
-    private List<ReflectIndicator> reflectIndicators;
+    private volatile List<ReflectIndicator> reflectIndicators;
 
 
 
@@ -40,8 +40,10 @@ public class Indicators {
      * @version V1.0
      */
     public void add(ReflectIndicator indicator) {
-        ListIterator<ReflectIndicator> iterator = reflectIndicators.listIterator();
-        iterator.add(indicator);
+        synchronized (Indicators.class){
+            ListIterator<ReflectIndicator> iterator = reflectIndicators.listIterator();
+            iterator.add(indicator);
+        }
     }
 
     /**
@@ -54,10 +56,12 @@ public class Indicators {
      * @version V1.0
      */
     public void add(List<ReflectIndicator> list) {
-        ListIterator<ReflectIndicator> iterator = reflectIndicators.listIterator();
-        while (iterator.hasNext()) {
-            ReflectIndicator temp = iterator.next();
-            add(temp);
+        synchronized (Indicators.class){
+            ListIterator<ReflectIndicator> iterator = reflectIndicators.listIterator();
+            while (iterator.hasNext()) {
+                ReflectIndicator temp = iterator.next();
+                add(temp);
+            }
         }
     }
 

@@ -29,23 +29,29 @@ public class QueenBaseService {
     private LogSystem log = LogSystemFactory.getLogSystem();
 
     @Path("/register")
-    public BaseRspVO register(String args){
+    public void register(String args){
         BeeRegisterReqVO getIp = (BeeRegisterReqVO) new JSONParserImpl().parser(args.getBytes(StandardCharsets.UTF_8),BeeRegisterReqVO.class);
         QueenRegisterReqVO queenRegisterReqVO = (QueenRegisterReqVO) new JSONParserImpl().parser(args.getBytes(StandardCharsets.UTF_8),QueenRegisterReqVO.class);
         String[] relativePaths = queenRegisterReqVO.getPaths().split("&&");
-        for (String relativePath : relativePaths) {
-            if(!SimpleUtils.isEmptyString(relativePath)){
-                Indicators indicators = listenerAdapter.getSelectorIO().getIndicators();
-                ReflectIndicator reflectIndicator = new ReflectIndicator();
-                reflectIndicator.setRelativePath(relativePath);
-                reflectIndicator.setApproachWay("1");
-                reflectIndicator.setApproachIP(getIp.getApproachIP());
-                reflectIndicator.setApproachPort(getIp.getApproachPort());
-                indicators.add(reflectIndicator);
-                System.out.println(reflectIndicator.getApproachIP()+"  "+reflectIndicator.getApproachPort());
+        try {
+            synchronized (Indicators.class){
+                for (String relativePath : relativePaths) {
+                    if(!SimpleUtils.isEmptyString(relativePath)){
+                        Indicators indicators = listenerAdapter.getSelectorIO().getIndicators();
+                        ReflectIndicator reflectIndicator = new ReflectIndicator();
+                        reflectIndicator.setRelativePath(relativePath);
+                        reflectIndicator.setApproachWay("1");
+                        reflectIndicator.setApproachIP(getIp.getApproachIP());
+                        reflectIndicator.setApproachPort(getIp.getApproachPort());
+                        indicators.add(reflectIndicator);
+                        System.out.println(reflectIndicator.getApproachIP()+"  "+reflectIndicator.getApproachPort());
+                    }
+                }
             }
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-        return new BaseRspVO();
+        //return new BaseRspVO();
     }
 
     @Path(value = "/invoke")
