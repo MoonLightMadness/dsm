@@ -1,6 +1,5 @@
 package app.dsm.server.adapter;
 
-import app.dsm.base.JSONTool;
 import app.dsm.server.container.ServerEntity;
 import app.dsm.server.domain.HttpEntity;
 import app.dsm.server.http.HttpParser;
@@ -13,7 +12,6 @@ import app.utils.special.RTimer;
 import lombok.Data;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.List;

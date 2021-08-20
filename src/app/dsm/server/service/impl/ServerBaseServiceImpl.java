@@ -1,15 +1,13 @@
 package app.dsm.server.service.impl;
 
-import app.dsm.server.SelectorIO;
 import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.annotation.Authority;
 import app.dsm.server.annotation.Path;
 import app.dsm.server.container.ServerContainer;
 import app.dsm.server.container.ServerEntity;
-import app.dsm.server.domain.BasePath;
 import app.dsm.server.impl.SelectorIOImpl;
-import app.dsm.server.vo.*;
 import app.dsm.server.service.ServerBaseService;
+import app.dsm.server.vo.*;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.parser.impl.JSONParserImpl;
