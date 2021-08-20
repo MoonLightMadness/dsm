@@ -82,9 +82,7 @@ public class ListenerAdapter implements Runnable {
 
         if (null != data && data.length > 0) {
             //数据再组装
-            System.out.println(new String(data)+" "+data.length);
             data = reConstruct(data);
-
             log.info("异步接收数据完成，开始触发订阅方法");
             try {
                 threadListener.setArgs(this);
@@ -126,12 +124,12 @@ public class ListenerAdapter implements Runnable {
         if(null!=entity.getBody()){
             removeBracedStr = entity.getBody().substring(1,entity.getBody().length()-1);
             sb.append("{").append("\n");
-            sb.append(removeBracedStr).append(",").append("\n");
-            sb.append("\"path\":").append("\"").append(entity.getRequestPath()).append("\"").append("\n");
+            sb.append(removeBracedStr).append("\t,").append("\n");
+            sb.append("\t\"path\":").append("\"").append(entity.getRequestPath()).append("\"").append("\n");
             sb.append("}");
         }else {
             sb.append("{").append("\n");
-            sb.append("\"path\":").append("\"").append(entity.getRequestPath()).append("\"").append("\n");
+            sb.append("\t\"path\":").append("\"").append(entity.getRequestPath()).append("\"").append("\n");
             sb.append("}");
         }
         return sb.toString().getBytes(StandardCharsets.UTF_8);
