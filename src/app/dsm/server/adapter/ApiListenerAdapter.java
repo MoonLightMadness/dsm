@@ -67,15 +67,13 @@ public class ApiListenerAdapter implements ThreadListener {
     @Override
     public void invoke(Object obj, String... args) {
         BasePath basePath = (BasePath) new JSONParserImpl().parser(listenerAdapter.getData(), BasePath.class);
-        UserAuthData userAuthData = (UserAuthData) new JSONParserImpl().parser(listenerAdapter.getData(), UserAuthData.class);
-        if(null != userAuthData.getUserId()||null !=userAuthData.getUserPassword()){
-            SqliteImpl sqliteImpl = new SqliteImpl();
-            sqliteImpl.initialize();
-            String command = configer.readConfig("get.auth.level", userAuthData.getUserId(), userAuthData.getUserPassword());
-            userAuthData.setAuthLevel((String) sqliteImpl.get(command));
-        }else {
-            userAuthData.setAuthLevel("NORMAL");
+        //如果未给response字段，默认不触发方法
+        if(!canTrigger(basePath)){
+            return;
         }
+        UserAuthData userAuthData = (UserAuthData) new JSONParserImpl().parser(listenerAdapter.getData(), UserAuthData.class);
+        //检查是否具有权限字段
+        checkAuthority(userAuthData);
         ListIterator<ReflectIndicator> iterator = listenerAdapter.getSelectorIO().getIndicators().getIterator();
         while (iterator.hasNext()){
             ReflectIndicator indicator = iterator.next();
@@ -95,6 +93,25 @@ public class ApiListenerAdapter implements ThreadListener {
             }
         }
 
+    }
+
+    private boolean canTrigger(BasePath basePath){
+        if(null == basePath.getResponse() || "0".equals(basePath.getResponse())){
+            log.info("不响应且不触发方法数据,{}",basePath);
+            return false;
+        }
+        return true;
+    }
+
+    private void checkAuthority(UserAuthData userAuthData){
+        if(null != userAuthData.getUserId()||null !=userAuthData.getUserPassword()){
+            SqliteImpl sqliteImpl = new SqliteImpl();
+            sqliteImpl.initialize();
+            String command = configer.readConfig("get.auth.level", userAuthData.getUserId(), userAuthData.getUserPassword());
+            userAuthData.setAuthLevel((String) sqliteImpl.get(command));
+        }else {
+            userAuthData.setAuthLevel("NORMAL");
+        }
     }
 
     /**
