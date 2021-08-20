@@ -44,7 +44,7 @@ public class LogSystem {
             synchronized (LogSystem.class){
                 ListIterator<LogEntity> iterator = list.listIterator();
                 //控制台输出
-                System.out.println(new String(JSONTool.toJson(log)));
+                System.out.println(log.toString());
                 iterator.add(log);
                 logCount++;
                 if(logCount>=LogConstantArg.AUTO_SAVE_MAX_COUNT){
@@ -77,7 +77,7 @@ public class LogSystem {
                 while (iterator.hasNext()){
                     LogEntity entity = iterator.next();
                     if(entity != null){
-                        writer.write(entity.toString()+"\n");
+                        writer.write(entity +"\n");
                     }
                     iterator.remove();
                 }

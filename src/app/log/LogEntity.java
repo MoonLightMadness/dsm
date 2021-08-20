@@ -28,6 +28,13 @@ public class LogEntity  {
         timestamp= SimpleUtils.getTimeStamp();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.timestamp).append("|<--->|").append(this.message).append("|<--->|").append(this.source);
+        return sb.toString();
+    }
+
 
 
 }
