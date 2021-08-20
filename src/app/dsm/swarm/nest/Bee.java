@@ -30,6 +30,6 @@ public class Bee {
         String ip = character.toLowerCase(Locale.ROOT)+".ip";
         String port = character.toLowerCase(Locale.ROOT)+".port";
         server.initialize(configer.readConfig(ip), configer.readConfig(port) );
-
+        server.open();
     }
 }

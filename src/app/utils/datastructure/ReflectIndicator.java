@@ -32,4 +32,20 @@ public class ReflectIndicator {
      */
     private String authority;
 
+    /**
+     * 触发方式
+     * 0-本地 1-远程
+     */
+    private String approachWay;
+
+    /**
+     * 远程触发方法的ip
+     */
+    private String approachIP;
+
+    /**
+     * 远程触发方法的端口
+     */
+    private String approachPort;
+
 }
