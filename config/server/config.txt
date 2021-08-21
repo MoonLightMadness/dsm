@@ -1,6 +1,6 @@
 ip = 127.0.0.1
 port = 10005
-package.name = app.dsm.server
+package.name = app
 database = dsm.db
 # 心跳计时间隔(毫秒)
 beat.time.unit = 1000

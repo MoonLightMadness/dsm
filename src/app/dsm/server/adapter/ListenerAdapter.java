@@ -1,21 +1,27 @@
 package app.dsm.server.adapter;
 
+import app.dsm.exception.ServiceException;
 import app.dsm.server.container.ServerEntity;
 import app.dsm.server.domain.HttpEntity;
+import app.dsm.server.domain.ModeSwitcher;
+import app.dsm.server.exception.ServerException;
 import app.dsm.server.http.HttpParser;
 import app.dsm.server.impl.SelectorIOImpl;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
+import app.parser.impl.JSONParserImpl;
 import app.utils.SimpleUtils;
 import app.utils.listener.ThreadListener;
 import app.utils.special.RTimer;
 import lombok.Data;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 
 @Data
 public class ListenerAdapter implements Runnable {
@@ -83,16 +89,7 @@ public class ListenerAdapter implements Runnable {
         if (null != data && data.length > 0) {
             //数据再组装
             data = reConstruct(data);
-            log.info("异步接收数据完成，开始触发订阅方法");
-            try {
-                threadListener.setArgs(this);
-                ((ApiListenerAdapter) threadListener).setListenerAdapter(this);
-                threadListener.invoke(this);
-                log.info("订阅方法触发完成");
-            } catch (Exception e) {
-                log.error("订阅方法执行失败，原因：{}", e);
-                e.printStackTrace();
-            }
+            switcher();
         } else {
             log.error("收到无效数据");
             try {
@@ -103,6 +100,51 @@ public class ListenerAdapter implements Runnable {
         }
         log.info("ListenerAdapter线程结束，环节计时:{}",rTimer.end());
     }
+
+    /**
+     * 选择器
+     * 选择执行何种策略来处理接收的数据
+     * @return
+     * @author zhl
+     * @date 2021-08-21 23:35
+     * @version V1.0
+     */
+    @SneakyThrows
+    private void switcher(){
+        log.info("选择器开始执行");
+        ModeSwitcher modeSwitcher = (ModeSwitcher) new JSONParserImpl().parser(data,ModeSwitcher.class);
+        if(null == modeSwitcher.getSwitcher()){
+            throw new ServerException("字段switcher不能为空");
+        }
+        switch (modeSwitcher.getSwitcher().toUpperCase(Locale.ROOT)){
+            case "APIG":
+                switchToAPIG();
+                break;
+            case "CONSOLE":
+                switchToConsole();
+                break;
+            default :
+                switchToAPIG();
+                break;
+        }
+    }
+
+    private void switchToAPIG(){
+        try {
+            threadListener.setArgs(this);
+            ((ApiListenerAdapter) threadListener).setListenerAdapter(this);
+            threadListener.invoke(this);
+            log.info("订阅方法触发完成");
+        } catch (Exception e) {
+            log.error("订阅方法执行失败，原因：{}", e);
+            e.printStackTrace();
+        }
+    }
+
+    private void switchToConsole(){
+
+    }
+
 
     private void removeFromReceiving(SocketChannel socketChannel){
         List<SocketChannel> list = selectorIO.getReceivingChannels();
