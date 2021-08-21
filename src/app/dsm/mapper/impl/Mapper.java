@@ -115,20 +115,20 @@ public class Mapper extends AbstractMapper {
 
     @Override
     public Object selectOne(Object object, Object condition) {
-        return dataBase.getOneObject("SELECT "+getSelectString(object)+" FROM "+tName+" WHERE "+getWhereString(condition),tName,object.getClass());
+        return dataBase.getOneObject("SELECT " + getSelectString(object) + " FROM " + tName + " WHERE " + getWhereString(condition), tName, object.getClass());
     }
 
     @Override
     public Object[] selectList(Object object, Object condition) {
-        return dataBase.getObjects("SELECT "+getSelectString(object)+" FROM "+tName+" WHERE "+getWhereString(condition),tName,object.getClass());
+        return dataBase.getObjects("SELECT " + getSelectString(object) + " FROM " + tName + " WHERE " + getWhereString(condition), tName, object.getClass());
     }
 
     @Override
     public void update(Object object, Object condition) {
         dataBase.update("UPDATE " + this.tName + " SET " + getSetString(object) + " WHERE " + getWhereString(condition) + ";");
     }
-    
-    private String getSelectString(Object object){
+
+    private String getSelectString(Object object) {
         Field[] fields = object.getClass().getDeclaredFields();
         StringBuilder sb = new StringBuilder();
         for (Field field : fields) {
@@ -178,8 +178,16 @@ public class Mapper extends AbstractMapper {
     @Override
     public void updateBatch(List<Object> list, List<Object> conditions) {
         int count = list.size();
-        for(int i = 0; i < count; i++){
-            this.update(list.get(i),conditions.get(i));
+        for (int i = 0; i < count; i++) {
+            this.update(list.get(i), conditions.get(i));
+        }
+    }
+
+    @Override
+    public void delete(Object condition) {
+        //校验condition不为空
+        if(null != condition){
+            dataBase.delete("DELETE FROM " + tName + " WHERE " + getWhereString(condition));
         }
     }
 }

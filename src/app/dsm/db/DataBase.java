@@ -69,4 +69,6 @@ public interface DataBase<T> {
      * @version V1.0
      */
     Object getOneObject(String command,String tableName,Class clazz);
+
+
 }

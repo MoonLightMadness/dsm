@@ -67,4 +67,13 @@ public abstract class AbstractMapper {
     public abstract void updateBatch(List<Object> list, List<Object> conditions);
 
 
+    /**
+     * @param condition 条件
+     * @return
+     * @author zhl
+     * @date 2021-08-21 12:47
+     * @version V1.0
+     */
+    public abstract void delete(Object condition);
+
 }
