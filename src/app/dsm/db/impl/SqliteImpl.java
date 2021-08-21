@@ -37,38 +37,60 @@ public class SqliteImpl<T> implements DataBase<T> {
 
     private Configer configer;
 
+    private String dbName;
+
     @Override
     public void initialize(){
         log= LogSystemFactory.getLogSystem();
         configer = new Configer();
         //log.info(this.getClass().getName(),"初始化数据库连接");
-        String dbName=configer.readConfig("database");
+        dbName=configer.readConfig("database");
         //log.info("连接到数据库:{}",dbName);
         try {
             Class.forName("org.sqlite.JDBC");
-            this.connection= DriverManager.getConnection("jdbc:sqlite:"+dbName);
-            this.statement=connection.createStatement();
-            //设置超时
-            this.statement.setQueryTimeout(30);
             log.info("数据库连接初始化完成");
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
             log.error(this.getClass().getName(),e.getMessage());
         }
     }
+    private void open(){
+        try {
+            this.connection= DriverManager.getConnection("jdbc:sqlite:"+dbName);
+            this.statement=connection.createStatement();
+            //设置超时
+            this.statement.setQueryTimeout(30);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    private void close(){
+        try {
+            connection.close();
+            statement.close();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     @Override
     public T get(String command) {
         try {
             synchronized (this){
+                open();
                 resultSet= statement.executeQuery(command);
                 if(resultSet.next()){
-                    return (T) resultSet.getObject(1);
+                    Object object =  resultSet.getObject(1);
+                    close();
+                    return (T) object;
                 }
             }
         } catch (SQLException throwables) {
             log.error(this.getClass().getName(),"error:{}---sql:{}",throwables.getMessage(),throwables.getSQLState());
             throwables.printStackTrace();
         }
+        close();
         return null;
     }
 
@@ -78,6 +100,7 @@ public class SqliteImpl<T> implements DataBase<T> {
             String[] names = getColumnNames(tableName);
             List<Object> list = new ArrayList<>();
             synchronized (this){
+                open();
                 resultSet= statement.executeQuery(command);
                 while (resultSet.next()){
                     Object object = clazz.getDeclaredConstructor().newInstance();
@@ -94,6 +117,7 @@ public class SqliteImpl<T> implements DataBase<T> {
                     list.add(object);
                 }
             }
+            close();
             return list.toArray();
         } catch (SQLException | NoSuchMethodException throwables) {
             log.error("error:{}---sql:{}",throwables);
@@ -101,6 +125,7 @@ public class SqliteImpl<T> implements DataBase<T> {
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
+        close();
         return null;
     }
 
@@ -112,6 +137,7 @@ public class SqliteImpl<T> implements DataBase<T> {
             Field[] fields = object.getClass().getDeclaredFields();
             String[] names = getColumnNames(tableName);
             synchronized (this){
+                open();
                 resultSet= statement.executeQuery(command);
                 while (resultSet.next()){
                     System.out.println(resultSet.getFetchSize());
@@ -123,6 +149,7 @@ public class SqliteImpl<T> implements DataBase<T> {
                             }
                         }
                     }
+                    close();
                     return object;
                 }
             }
@@ -132,6 +159,7 @@ public class SqliteImpl<T> implements DataBase<T> {
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
+        close();
         return null;
     }
 
@@ -139,6 +167,7 @@ public class SqliteImpl<T> implements DataBase<T> {
         String comm = "pragma table_info(\""+tableName+"\")";
         StringBuilder sb = new StringBuilder();
         try {
+            open();
             resultSet = statement.executeQuery(comm);
             while (resultSet.next()){
                 sb.append(resultSet.getString("name")).append("\n");
@@ -146,6 +175,7 @@ public class SqliteImpl<T> implements DataBase<T> {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+        close();
         return sb.toString().split("\n");
     }
 
@@ -155,6 +185,7 @@ public class SqliteImpl<T> implements DataBase<T> {
         int count=1;
         try {
             synchronized (this){
+                open();
                 resultSet= statement.executeQuery(command);
                 while (resultSet.next()){
                     list.add((T) resultSet.getObject(count));
@@ -165,6 +196,7 @@ public class SqliteImpl<T> implements DataBase<T> {
             log.error(this.getClass().getName(),"error:{}---sql:{}",throwables.getMessage(),throwables.getSQLState());
             throwables.printStackTrace();
         }
+        close();
         return (T[]) list.toArray();
     }
 
@@ -172,36 +204,42 @@ public class SqliteImpl<T> implements DataBase<T> {
     public void insert(String command) {
         try {
             synchronized (this){
+                open();
                 statement.execute(command);
             }
         } catch (SQLException throwables) {
             log.error(this.getClass().getName(),"error:{}---sql:{}",throwables.getMessage(),throwables.getSQLState());
             throwables.printStackTrace();
         }
+        close();
     }
 
     @Override
     public void delete(String command) {
         try {
             synchronized (this){
+                open();
                 statement.execute(command);
             }
         } catch (SQLException throwables) {
             log.error(this.getClass().getName(),"error:{}---sql:{}",throwables.getMessage(),throwables.getSQLState());
             throwables.printStackTrace();
         }
+        close();
     }
 
     @Override
     public void update(String command) {
         try {
             synchronized (this){
+                open();
                 statement.execute(command);
             }
         } catch (SQLException throwables) {
             log.error(this.getClass().getName(),"error:{}---sql:{}",throwables.getMessage(),throwables.getSQLState());
             throwables.printStackTrace();
         }
+        close();
     }
 
 

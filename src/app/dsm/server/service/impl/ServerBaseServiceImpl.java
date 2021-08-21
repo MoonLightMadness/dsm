@@ -1,5 +1,7 @@
 package app.dsm.server.service.impl;
 
+import app.dsm.mapper.annotation.TableName;
+import app.dsm.mapper.impl.Mapper;
 import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.annotation.Authority;
 import app.dsm.server.annotation.Path;
@@ -16,15 +18,19 @@ import app.utils.TimeFormatter;
 
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
 @Path(value = "/server")
+@TableName(value = "auth_user_config")
 public class ServerBaseServiceImpl implements ServerBaseService {
 
     private ListenerAdapter listenerAdapter;
 
     private LogSystem log = LogSystemFactory.getLogSystem();
+
+    private Mapper mapper = new Mapper();
 
     @Override
     public void invoke(Object obj, String... args) {
@@ -99,5 +105,17 @@ public class ServerBaseServiceImpl implements ServerBaseService {
         baseReqVO.setCode("200");
         baseReqVO.setMsg("success");
         return baseReqVO;
+    }
+
+    @Path(value = "/getuser")
+    public List<GetUserInfoRspVO> getUser(String args){
+        GetUserInfoReqVO getUserInfoReqVO = (GetUserInfoReqVO) new JSONParserImpl().parser(args.getBytes(StandardCharsets.UTF_8),GetUserInfoReqVO.class);
+        mapper.initialize(this.getClass());
+        Object[] objects = mapper.selectList(new GetUserInfoRspVO(),getUserInfoReqVO);
+        List<GetUserInfoRspVO> result = new ArrayList<>();
+        for (Object object : objects){
+            result.add((GetUserInfoRspVO) object);
+        }
+        return result;
     }
 }
