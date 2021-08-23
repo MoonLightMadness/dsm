@@ -65,8 +65,8 @@ public class simpleUtils {
     public void test6(){
         String res =  SimpleUtils.callShell("ipconfig","c",true);
         System.out.println(res);
-        res = SimpleUtils.call("notepad C:\\Users\\Administrator\\Desktop\\work\\DSM\\config.txt");
-        System.out.println(res);
+        res = SimpleUtils.callShell("notepad C:\\Users\\Administrator\\Desktop\\work\\DSM\\config.txt","c",false);
+        System.out.println("res");
     }
     @Test
     public void test7(){
