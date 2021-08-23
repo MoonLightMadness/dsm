@@ -690,7 +690,7 @@ public class SimpleUtils {
         return variable;
     }
 
-    public boolean hasAnnotation(Class clazz,Class annotationType){
+    public boolean hasClassAnnotation(Class clazz,Class annotationType){
         Annotation annotation = clazz.getDeclaredAnnotation(annotationType);
         if(null != annotation && annotation.annotationType() == annotationType){
             return true;
@@ -698,8 +698,16 @@ public class SimpleUtils {
         return false;
     }
 
+    public boolean hasMethodAnnotaion(Method method,Class annotationType){
+        Annotation annotation = method.getDeclaredAnnotation(annotationType);
+        if(null != annotation && annotation.annotationType() == annotationType){
+            return true;
+        }
+        return false;
+    }
+
     /**
-     * 获取注解中value的值
+     * 获取类级别注解中value的值
      * @param clazz          clazz
      * @param annotationType 注释类型
      * @return @return {@link String }
@@ -707,8 +715,8 @@ public class SimpleUtils {
      * @date 2021-08-23 14:00
      * @version V1.0
      */
-    public String getAnnotationValue(Class clazz,Class annotationType){
-        if(hasAnnotation(clazz, annotationType)){
+    public String getClassAnnotationValue(Class clazz,Class annotationType){
+        if(hasClassAnnotation(clazz, annotationType)){
             Annotation annotation = clazz.getDeclaredAnnotation(annotationType);
             try {
                 Method method = annotation.getClass().getDeclaredMethod("value");
@@ -721,6 +729,28 @@ public class SimpleUtils {
         return null;
     }
 
+    /**
+     * 获取方法级别的注解的value的值
+     * @param method         方法
+     * @param annotationType 注释类型
+     * @return @return {@link String }
+     * @author zhl
+     * @date 2021-08-23 14:33
+     * @version V1.0
+     */
+    public String getMethodAnnotationValue(Method method,Class annotationType){
+        if(hasMethodAnnotaion(method,annotationType)){
+            Annotation annotation = method.getDeclaredAnnotation(annotationType);
+            try {
+                Method me = annotation.getClass().getDeclaredMethod("value");
+                return (String) me.invoke(annotation);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                log.error("获取注解值失败，原因：{}",e);
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 
 
 }
