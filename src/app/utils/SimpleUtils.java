@@ -18,8 +18,10 @@ import app.utils.datastructure.ReflectIndicator;
 import app.utils.datastructure.XByteBuffer;
 import app.utils.domain.Variable;
 import app.utils.special.RTimer;
+import lombok.Data;
 import lombok.SneakyThrows;
 import org.junit.Test;
+import test.testPojo;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
@@ -369,11 +371,11 @@ public class SimpleUtils {
             buffer.clear();
             try {
                 size = socketChannel.read(buffer);
-                if(size > 0){
+                if (size > 0) {
                     if (size == standard) {
                         buffer.flip();
                         xb.append(buffer.array());
-                    } else{
+                    } else {
                         byte[] rb = new byte[size];
                         buffer.flip();
                         System.arraycopy(buffer.array(), 0, rb, 0, size);
@@ -546,7 +548,8 @@ public class SimpleUtils {
             Field[] fields = obj.getClass().getDeclaredFields();
             for (Field field : fields) {
                 field.setAccessible(true);
-                if (field.get(obj).getClass().isPrimitive() || (field.get(obj).getClass() == String.class)) {
+                if (field.get(obj).getClass().isPrimitive() || (field.get(obj).getClass() == String.class)
+                        || (field.get(obj).getClass() == Integer.class)) {
                     field.set(newer, field.get(obj));
                 } else {
                     field.set(newer, duplicate(field.get(obj)));
@@ -565,7 +568,7 @@ public class SimpleUtils {
         return System.getProperty("file.separator");
     }
 
-    public static void scanPackage(String packageName,Indicators indicator) {
+    public static void scanPackage(String packageName, Indicators indicator) {
         String workingPath = getJarSelfPath();
         String[] paths;
         //判断程序是否是以jar包形式启动的
@@ -579,12 +582,12 @@ public class SimpleUtils {
         for (String path : paths) {
             path = path.trim().replace(SimpleUtils.getFilePathSeparator(), ".");
             if (path.startsWith(packageName)) {
-                SimpleUtils.constructReflectIndicator(path,indicator);
+                SimpleUtils.constructReflectIndicator(path, indicator);
             }
         }
     }
 
-    public static void constructReflectIndicator(String className,Indicators indicator) {
+    public static void constructReflectIndicator(String className, Indicators indicator) {
         ReflectIndicator temp = null;
         Class clazz = null;
         try {
@@ -677,30 +680,30 @@ public class SimpleUtils {
         return null;
     }
 
-    public Variable getVariable(Object obj){
+    public Variable getVariable(Object obj) {
         Variable variable = new Variable();
         try {
             Class clazz = obj.getClass();
             variable.setName(clazz.getSimpleName());
             variable.setFullName(clazz.getTypeName());
             variable.setValue(obj);
-        }catch (Exception ex) {
-            log.error("获取变量属性失败，原因：{}",ex);
+        } catch (Exception ex) {
+            log.error("获取变量属性失败，原因：{}", ex);
         }
         return variable;
     }
 
-    public boolean hasClassAnnotation(Class clazz,Class annotationType){
+    public boolean hasClassAnnotation(Class clazz, Class annotationType) {
         Annotation annotation = clazz.getDeclaredAnnotation(annotationType);
-        if(null != annotation && annotation.annotationType() == annotationType){
+        if (null != annotation && annotation.annotationType() == annotationType) {
             return true;
         }
         return false;
     }
 
-    public boolean hasMethodAnnotaion(Method method,Class annotationType){
+    public boolean hasMethodAnnotaion(Method method, Class annotationType) {
         Annotation annotation = method.getDeclaredAnnotation(annotationType);
-        if(null != annotation && annotation.annotationType() == annotationType){
+        if (null != annotation && annotation.annotationType() == annotationType) {
             return true;
         }
         return false;
@@ -708,6 +711,7 @@ public class SimpleUtils {
 
     /**
      * 获取类级别注解中value的值
+     *
      * @param clazz          clazz
      * @param annotationType 注释类型
      * @return @return {@link String }
@@ -715,14 +719,14 @@ public class SimpleUtils {
      * @date 2021-08-23 14:00
      * @version V1.0
      */
-    public String getClassAnnotationValue(Class clazz,Class annotationType){
-        if(hasClassAnnotation(clazz, annotationType)){
+    public String getClassAnnotationValue(Class clazz, Class annotationType) {
+        if (hasClassAnnotation(clazz, annotationType)) {
             Annotation annotation = clazz.getDeclaredAnnotation(annotationType);
             try {
                 Method method = annotation.getClass().getDeclaredMethod("value");
                 return (String) method.invoke(annotation);
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                log.error("获取注解值失败，原因：{}",e);
+                log.error("获取注解值失败，原因：{}", e);
                 e.printStackTrace();
             }
         }
@@ -731,6 +735,7 @@ public class SimpleUtils {
 
     /**
      * 获取方法级别的注解的value的值
+     *
      * @param method         方法
      * @param annotationType 注释类型
      * @return @return {@link String }
@@ -738,19 +743,128 @@ public class SimpleUtils {
      * @date 2021-08-23 14:33
      * @version V1.0
      */
-    public String getMethodAnnotationValue(Method method,Class annotationType){
-        if(hasMethodAnnotaion(method,annotationType)){
+    public String getMethodAnnotationValue(Method method, Class annotationType) {
+        if (hasMethodAnnotaion(method, annotationType)) {
             Annotation annotation = method.getDeclaredAnnotation(annotationType);
             try {
                 Method me = annotation.getClass().getDeclaredMethod("value");
                 return (String) me.invoke(annotation);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                log.error("获取注解值失败，原因：{}",e);
+                log.error("获取注解值失败，原因：{}", e);
                 e.printStackTrace();
             }
         }
         return null;
     }
 
+    /**
+     * 快速排序
+     *
+     * @param array 数组
+     * @param start 开始
+     * @param end   结束
+     * @return @return {@link int[] }
+     * @author zhl
+     * @date 2021-08-23 15:13
+     * @version V1.0
+     */
+    public static int[] qsort(int array[], int start, int end) {
+        int pivot = array[start];
+        int i = start;
+        int j = end;
+        while (i < j) {
+            while ((i < j) && (array[j] > pivot)) {
+                j--;
+            }
+            while ((i < j) && (array[i] < pivot)) {
+                i++;
+            }
+            if ((array[i] == array[j]) && (i < j)) {
+                i++;
+            } else {
+                int temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+        }
+        if (i - 1 > start) {
+            array = qsort(array, start, i - 1);
+        }
+        if (j + 1 < end) {
+            array = qsort(array, j + 1, end);
+        }
+        return array;
+    }
+
+    /**
+     * 对对象数值进行排序
+     * 排序标志：Field
+     * @param array 数组
+     * @param field 排序标志，该字段类型必须为数值类型
+     * @param start 开始
+     * @param end   结束
+     * @return @return {@link Object[] }
+     * @author zhl
+     * @date 2021-08-23 15:51
+     * @version V1.0
+     */
+    public static Object[] qsortObjects(Object[] array, Field field, int start, int end) {
+        long pivot = parseToLong(array[start],field);
+        int i = start;
+        int j = end;
+        while (i < j) {
+            while ((i < j) && (parseToLong(array[j],field) > pivot)) {
+                j--;
+            }
+            while ((i < j) && (parseToLong(array[i],field)  < pivot)) {
+                i++;
+            }
+            if ((parseToLong(array[i],field)  == parseToLong(array[j],field) ) && (i < j)) {
+                i++;
+            } else {
+                Object temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+        }
+        if (i - 1 > start) {
+            array = qsortObjects(array, field, start, i - 1);
+        }
+        if (j + 1 < end) {
+            array = qsortObjects(array, field, j + 1, end);
+        }
+        return array;
+    }
+
+    /**
+     * 对对象数值进行排序
+     * 排序标志：Field
+     * @param objects 对象
+     * @param field   具有基本数值类型的字段
+     * @return @return {@link List<Object> }
+     * @author zhl
+     * @date 2021-08-23 16:08
+     * @version V1.0
+     */
+    public static List<Object> qsortObjects(List<Object> objects,Field field){
+        Object[] os = objects.toArray();
+        os = qsortObjects(os,field,0,os.length-1);
+        return Arrays.asList(os);
+    }
+
+    private static long parseToLong(Object object,Field field){
+        return Long.valueOf(String.valueOf(getObjectFieldValue(object, field)));
+    }
+
+    public static Object getObjectFieldValue(Object obj, Field field) {
+        try {
+            field.setAccessible(true);
+            return field.get(obj);
+        } catch (IllegalAccessException e) {
+            log.error("获取字段值失败，原因:{}", e);
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }
