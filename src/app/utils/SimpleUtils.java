@@ -304,14 +304,15 @@ public class SimpleUtils {
             p = Runtime.getRuntime().exec("cmd /" + option + " " + cmd);
             if (block) {
                 p.waitFor();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), Charset.forName("gbk")));
+                String temp;
+                StringBuilder builder = new StringBuilder();
+                while ((temp = reader.readLine()) != null) {
+                    builder.append(temp).append("\n");
+                }
+                return builder.toString();
             }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), Charset.forName("gbk")));
-            String temp;
-            StringBuilder builder = new StringBuilder();
-            while ((temp = reader.readLine()) != null) {
-                builder.append(temp).append("\n");
-            }
-            return builder.toString();
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -335,6 +336,7 @@ public class SimpleUtils {
             while ((temp = reader.readLine()) != null) {
                 builder.append(temp).append("\n");
             }
+            p.destroy();
             return builder.toString();
         } catch (IOException e) {
             e.printStackTrace();
