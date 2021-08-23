@@ -6,6 +6,7 @@ import app.dsm.db.impl.SqliteImpl;
 import app.dsm.server.authority.AuthSystem;
 import app.dsm.server.constant.Indicators;
 import app.dsm.server.domain.BasePath;
+import app.dsm.server.domain.MessagePacket;
 import app.dsm.server.domain.UserAuthData;
 import app.dsm.server.http.HttpResponseBuilder;
 import app.dsm.server.trigger.PathTrigger;
@@ -48,12 +49,14 @@ public class ApiListenerAdapter implements ThreadListener {
 
     @Override
     public void invoke(Object obj, String... args) {
-        BasePath basePath = (BasePath) new JSONParserImpl().parser(listenerAdapter.getData(), BasePath.class);
+        MessagePacket messagePacket = listenerAdapter.getMessagePacket();
+        byte[] data = messagePacket.getData();
+        BasePath basePath = (BasePath) new JSONParserImpl().parser(data, BasePath.class);
         //如果未给response字段，默认不触发方法
         if(!canTrigger(basePath)){
             return;
         }
-        UserAuthData userAuthData = (UserAuthData) new JSONParserImpl().parser(listenerAdapter.getData(), UserAuthData.class);
+        UserAuthData userAuthData = (UserAuthData) new JSONParserImpl().parser(data, UserAuthData.class);
         //检查是否具有权限字段
         checkAuthority(userAuthData);
         ListIterator<ReflectIndicator> iterator = listenerAdapter.getSelectorIO().getIndicators().getIterator();
@@ -61,7 +64,7 @@ public class ApiListenerAdapter implements ThreadListener {
             ReflectIndicator indicator = iterator.next();
             if(indicator.getRelativePath().equals(basePath.getPath())){
                 if(AuthSystem.judge(indicator.getAuthority(),userAuthData.getAuthLevel())){
-                    result = pathTrigger.trigger(basePath.getPath(), new String(listenerAdapter.getData()), listenerAdapter);
+                    result = pathTrigger.trigger(basePath.getPath(), new String(data), listenerAdapter);
                     if (result != null) {
                         response(result);
                         return;

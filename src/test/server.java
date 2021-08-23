@@ -100,7 +100,7 @@ class testClass implements ThreadListener {
     @Override
     public void invoke(Object obj, String... args) {
         ListenerAdapter listenerAdapter = (ListenerAdapter) obj;
-        byte[] data = listenerAdapter.getData();
+        byte[] data = listenerAdapter.getMessagePacket().getData();
         if(JSONTool.getProperty("option",data) .equals("setname")){
             SelectorIOImpl selectorIO = listenerAdapter.getSelectorIO();
             ServerContainer container = selectorIO.getServerContainer();

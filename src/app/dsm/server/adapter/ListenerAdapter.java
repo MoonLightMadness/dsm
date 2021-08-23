@@ -3,6 +3,7 @@ package app.dsm.server.adapter;
 import app.dsm.exception.ServiceException;
 import app.dsm.server.container.ServerEntity;
 import app.dsm.server.domain.HttpEntity;
+import app.dsm.server.domain.MessagePacket;
 import app.dsm.server.domain.ModeSwitcher;
 import app.dsm.server.exception.ServerException;
 import app.dsm.server.http.HttpParser;
@@ -26,10 +27,11 @@ import java.util.Locale;
 @Data
 public class ListenerAdapter implements Runnable {
 
+
     /**
-     * 数据
+     * 消息包
      */
-    private byte[] data;
+    private MessagePacket messagePacket;
 
     /**
      * 远端服务器实体
@@ -75,7 +77,11 @@ public class ListenerAdapter implements Runnable {
         }
         try {
             log.info("正在接收数据");
-            data = SimpleUtils.receiveDataInNIO(channel);
+            messagePacket = new MessagePacket();
+            String[] address = SimpleUtils.addressCutter(channel.getRemoteAddress().toString());
+            messagePacket.setRemoteIP(address[0]);
+            messagePacket.setRemotePort(address[1]);
+            messagePacket.setData(SimpleUtils.receiveDataInNIO(channel));
             //接收完毕将该channel从集合中移除
             removeFromReceiving(channel);
         } catch (Exception e) {
@@ -86,9 +92,9 @@ public class ListenerAdapter implements Runnable {
             return;
         }
 
-        if (null != data && data.length > 0) {
+        if (null != messagePacket.getData() && messagePacket.getData().length > 0) {
             //数据再组装
-            data = reConstruct(data);
+            messagePacket.setData(reConstruct(messagePacket.getData()));
             switcher();
         } else {
             log.error("收到无效数据");
@@ -112,9 +118,10 @@ public class ListenerAdapter implements Runnable {
     @SneakyThrows
     private void switcher(){
         log.info("选择器开始执行");
-        ModeSwitcher modeSwitcher = (ModeSwitcher) new JSONParserImpl().parser(data,ModeSwitcher.class);
+        ModeSwitcher modeSwitcher = (ModeSwitcher) new JSONParserImpl().parser(messagePacket.getData(), ModeSwitcher.class);
         if(null == modeSwitcher.getSwitcher()){
-            throw new ServerException("字段switcher不能为空");
+            //throw new ServerException("字段switcher不能为空");
+            modeSwitcher.setSwitcher("APIG");
         }
         switch (modeSwitcher.getSwitcher().toUpperCase(Locale.ROOT)){
             case "APIG":

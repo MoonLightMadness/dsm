@@ -3,6 +3,7 @@ package app.utils.net;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @ClassName : app.utils.net.Sender
@@ -12,11 +13,6 @@ import java.nio.channels.SocketChannel;
  */
 public class Sender {
     public static void send(SocketChannel channel, byte[] data){
-        try {
-            channel.configureBlocking(false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         ByteBuffer buffer = ByteBuffer.allocate(data.length);
         buffer.put(data);
         buffer.flip();
