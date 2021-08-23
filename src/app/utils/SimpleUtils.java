@@ -10,12 +10,15 @@ import app.dsm.server.constant.AuthorityEnum;
 import app.dsm.server.constant.Indicators;
 import app.dsm.server.trigger.PathTrigger;
 import app.dsm.server.vo.CalculatorReqVO;
+import app.dsm.server.vo.GetUserInfoRspVO;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.datastructure.ReflectIndicator;
 import app.utils.datastructure.XByteBuffer;
+import app.utils.domain.Variable;
 import app.utils.special.RTimer;
 import lombok.SneakyThrows;
+import org.junit.Test;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
@@ -672,6 +675,20 @@ public class SimpleUtils {
         }
         return null;
     }
+
+    public Variable getVariable(Object obj){
+        Variable variable = new Variable();
+        try {
+            Class clazz = obj.getClass();
+            variable.setName(clazz.getSimpleName());
+            variable.setFullName(clazz.getTypeName());
+            variable.setValue(obj);
+        }catch (Exception ex) {
+            log.error("获取变量属性失败，原因：{}",ex);
+        }
+        return variable;
+    }
+
 
 
 }
