@@ -26,9 +26,16 @@ public class LogSystem {
     private List<LogEntity> list;
     private  Logger log;
     private  int logCount=0;
+    private boolean consoleOutput = true;
     public void init(){
         log=new Logger();
         list=new ArrayList<>();
+    }
+
+    public void init(boolean consoleOutput){
+        log=new Logger();
+        list=new ArrayList<>();
+        this.consoleOutput = consoleOutput;
     }
     /**
      * 将一个日志实体加入到日志系统中
@@ -44,7 +51,9 @@ public class LogSystem {
             synchronized (LogSystem.class){
                 ListIterator<LogEntity> iterator = list.listIterator();
                 //控制台输出
-                System.out.println(log.toString());
+                if(consoleOutput){
+                    System.out.println(log.toString());
+                }
                 iterator.add(log);
                 logCount++;
                 if(logCount>=LogConstantArg.AUTO_SAVE_MAX_COUNT){

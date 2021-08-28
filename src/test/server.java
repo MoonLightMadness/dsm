@@ -26,7 +26,6 @@ import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.ListIterator;
-
 public class server {
 
 
@@ -35,7 +34,6 @@ public class server {
     public void test2(){
 //        RTimer rTimer = new RTimer();
 //        rTimer.start();
-
         Configer configer = new Configer();
 
         Server server = new ServerImpl();

@@ -31,4 +31,23 @@ public class LogSystemFactory {
     }
 
 
+    /**
+     * @param consoleOutput 控制台输出标志
+     * @return @return {@link LogSystem }
+     * @author zhl
+     * @date 2021-08-28 10:55
+     * @version V1.0
+     */
+    public static synchronized LogSystem getLogSystem(boolean consoleOutput){
+        if(logSystem==null){
+            synchronized (LogSystemFactory.class){
+                logSystem=new LogSystem();
+                logSystem.init(consoleOutput);
+                logSystem.immediatelySaveMode(true);
+            }
+        }
+        return logSystem;
+    }
+
+
 }
