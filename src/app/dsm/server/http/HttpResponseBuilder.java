@@ -53,7 +53,7 @@ public class HttpResponseBuilder {
     /**
      * 连接方式
      */
-    private String connection = "Close";
+    private String connection = "Keep-Alive";
 
     /**
      * 数据

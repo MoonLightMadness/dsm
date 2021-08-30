@@ -26,7 +26,6 @@ import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.ListIterator;
-
 public class server {
 
 
@@ -35,7 +34,6 @@ public class server {
     public void test2(){
 //        RTimer rTimer = new RTimer();
 //        rTimer.start();
-
         Configer configer = new Configer();
 
         Server server = new ServerImpl();
@@ -100,7 +98,7 @@ class testClass implements ThreadListener {
     @Override
     public void invoke(Object obj, String... args) {
         ListenerAdapter listenerAdapter = (ListenerAdapter) obj;
-        byte[] data = listenerAdapter.getData();
+        byte[] data = listenerAdapter.getMessagePacket().getData();
         if(JSONTool.getProperty("option",data) .equals("setname")){
             SelectorIOImpl selectorIO = listenerAdapter.getSelectorIO();
             ServerContainer container = selectorIO.getServerContainer();

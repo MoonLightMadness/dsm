@@ -869,4 +869,13 @@ public class SimpleUtils {
         return null;
     }
 
+    public static String[] addressCutter(String address){
+        // example: /127.0.0.1:10000
+        address = address.substring(1);
+        String[] result = new String[2];
+        result[0] = address.split(":")[0];
+        result[1] = address.split(":")[1];
+        return result;
+    }
+
 }

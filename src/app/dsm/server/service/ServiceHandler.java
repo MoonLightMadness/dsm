@@ -25,7 +25,7 @@ public class ServiceHandler implements Service{
     }
 
     private void choose(){
-        String path = JSONTool.getProperty("path",listenerAdapter.getData());
+        String path = JSONTool.getProperty("path",listenerAdapter.getMessagePacket().getData());
         String clazzName = path.substring(1,path.indexOf("/",1));
         String methodName = path.substring(path.lastIndexOf("/")+1);
         try {
