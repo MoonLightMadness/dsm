@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.*;
 
 @Data
 public class SelectorIOImpl implements SelectorIO,Runnable {
@@ -48,6 +49,11 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
      */
     private List<SocketChannel> receivingChannels;
 
+    ThreadFactory namedThreadFactory ;
+
+    ExecutorService singleThreadPool ;
+
+
     @Override
     public void initialize(){
         indicators = new Indicators();
@@ -62,7 +68,11 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         ((ApiListenerAdapter)threadListener).initialize(indicators);
         filter = new Filter();
         receivingChannels = new ArrayList<>();
-        new Thread(beatChecker).start();
+        namedThreadFactory = Thread::new;
+        singleThreadPool = new ThreadPoolExecutor(4, 8,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+        singleThreadPool.submit(beatChecker);
     }
 
     @Override
@@ -144,17 +154,26 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
             log.info("Server读取远程服务器发来数据，开始，ip:{}--{}",((SocketChannel)key.channel()).getRemoteAddress(),
                     Thread.currentThread().getName());
             //将该key的channel加入到正在接收数据的channel集合中
-            ListIterator<SocketChannel> iterator = receivingChannels.listIterator();
-            iterator.add((SocketChannel) key.channel());
-            ListenerAdapter listenerAdapter = new ListenerAdapter();
-            listenerAdapter.setChannel(((SocketChannel)key.channel()));
-            listenerAdapter.setSelectorIO(this);
-            listenerAdapter.setThreadListener(threadListener);
-            log.info("异步接收数据，开始");
-            new Thread(listenerAdapter).start();
+            this.saveToReceiving(key);
+            //接收数据
+            this.receive(key);
         }catch (Exception e) {
             log.error("Server读取远程服务器发来数据失败，原因：{}",e);
         }
+    }
+
+    private void saveToReceiving(SelectionKey key){
+        ListIterator<SocketChannel> iterator = receivingChannels.listIterator();
+        iterator.add((SocketChannel) key.channel());
+    }
+
+    private void receive(SelectionKey key){
+        ListenerAdapter listenerAdapter = new ListenerAdapter();
+        listenerAdapter.setChannel(((SocketChannel)key.channel()));
+        listenerAdapter.setSelectorIO(this);
+        listenerAdapter.setThreadListener(threadListener);
+        log.info("异步接收数据，开始");
+        singleThreadPool.submit(listenerAdapter);
     }
 
     /**
