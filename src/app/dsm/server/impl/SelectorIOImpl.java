@@ -10,6 +10,7 @@ import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.constant.Indicators;
 import app.dsm.server.container.ServerContainer;
 import app.dsm.server.filter.Filter;
+import app.dsm.server.trigger.PathTrigger;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.listener.ThreadListener;
@@ -34,8 +35,6 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
     private LogSystem log = LogSystemFactory.getLogSystem();
 
-    private ThreadListener threadListener;
-
     private ServerContainer serverContainer;
 
     private BeatChecker beatChecker;
@@ -53,19 +52,22 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
     ExecutorService singleThreadPool ;
 
+    private PathTrigger pathTrigger;
 
     @Override
     public void initialize(){
         indicators = new Indicators();
         indicators.initialize();
+        pathTrigger = new PathTrigger();
+        pathTrigger.initialize(indicators);
+        //扫描包
+        scanPackage();
         Configer configer = new Configer();
         serverContainer = new ServerContainer();
         serverContainer.initialize();
         beatChecker = new BeatCheckerImpl();
         beatChecker.startBeat(serverContainer,Long.parseLong(configer.readConfig("beat.time.unit"))
                 ,Integer.parseInt(configer.readConfig("beat.max")));
-        threadListener = new ApiListenerAdapter();
-        ((ApiListenerAdapter)threadListener).initialize(indicators);
         filter = new Filter();
         receivingChannels = new ArrayList<>();
         namedThreadFactory = Thread::new;
@@ -170,7 +172,6 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         ListenerAdapter listenerAdapter = new ListenerAdapter();
         listenerAdapter.setChannel(((SocketChannel)key.channel()));
         listenerAdapter.setSelectorIO(this);
-        listenerAdapter.setThreadListener(threadListener);
         log.info("异步接收数据，开始");
         singleThreadPool.submit(listenerAdapter);
     }
@@ -195,6 +196,12 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         return true;
     }
 
+    private void scanPackage(){
+        List<String> packages = new Configer().readConfigList("package.name");
+        for (String str : packages) {
+            pathTrigger.scanPackage(str);
+        }
+    }
 
 
 }

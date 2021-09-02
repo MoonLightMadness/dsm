@@ -27,6 +27,7 @@ import java.util.ListIterator;
 @Data
 public class ApiListenerAdapter implements ThreadListener {
 
+
     private PathTrigger pathTrigger;
 
     private Object result;
@@ -37,14 +38,9 @@ public class ApiListenerAdapter implements ThreadListener {
 
     private Configer configer;
 
-    public void initialize(Indicators indicators) {
-        pathTrigger = new PathTrigger();
-        pathTrigger.initialize(indicators);
+    public void initialize() {
         configer = new Configer();
-        List<String> packages = new Configer().readConfigList("package.name");
-        for (String str : packages) {
-            pathTrigger.scanPackage(str);
-        }
+        pathTrigger = listenerAdapter.getSelectorIO().getPathTrigger();
     }
 
     @Override
