@@ -10,6 +10,7 @@ import app.dsm.server.domain.UserAuthData;
 import app.dsm.server.http.HttpResponseBuilder;
 import app.dsm.server.trigger.PathTrigger;
 import app.dsm.server.vo.NoPowerBaseRspVO;
+import app.dsm.server.vo.ResponseRspVO;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
@@ -47,6 +48,7 @@ public class ApiListenerAdapter implements ThreadListener {
         BasePath basePath = (BasePath) SimpleUtils.parseTo(data, BasePath.class);
         //如果未给response字段，默认不触发方法
         if(!canTrigger(basePath)){
+            noTriggerResponse();
             return;
         }
         UserAuthData userAuthData = (UserAuthData) SimpleUtils.parseTo(data, UserAuthData.class);
@@ -90,6 +92,13 @@ public class ApiListenerAdapter implements ThreadListener {
         }else {
             userAuthData.setAuthLevel("NORMAL");
         }
+    }
+
+    private void noTriggerResponse(){
+        ResponseRspVO responseRspVO = new ResponseRspVO();
+        responseRspVO.setResponse("000000");
+        responseRspVO.setMsg("不响应且不触发方法");
+        response(responseRspVO);
     }
 
     /**
