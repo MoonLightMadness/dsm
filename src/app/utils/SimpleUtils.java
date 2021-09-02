@@ -5,6 +5,7 @@ import app.dsm.exception.ServiceException;
 import app.dsm.exception.UniversalErrorCodeEnum;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
+import app.parser.impl.JSONParserImpl;
 import app.utils.datastructure.XByteBuffer;
 import app.utils.domain.Variable;
 import lombok.SneakyThrows;
@@ -750,6 +751,10 @@ public class SimpleUtils {
         result[0] = address.split(":")[0];
         result[1] = address.split(":")[1];
         return result;
+    }
+
+    public static Object parseTo(byte[] json,Class clazz){
+        return new JSONParserImpl().parser(json,clazz);
     }
 
 }

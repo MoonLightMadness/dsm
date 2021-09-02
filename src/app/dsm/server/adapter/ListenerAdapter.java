@@ -113,7 +113,7 @@ public class ListenerAdapter implements Adapter {
     @SneakyThrows
     private void switcher(){
         log.info("选择器开始执行");
-        ModeSwitcher modeSwitcher = (ModeSwitcher) new JSONParserImpl().parser(messagePacket.getData(), ModeSwitcher.class);
+        ModeSwitcher modeSwitcher = (ModeSwitcher) SimpleUtils.parseTo(messagePacket.getData(), ModeSwitcher.class);
         if(null == modeSwitcher.getSwitcher()){
             throw new ServerException("字段switcher不能为空");
         }
