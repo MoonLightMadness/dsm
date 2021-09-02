@@ -14,7 +14,7 @@ public interface ServerBaseService extends  Service{
      * @date 2021-08-12 21:58
      * @version V1.0
      */
-    public GetTimeRspVO getTime(String args);
+    public GetTimeRspVO getTime(GetTimeRspVO args);
 
     /**
      * 计算两数的和
@@ -24,7 +24,7 @@ public interface ServerBaseService extends  Service{
      * @date 2021-08-13 23:26
      * @version V1.0
      */
-    public CalculatorRspVO calculate(String args);
+    public CalculatorRspVO calculate(CalculatorReqVO args);
 
     /**
      * 设置服务器名字

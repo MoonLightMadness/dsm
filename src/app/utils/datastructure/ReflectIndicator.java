@@ -48,4 +48,9 @@ public class ReflectIndicator {
      */
     private String approachPort;
 
+    /**
+     * 参数类型
+     */
+    private String[] parameterTypes;
+
 }

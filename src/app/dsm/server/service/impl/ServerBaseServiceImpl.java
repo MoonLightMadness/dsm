@@ -51,7 +51,7 @@ public class ServerBaseServiceImpl implements ServerBaseService {
      */
     @Path(value = "/gettime")
     @Override
-    public GetTimeRspVO getTime(String args){
+    public GetTimeRspVO getTime(GetTimeRspVO args){
         GetTimeRspVO getTimeRspVO = new GetTimeRspVO();
         getTimeRspVO.setTime(SimpleUtils.getTimeStamp2(TimeFormatter.SEC_LEVEL));
         return getTimeRspVO;
@@ -60,8 +60,7 @@ public class ServerBaseServiceImpl implements ServerBaseService {
     @Path(value = "/calculate")
     @Authority(value = "HIGH")
     @Override
-    public CalculatorRspVO calculate(String args) {
-        CalculatorReqVO calculatorReqVO = (CalculatorReqVO) new JSONParserImpl().parser(args.getBytes(StandardCharsets.UTF_8),CalculatorReqVO.class);
+    public CalculatorRspVO calculate(CalculatorReqVO calculatorReqVO) {
         CalculatorRspVO calculatorRspVO = new CalculatorRspVO();
         try {
             long result = Long.parseLong(calculatorReqVO.getX()) + Long.parseLong(calculatorReqVO.getY());
