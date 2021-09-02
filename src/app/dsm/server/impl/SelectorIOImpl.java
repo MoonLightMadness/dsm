@@ -5,7 +5,6 @@ import app.dsm.exception.ServiceException;
 import app.dsm.exception.UniversalErrorCodeEnum;
 import app.dsm.server.BeatChecker;
 import app.dsm.server.SelectorIO;
-import app.dsm.server.adapter.ApiListenerAdapter;
 import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.constant.Indicators;
 import app.dsm.server.container.ServerContainer;
@@ -13,10 +12,8 @@ import app.dsm.server.filter.Filter;
 import app.dsm.server.trigger.PathTrigger;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
-import app.utils.listener.ThreadListener;
 import lombok.Data;
 import lombok.SneakyThrows;
-
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;

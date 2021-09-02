@@ -1,9 +1,7 @@
 package app.dsm.server.trigger;
 
-import app.dsm.base.JSONTool;
 import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.constant.Indicators;
-import app.dsm.server.domain.BasePath;
 import app.utils.SimpleUtils;
 import app.utils.datastructure.ReflectIndicator;
 import app.utils.net.NetUtils;
@@ -11,6 +9,7 @@ import app.utils.net.NetUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.ListIterator;
 
 public class PathTrigger {
@@ -49,42 +48,33 @@ public class PathTrigger {
      * @date 2021-08-13 22:37
      * @version V1.0
      */
-    public Object trigger(String path, String arg, ListenerAdapter adapter){
-        ListIterator<ReflectIndicator> iterator = adapter.getSelectorIO().getIndicators().getIterator();
-        while (iterator.hasNext()) {
-            ReflectIndicator reflectIndicator = iterator.next();
-            if(reflectIndicator.getRelativePath().equals(path)){
-                try {
-                    Class clazz = Class.forName(reflectIndicator.getClassPath());
-                    Object obj = clazz.newInstance();
-                    Field listener = obj.getClass().getDeclaredField("listenerAdapter");
-                    listener.setAccessible(true);
-                    listener.set(obj,adapter);
-                    Method method = null;
-                    Object result;
-                    if(arg == null){
-                        method = obj.getClass().getMethod(reflectIndicator.getMethodName(),null);
-                        method.setAccessible(true);
-                        result = method.invoke(obj,null);
-                    }else {
-                        method = obj.getClass().getMethod(reflectIndicator.getMethodName(), String.class);
-                        method.setAccessible(true);
-                        result = method.invoke(obj, arg);
-                    }
-                    return result;
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                }
+    public Object trigger(String path, String arg, ListenerAdapter adapter,ReflectIndicator indicator){
+        if(indicator.getRelativePath().equals(path)){
+            try {
+                Class clazz = Class.forName(indicator.getClassPath());
+                Class para = Class.forName(indicator.getParameterTypes()[0]);
+                Object obj = clazz.newInstance();
+                Field listener = obj.getClass().getDeclaredField("listenerAdapter");
+                listener.setAccessible(true);
+                listener.set(obj,adapter);
+                Method method = null;
+                Object result;
+                method = obj.getClass().getMethod(indicator.getMethodName(), para);
+                method.setAccessible(true);
+                result = method.invoke(obj, SimpleUtils.parseTo(arg.getBytes(StandardCharsets.UTF_8),para));
+                return result;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
             }
         }
         return null;

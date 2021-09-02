@@ -4,7 +4,6 @@ import app.dsm.base.JSONTool;
 import app.dsm.config.Configer;
 import app.dsm.db.impl.SqliteImpl;
 import app.dsm.server.authority.AuthSystem;
-import app.dsm.server.constant.Indicators;
 import app.dsm.server.domain.BasePath;
 import app.dsm.server.domain.MessagePacket;
 import app.dsm.server.domain.UserAuthData;
@@ -13,15 +12,13 @@ import app.dsm.server.trigger.PathTrigger;
 import app.dsm.server.vo.NoPowerBaseRspVO;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
-import app.parser.impl.JSONParserImpl;
+import app.utils.SimpleUtils;
 import app.utils.datastructure.ReflectIndicator;
 import app.utils.listener.ThreadListener;
 import app.utils.net.Sender;
 import lombok.Data;
-
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.ListIterator;
 
 @Data
@@ -47,12 +44,12 @@ public class ApiListenerAdapter implements ThreadListener {
     public void invoke(Object obj, String... args) {
         MessagePacket messagePacket = listenerAdapter.getMessagePacket();
         byte[] data = messagePacket.getData();
-        BasePath basePath = (BasePath) new JSONParserImpl().parser(data, BasePath.class);
+        BasePath basePath = (BasePath) SimpleUtils.parseTo(data, BasePath.class);
         //如果未给response字段，默认不触发方法
         if(!canTrigger(basePath)){
             return;
         }
-        UserAuthData userAuthData = (UserAuthData) new JSONParserImpl().parser(data, UserAuthData.class);
+        UserAuthData userAuthData = (UserAuthData) SimpleUtils.parseTo(data, UserAuthData.class);
         //检查是否具有权限字段
         checkAuthority(userAuthData);
         ListIterator<ReflectIndicator> iterator = listenerAdapter.getSelectorIO().getIndicators().getIterator();
@@ -60,7 +57,7 @@ public class ApiListenerAdapter implements ThreadListener {
             ReflectIndicator indicator = iterator.next();
             if(indicator.getRelativePath().equals(basePath.getPath())){
                 if(AuthSystem.judge(indicator.getAuthority(),userAuthData.getAuthLevel())){
-                    result = pathTrigger.trigger(basePath.getPath(), new String(data), listenerAdapter);
+                    result = pathTrigger.trigger(basePath.getPath(), new String(data), listenerAdapter,indicator);
                     if (result != null) {
                         response(result);
                         return;

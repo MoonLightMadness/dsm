@@ -1,6 +1,5 @@
 package app.dsm.server.adapter;
 
-import app.dsm.exception.ServiceException;
 import app.dsm.server.container.ServerEntity;
 import app.dsm.server.domain.HttpEntity;
 import app.dsm.server.domain.MessagePacket;
@@ -12,13 +11,10 @@ import app.dsm.server.http.HttpParser;
 import app.dsm.server.impl.SelectorIOImpl;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
-import app.parser.impl.JSONParserImpl;
 import app.utils.SimpleUtils;
-import app.utils.listener.ThreadListener;
 import app.utils.special.RTimer;
 import lombok.Data;
 import lombok.SneakyThrows;
-
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
@@ -113,7 +109,7 @@ public class ListenerAdapter implements Adapter {
     @SneakyThrows
     private void switcher(){
         log.info("选择器开始执行");
-        ModeSwitcher modeSwitcher = (ModeSwitcher) new JSONParserImpl().parser(messagePacket.getData(), ModeSwitcher.class);
+        ModeSwitcher modeSwitcher = (ModeSwitcher) SimpleUtils.parseTo(messagePacket.getData(), ModeSwitcher.class);
         if(null == modeSwitcher.getSwitcher()){
             throw new ServerException("字段switcher不能为空");
         }

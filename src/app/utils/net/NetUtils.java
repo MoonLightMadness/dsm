@@ -62,6 +62,7 @@ public class NetUtils {
                     temp = new ReflectIndicator();
                     temp.setClassPath(className);
                     temp.setMethodName(method.getName());
+                    temp.setParameterTypes(generateParameters(method));
                     temp.setRelativePath(classPath.value() + methodPath.value());
                     //判断有无权限注解
                     if (method.isAnnotationPresent(Authority.class)) {
@@ -77,7 +78,14 @@ public class NetUtils {
         }
     }
 
-
+    private static String[] generateParameters(Method method) {
+        String[] paras = new String[method.getParameterCount()];
+        int count = 0;
+        for (Class clazz : method.getParameterTypes()) {
+            paras[count++] = clazz.getName();
+        }
+        return paras;
+    }
 
     public static String scanDirectory(String directory) {
         File file = new File(directory);
