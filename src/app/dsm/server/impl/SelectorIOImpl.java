@@ -88,8 +88,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
 
 
-    @Override
-    public void register(SocketChannel socketChannel) {
+    private void register(SocketChannel socketChannel) {
         try {
             log.info("远端服务器注册Selector开始，入参:{}",socketChannel);
             socketChannel.register(selector, SelectionKey.OP_READ);
