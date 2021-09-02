@@ -6,6 +6,7 @@ import app.dsm.server.constant.Indicators;
 import app.dsm.server.domain.BasePath;
 import app.utils.SimpleUtils;
 import app.utils.datastructure.ReflectIndicator;
+import app.utils.net.NetUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -37,7 +38,7 @@ public class PathTrigger {
      * @version V1.0
      */
     public void scanPackage(String packageName){
-        SimpleUtils.scanPackage(packageName,indicators);
+        NetUtils.scanPackage(packageName,indicators);
     }
 
     /**
