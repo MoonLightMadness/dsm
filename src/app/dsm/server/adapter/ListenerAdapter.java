@@ -6,6 +6,8 @@ import app.dsm.server.domain.HttpEntity;
 import app.dsm.server.domain.MessagePacket;
 import app.dsm.server.domain.ModeSwitcher;
 import app.dsm.server.exception.ServerException;
+import app.dsm.server.handler.Handler;
+import app.dsm.server.handler.HandlerFactory;
 import app.dsm.server.http.HttpParser;
 import app.dsm.server.impl.SelectorIOImpl;
 import app.log.LogSystem;
@@ -25,7 +27,7 @@ import java.util.ListIterator;
 import java.util.Locale;
 
 @Data
-public class ListenerAdapter implements Runnable {
+public class ListenerAdapter implements Adapter {
 
 
     /**
@@ -43,10 +45,7 @@ public class ListenerAdapter implements Runnable {
      */
     private SelectorIOImpl selectorIO;
 
-    /**
-     * 线程监听器
-     */
-    private ThreadListener threadListener;
+
 
     private LogSystem log = LogSystemFactory.getLogSystem();
 
@@ -87,10 +86,6 @@ public class ListenerAdapter implements Runnable {
         } catch (Exception e) {
             log.error("接收数据失败，原因：{}", e);
         }
-        if (null == threadListener) {
-            log.error("未指定订阅方法,触发事件结束");
-            return;
-        }
 
         if (null != messagePacket.getData() && messagePacket.getData().length > 0) {
             //数据再组装
@@ -120,37 +115,14 @@ public class ListenerAdapter implements Runnable {
         log.info("选择器开始执行");
         ModeSwitcher modeSwitcher = (ModeSwitcher) new JSONParserImpl().parser(messagePacket.getData(), ModeSwitcher.class);
         if(null == modeSwitcher.getSwitcher()){
-            //throw new ServerException("字段switcher不能为空");
-            modeSwitcher.setSwitcher("APIG");
+            throw new ServerException("字段switcher不能为空");
         }
-        switch (modeSwitcher.getSwitcher().toUpperCase(Locale.ROOT)){
-            case "APIG":
-                switchToAPIG();
-                break;
-            case "CONSOLE":
-                switchToConsole();
-                break;
-            default :
-                switchToAPIG();
-                break;
-        }
+        //调用处理器进行处理
+        Handler handler = HandlerFactory.getHandler(modeSwitcher.getSwitcher().toUpperCase(Locale.ROOT));
+        handler.handle(this);
     }
 
-    private void switchToAPIG(){
-        try {
-            threadListener.setArgs(this);
-            ((ApiListenerAdapter) threadListener).setListenerAdapter(this);
-            threadListener.invoke(this);
-            log.info("订阅方法触发完成");
-        } catch (Exception e) {
-            log.error("订阅方法执行失败，原因：{}", e);
-            e.printStackTrace();
-        }
-    }
 
-    private void switchToConsole(){
-
-    }
 
 
     private void removeFromReceiving(SocketChannel socketChannel){

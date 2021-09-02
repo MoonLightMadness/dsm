@@ -29,15 +29,7 @@ public interface SelectorIO extends Runnable{
     void open(ServerSocketChannel serverSocketChannel);
 
 
-    /**
-     * 远端服务器注册
-     * @param socketChannel 套接字通道
-     * @return
-     * @author zhl
-     * @date 2021-08-11 20:58
-     * @version V1.0
-     */
-    void register(SocketChannel socketChannel);
+
 
 
 }

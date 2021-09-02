@@ -10,6 +10,7 @@ import app.dsm.server.adapter.ListenerAdapter;
 import app.dsm.server.constant.Indicators;
 import app.dsm.server.container.ServerContainer;
 import app.dsm.server.filter.Filter;
+import app.dsm.server.trigger.PathTrigger;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.listener.ThreadListener;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.*;
 
 @Data
 public class SelectorIOImpl implements SelectorIO,Runnable {
@@ -32,8 +34,6 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
     private Selector selector;
 
     private LogSystem log = LogSystemFactory.getLogSystem();
-
-    private ThreadListener threadListener;
 
     private ServerContainer serverContainer;
 
@@ -48,21 +48,33 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
      */
     private List<SocketChannel> receivingChannels;
 
+    ThreadFactory namedThreadFactory ;
+
+    ExecutorService singleThreadPool ;
+
+    private PathTrigger pathTrigger;
+
     @Override
     public void initialize(){
         indicators = new Indicators();
         indicators.initialize();
+        pathTrigger = new PathTrigger();
+        pathTrigger.initialize(indicators);
+        //扫描包
+        scanPackage();
         Configer configer = new Configer();
         serverContainer = new ServerContainer();
         serverContainer.initialize();
         beatChecker = new BeatCheckerImpl();
         beatChecker.startBeat(serverContainer,Long.parseLong(configer.readConfig("beat.time.unit"))
                 ,Integer.parseInt(configer.readConfig("beat.max")));
-        threadListener = new ApiListenerAdapter();
-        ((ApiListenerAdapter)threadListener).initialize(indicators);
         filter = new Filter();
         receivingChannels = new ArrayList<>();
-        new Thread(beatChecker).start();
+        namedThreadFactory = Thread::new;
+        singleThreadPool = new ThreadPoolExecutor(4, 8,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+        singleThreadPool.submit(beatChecker);
     }
 
     @Override
@@ -78,8 +90,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
 
 
 
-    @Override
-    public void register(SocketChannel socketChannel) {
+    private void register(SocketChannel socketChannel) {
         try {
             log.info("远端服务器注册Selector开始，入参:{}",socketChannel);
             socketChannel.register(selector, SelectionKey.OP_READ);
@@ -144,17 +155,25 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
             log.info("Server读取远程服务器发来数据，开始，ip:{}--{}",((SocketChannel)key.channel()).getRemoteAddress(),
                     Thread.currentThread().getName());
             //将该key的channel加入到正在接收数据的channel集合中
-            ListIterator<SocketChannel> iterator = receivingChannels.listIterator();
-            iterator.add((SocketChannel) key.channel());
-            ListenerAdapter listenerAdapter = new ListenerAdapter();
-            listenerAdapter.setChannel(((SocketChannel)key.channel()));
-            listenerAdapter.setSelectorIO(this);
-            listenerAdapter.setThreadListener(threadListener);
-            log.info("异步接收数据，开始");
-            new Thread(listenerAdapter).start();
+            this.saveToReceiving(key);
+            //接收数据
+            this.receive(key);
         }catch (Exception e) {
             log.error("Server读取远程服务器发来数据失败，原因：{}",e);
         }
+    }
+
+    private void saveToReceiving(SelectionKey key){
+        ListIterator<SocketChannel> iterator = receivingChannels.listIterator();
+        iterator.add((SocketChannel) key.channel());
+    }
+
+    private void receive(SelectionKey key){
+        ListenerAdapter listenerAdapter = new ListenerAdapter();
+        listenerAdapter.setChannel(((SocketChannel)key.channel()));
+        listenerAdapter.setSelectorIO(this);
+        log.info("异步接收数据，开始");
+        singleThreadPool.submit(listenerAdapter);
     }
 
     /**
@@ -177,6 +196,12 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         return true;
     }
 
+    private void scanPackage(){
+        List<String> packages = new Configer().readConfigList("package.name");
+        for (String str : packages) {
+            pathTrigger.scanPackage(str);
+        }
+    }
 
 
 }
