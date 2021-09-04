@@ -79,6 +79,7 @@ public class GenhinImpactMonitor implements Monitor {
         }
         timeVo.setStartTime(start.toString());
         int success = -1;
+        log.info("启动游戏--{}",start);
         while (success == -1){
             try {
                success = Mail.sendMail("home.pc","phone","YuanShen Start"
@@ -94,6 +95,7 @@ public class GenhinImpactMonitor implements Monitor {
         timeVo.setEndTime(end.toString());
         timeVo.setLastTime(String.valueOf(start.until(end, ChronoUnit.MINUTES)));
         int success = -1;
+        log.info("结束游戏--{}",end);
         while (success == -1){
             try {
                 mapper.save(timeVo);
