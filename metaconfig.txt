@@ -11,3 +11,5 @@ local_path = .\config\server\blacklist.txt
 local_path = .\config\server\mapper.txt
 
 local_path = .\config\swarm\config.txt
+
+local_path = .\config\system\config.txt

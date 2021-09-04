@@ -167,7 +167,19 @@ public class Configer {
         return result;
     }
 
-    public void writeConfig(int mode,String path,String dataType,String brief){
+
+    /**
+     * @param path     路径
+     * @param key
+     * @param value
+     * @param dataType 数据类型 可空
+     * @param brief    注释 可空
+     * @return
+     * @author zhl
+     * @date 2021-09-04 16:16
+     * @version V1.0
+     */
+    public void writeConfig(String path,String key,String value,String dataType,String brief){
         File f = new File(path);
         if(!f.exists()){
             log.error("在指定的路径上找不到该文件");
@@ -181,12 +193,8 @@ public class Configer {
                 bw.newLine();
                 bw.write("# DataType:"+dataType);
                 bw.newLine();
-                if(mode == 1){
-                    bw.write("local_path = ");
-                }else {
-                    bw.write("remote_path = ");
-                }
-                bw.write(path);
+                bw.write(key+" = "+value);
+                bw.newLine();
                 bw.flush();
                 bw.close();
             }
@@ -195,6 +203,48 @@ public class Configer {
             e.printStackTrace();
         }
 
+    }
+
+    public void updateConfig(String key,String newValue,String path){
+        File f = new File(path);
+        if (!f.exists()) {
+            log.error("在指定的路径上找不到该文件--path:{}",path);
+        }
+        try {
+            StringBuilder sb = new StringBuilder();
+            synchronized (Configer.class){
+                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                String temp;
+                while ((temp = br.readLine())!=null){
+                    if(!temp.trim().startsWith(key)){
+                        sb.append(temp).append("\n");
+                    }else {
+                        sb.append(key).append(" = ").append(newValue).append("\n");
+                    }
+                }
+                br.close();
+                write(f, sb.toString());
+            }
+        } catch (FileNotFoundException e) {
+            log.error(null,e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            log.error(null,e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void write(File f,String data){
+        try {
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f,false)));
+            writer.write(data);
+            writer.flush();
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void refreshLocal(File f){

@@ -1,5 +1,11 @@
 
 @echo off
+
+
+@REM 创建日志文件夹
+md log
+
+
 set meta=./metaconfig.txt
 
 @REM 如果不存在元配置文件，则创建一个新的
@@ -17,4 +23,5 @@ if not exist ./config (
     cd ./sample
     echo #sample = sample > sample.txt
 )
+
 
