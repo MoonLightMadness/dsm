@@ -63,16 +63,16 @@ public class Configer {
                 log.error("在指定的路径上找不到该文件--path:{}",path);
                 return null;
             }
+            BufferedReader br = null;
             try {
                 synchronized (Configer.class){
-                    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                   br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
                     String temp;
                     while ((temp = br.readLine())!=null){
                         if(temp.trim().startsWith(propertyName)){
                             return temp.substring(temp.indexOf("=")+1).trim();
                         }
                     }
-                    br.close();
                 }
             } catch (FileNotFoundException e) {
                 log.error(null,e.getMessage());
@@ -80,8 +80,15 @@ public class Configer {
             } catch (IOException e) {
                 log.error(null,e.getMessage());
                 e.printStackTrace();
+            }finally {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
+        log.error("未找到属性{}的值",propertyName);
         return null;
     }
 
@@ -102,7 +109,6 @@ public class Configer {
                             return messageHandler(temp.substring(temp.indexOf("=")+1).trim(),args);
                         }
                     }
-                    log.error("未找到属性{}的值",propertyName);
                 }
             } catch (FileNotFoundException e) {
                 log.error(null,e.getMessage());
@@ -118,7 +124,7 @@ public class Configer {
                 }
             }
         }
-        log.error("找不到属性:{}的值",propertyName);
+        log.error("未找到属性{}的值",propertyName);
         return null;
     }
 
