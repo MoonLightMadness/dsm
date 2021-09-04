@@ -13,3 +13,5 @@ local_path = .\config\server\mapper.txt
 local_path = .\config\swarm\config.txt
 
 local_path = .\config\system\config.txt
+
+local_path = .\config\mail\config.txt

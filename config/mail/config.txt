@@ -1,0 +1,8 @@
+
+mail.account = qq2377459837@163.com
+
+mail.pwd = YLTTKNREIMKWDNKZ
+
+mail.smtp = smtp.163.com
+
+mail.receiver = 2377459837@qq.com
