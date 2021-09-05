@@ -1,4 +1,7 @@
 
+
+mail.switch = on
+
 mail.account = qq2377459837@163.com
 
 mail.pwd = YLTTKNREIMKWDNKZ
