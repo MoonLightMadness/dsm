@@ -1,5 +1,6 @@
 package app.dsm.game.monitor.impl;
 
+import app.dsm.config.Configer;
 import app.dsm.game.monitor.Monitor;
 import app.dsm.game.monitor.vo.TimeVo;
 import app.dsm.mail.Mail;
@@ -28,16 +29,19 @@ public class GenhinImpactMonitor implements Monitor {
 
     private LogSystem log = LogSystemFactory.getLogSystem();
 
+    private Configer configer;
+
     private Mapper mapper;
 
     private TimeVo timeVo;
 
     private SnowFlake snowFlake;
 
-    public void init(){
+    public void init() {
         mapper = new Mapper();
         mapper.initialize(this.getClass());
         snowFlake = new SnowFlake();
+        configer = new Configer();
     }
 
     @Override
@@ -47,8 +51,8 @@ public class GenhinImpactMonitor implements Monitor {
             Process p = runtime.exec("tasklist");
             BufferedReader bw = new BufferedReader(new InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8));
             String s;
-            while ((s=bw.readLine())!=null) {
-                if(s.toLowerCase(Locale.ROOT).startsWith("yuanshen")){
+            while ((s = bw.readLine()) != null) {
+                if (s.toLowerCase(Locale.ROOT).startsWith("yuanshen")) {
                     setStatus(true);
                     return;
                 }
@@ -59,17 +63,23 @@ public class GenhinImpactMonitor implements Monitor {
         }
     }
 
-    private void setStatus(boolean isRunning){
-        if(!this.isRunning && isRunning){
-            sendRunning();
-        }else if(this.isRunning && !isRunning){
-            sendClose();
+    private void setStatus(boolean isRunning) {
+        boolean mailSwtch = false;
+        if (configer.readConfig("mail.switch").toLowerCase(Locale.ROOT).equals("on")) {
+            mailSwtch = true;
+        } else {
+            mailSwtch = false;
+        }
+        if (!this.isRunning && isRunning) {
+            sendRunning(mailSwtch);
+        } else if (this.isRunning && !isRunning) {
+            sendClose(mailSwtch);
         }
         this.isRunning = isRunning;
     }
 
 
-    private void sendRunning(){
+    private void sendRunning(boolean mailSwtch) {
         start = LocalDateTime.now();
         timeVo = new TimeVo();
         try {
@@ -78,41 +88,45 @@ public class GenhinImpactMonitor implements Monitor {
             e.printStackTrace();
         }
         timeVo.setStartTime(start.toString());
-        int success = -1;
-        log.info("启动游戏--{}",start);
-        while (success == -1){
-            try {
-               success = Mail.sendMail("home.pc","phone","YuanShen Start"
-                        ,"YuanShen.exe Start in"+ start);
-            }catch (Exception e) {
-                e.printStackTrace();
+        log.info("启动游戏--{}", start);
+        if(mailSwtch){
+            int success = -1;
+            while (success == -1) {
+                try {
+                    success = Mail.sendMail("home.pc", "phone", "YuanShen Start"
+                            , "YuanShen.exe Start in" + start);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    private void sendClose(){
+    private void sendClose(boolean mailSwtch) {
         LocalDateTime end = LocalDateTime.now();
         timeVo.setEndTime(end.toString());
         timeVo.setLastTime(String.valueOf(start.until(end, ChronoUnit.MINUTES)));
-        int success = -1;
-        log.info("结束游戏--{}",end);
-        while (success == -1){
-            try {
-                mapper.save(timeVo);
-                success = Mail.sendMail("home.pc","phone","YuanShen Closed"
-                        ,"YuanShen.exe Closed in"+ end+"</br>You played "+start.until(end, ChronoUnit.MINUTES)+" mins");
-            }catch (Exception e) {
-                e.printStackTrace();
+        mapper.save(timeVo);
+        log.info("结束游戏--{}", end);
+        if(mailSwtch){
+            int success = -1;
+            while (success == -1) {
+                try {
+
+                    success = Mail.sendMail("home.pc", "phone", "YuanShen Closed"
+                            , "YuanShen.exe Closed in" + end + "</br>You played " + start.until(end, ChronoUnit.MINUTES) + " mins");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
-
     }
 
     public static void main(String[] args) {
         try {
             GenhinImpactMonitor genhinImpactMonitor = new GenhinImpactMonitor();
             genhinImpactMonitor.init();
-            while (true){
+            while (true) {
                 genhinImpactMonitor.startMonitor();
                 Thread.sleep(100);
             }
