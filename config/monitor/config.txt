@@ -1,0 +1,8 @@
+
+genhin.config.path = ./config/monitor/config.txt
+
+genhin.dailyreport = on
+
+genhin.report.time = 08:00:00
+
+report.date = 2021-09-05

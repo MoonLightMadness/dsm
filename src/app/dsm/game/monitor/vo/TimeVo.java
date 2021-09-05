@@ -13,4 +13,6 @@ public class TimeVo {
 
     private String lastTime;
 
+    private String gameDate;
+
 }
