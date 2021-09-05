@@ -5,10 +5,12 @@ import app.dsm.base.impl.UniversalEntityWrapper;
 import app.utils.EntityUtils;
 import app.utils.SimpleUtils;
 import app.utils.TimeFormatter;
+import app.utils.guid.impl.SnowFlake;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 /**
@@ -93,5 +95,18 @@ public class simpleUtils {
         LocalDate end = LocalDate.parse("2021-09-10");
         long interval = start.until(end, ChronoUnit.DAYS);
         System.out.println(interval);
+    }
+
+    @Test
+    public void test11(){
+        SnowFlake snowFlake = new SnowFlake();
+        try {
+            for (int i = 0; i < 100;i++) {
+                System.out.println(snowFlake.generateGuid("1"));
+            }
+            System.out.println(LocalDateTime.parse("1970-01-01T00:00:00").until(LocalDateTime.now(),ChronoUnit.SECONDS));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
