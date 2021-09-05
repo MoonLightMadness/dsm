@@ -51,7 +51,9 @@ public class GenhinImpactMonitor implements Monitor {
     public void startMonitor() {
         Runtime runtime = Runtime.getRuntime();
         try {
-            dailyReport();
+            if(configer.readConfig("genhin.dailyreport").toLowerCase(Locale.ROOT).equals("on")){
+                dailyReport();
+            }
             Process p = runtime.exec("tasklist");
             BufferedReader bw = new BufferedReader(new InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8));
             String s;

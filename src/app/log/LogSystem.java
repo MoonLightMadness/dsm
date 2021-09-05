@@ -45,9 +45,6 @@ public class LogSystem {
         configer = new Configer();
         sysName = configer.readConfig("sys.name");
         logPath = configer.readConfig("log.save.path");
-        if (!isToday()) {
-            dailyChange();
-        }
     }
 
     public void init(boolean consoleOutput) {
@@ -81,6 +78,9 @@ public class LogSystem {
     private void add(LogEntity log) {
         try {
             synchronized (LogSystem.class) {
+                if (!isToday()) {
+                    dailyChange();
+                }
                 ListIterator<LogEntity> iterator = list.listIterator();
                 //控制台输出
                 if (consoleOutput) {
