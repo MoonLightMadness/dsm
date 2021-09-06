@@ -86,7 +86,7 @@ public class ApiListenerAdapter implements ThreadListener {
     private void checkAuthority(UserAuthData userAuthData){
         if(null != userAuthData.getUserId()||null !=userAuthData.getUserPassword()){
             SqliteImpl sqliteImpl = new SqliteImpl();
-            sqliteImpl.initialize();
+            sqliteImpl.initialize(configer.readConfig("server.db.name"));
             String command = configer.readConfig("get.auth.level", userAuthData.getUserId(), userAuthData.getUserPassword());
             userAuthData.setAuthLevel((String) sqliteImpl.get(command));
         }else {

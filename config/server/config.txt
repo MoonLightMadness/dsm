@@ -5,3 +5,5 @@ package.name = app
 beat.time.unit = 1000
 # 心跳计数上限
 beat.max = 60
+
+server.db.name = dsm.db

@@ -1,5 +1,6 @@
 package app.dsm.mapper.impl;
 
+import app.dsm.config.Configer;
 import app.dsm.db.DataBase;
 import app.dsm.db.impl.SqliteImpl;
 import app.dsm.mapper.AbstractMapper;
@@ -29,6 +30,8 @@ public class Mapper extends AbstractMapper {
      */
     String[] columnNames;
 
+    private Configer configer = new Configer();
+
     /**
      * 初始化Mapper
      *
@@ -38,8 +41,20 @@ public class Mapper extends AbstractMapper {
      * @version V1.0
      */
     public void initialize(Class clazz) {
+        initialize(clazz,configer.readConfig("sys.name")+".db");
+    }
+
+    /**
+     * 初始化Mapper
+     * @param dbName 数据库的名字
+     * @return
+     * @author zhl
+     * @date 2021-09-06 10:21
+     * @version V1.0
+     */
+    public void initialize(Class clazz,String dbName) {
         dataBase = new SqliteImpl<>();
-        dataBase.initialize();
+        dataBase.initialize(dbName);
         getTableName(clazz);
     }
 

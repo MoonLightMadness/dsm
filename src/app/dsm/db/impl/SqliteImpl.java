@@ -44,7 +44,9 @@ public class SqliteImpl<T> implements DataBase<T> {
         log= LogSystemFactory.getLogSystem();
         configer = new Configer();
         //log.info(this.getClass().getName(),"初始化数据库连接");
-        dbName=configer.readConfig("database");
+        if(dbName == null){
+            dbName=configer.readConfig("database");
+        }
         //log.info("连接到数据库:{}",dbName);
         try {
             Class.forName("org.sqlite.JDBC");
@@ -54,6 +56,22 @@ public class SqliteImpl<T> implements DataBase<T> {
             log.error(this.getClass().getName(),e.getMessage());
         }
     }
+
+    /**
+     * 初始化
+     *
+     * @param dbName 数据库的名字
+     * @return
+     * @author zhl
+     * @date 2021-09-06 10:18
+     * @version V1.0
+     */
+    @Override
+    public void initialize(String dbName) {
+        this.dbName = dbName;
+        initialize();
+    }
+
     private void open(){
         try {
             this.connection= DriverManager.getConnection("jdbc:sqlite:"+dbName);

@@ -13,6 +13,15 @@ public interface DataBase<T> {
      **/
     void initialize();
     /**
+     * 初始化
+     * @param dbName 数据库的名字
+     * @return
+     * @author zhl
+     * @date 2021-09-06 10:18
+     * @version V1.0
+     */
+    void initialize(String dbName);
+    /**
      * 获取数据
      * @author Zhang huai lan
      * @version V1.0
