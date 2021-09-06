@@ -17,3 +17,5 @@ local_path = .\config\system\config.txt
 local_path = .\config\mail\config.txt
 
 local_path = .\config\monitor\config.txt
+
+local_path = .\config\monitor\universal\config.txt

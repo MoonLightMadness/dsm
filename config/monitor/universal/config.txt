@@ -1,0 +1,29 @@
+
+monitor.database = Entertainment.db
+
+monitor.mail.main.switch = on
+monitor.start.mail.default.receiver = 2377459837@qq.com
+monitor.start.mail.default.sendername = home.pc
+monitor.start.mail.default.receivername = phone
+monitor.start.mail.default.subject = aaa
+monitor.start.mail.default.content = bbb
+
+monitor.close.mail.default.receiver = 2377459837@qq.com
+monitor.close.mail.default.sendername = home.pc
+monitor.close.mail.default.receivername = phone
+monitor.close.mail.default.subject = aaa
+monitor.close.mail.default.content = bbb
+
+monitor.daily.date = 2021-09-05
+
+monitor.weekly.date = 2021-09-05
+
+monitor.target = notepad++.exe
+
+monitor.target = 2asdasd
+
+monitor.target = 3sadsad.exe
+
+notepad++.exe.start.mail.switch = on
+notepad++.exe.close.mail.switch = on
+

@@ -35,6 +35,17 @@ public class Configer {
     }
 
     /**
+     * @param metaPath 元配置文件路径
+     * @return @return {@link  }
+     * @author zhl
+     * @date 2021-09-06 10:13
+     * @version V1.0
+     */
+    public Configer(String metaPath){
+        this.init(metaPath);
+    }
+
+    /**
      * 初始化
      * 在指定路径下创建配置目录
      *

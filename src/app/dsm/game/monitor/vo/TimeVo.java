@@ -15,4 +15,6 @@ public class TimeVo {
 
     private String gameDate;
 
+    private String processName;
+
 }
