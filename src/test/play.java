@@ -68,6 +68,15 @@ public class play {
         return sb.toString();
     }
 
+    @Test
+    public void test5(){
+        String str = "jps | find /I \"RemoteMavenServer36\"";
+        String res = SimpleUtils.callShell(str,"c",true);
+        res = res.split(" ")[0].trim();
+        res = SimpleUtils.callShell("taskkill /F /PID "+res,"c",true);
+        System.out.println(res);
+    }
+
 }
 @Data
 class School{

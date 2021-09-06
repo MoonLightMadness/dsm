@@ -101,7 +101,7 @@ public class GenhinImpactMonitor implements Monitor {
             while (success == -1) {
                 try {
                     success = Mail.sendMail("home.pc", "phone", "YuanShen Start"
-                            , "YuanShen.exe Start in" + start);
+                            , "YuanShen.exe Start in " + start);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -119,9 +119,8 @@ public class GenhinImpactMonitor implements Monitor {
             int success = -1;
             while (success == -1) {
                 try {
-
                     success = Mail.sendMail("home.pc", "phone", "YuanShen Closed"
-                            , "YuanShen.exe Closed in" + end + "</br>You played " + start.until(end, ChronoUnit.MINUTES) + " mins");
+                            , "YuanShen.exe Closed in " + end + "<br>You played " + start.until(end, ChronoUnit.MINUTES) + " mins");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -144,7 +143,6 @@ public class GenhinImpactMonitor implements Monitor {
             int success = -1;
             while (success == -1) {
                 try {
-
                     success = Mail.sendMail("home.pc", "phone", "YuanShen DailyReport"
                             , "Yesterday you played "+total+" mins");
                 } catch (Exception e) {

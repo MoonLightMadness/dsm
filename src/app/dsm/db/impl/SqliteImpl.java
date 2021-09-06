@@ -158,9 +158,9 @@ public class SqliteImpl<T> implements DataBase<T> {
                 open();
                 resultSet= statement.executeQuery(command);
                 while (resultSet.next()){
-                    System.out.println(resultSet.getFetchSize());
                     for (String name : names){
                         for (Field field : fields){
+                            field.setAccessible(true);
                             if(name.replace("_","").equals(field.getName().toLowerCase(Locale.ROOT))){
                                 String str = resultSet.getString(name);
                                 field.set(object,str);
