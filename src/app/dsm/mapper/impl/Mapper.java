@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Mapper extends AbstractMapper {
 
@@ -44,7 +45,18 @@ public class Mapper extends AbstractMapper {
 
     private void getTableName(Class clazz) {
         TableName tableName = (TableName) clazz.getDeclaredAnnotation(TableName.class);
-        this.tName = tableName.value();
+        if(tableName != null){
+            this.tName = tableName.value();
+        }else {
+            //如果没有@TableName注释则采用类名作为表名进行解析
+            parseOriginalClassName(clazz.getName());
+        }
+    }
+
+    private void parseOriginalClassName(String name){
+        char[] cname = name.toCharArray();
+        cname[0] = String.valueOf(cname[0]).toLowerCase(Locale.ROOT).toCharArray()[0];
+        this.tName = convertPOJOToDBType(String.valueOf(cname));
     }
 
     @Override

@@ -1,5 +1,8 @@
 package test;
 
+import app.dsm.config.utils.ConfigerUtil;
+import app.dsm.game.monitor.Monitor;
+import app.dsm.game.monitor.impl.GenhinImpactMonitor;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
@@ -8,6 +11,7 @@ import lombok.Data;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.util.Locale;
 
 /**
  * @ClassName : test.play
@@ -42,6 +46,27 @@ public class play {
         System.out.println(dup.getStu().getAge());
     }
 
+    @Test
+    public void test4(){
+        char[] cname = "GenhinImpactMonitor".toCharArray();
+        cname[0] = String.valueOf(cname[0]).toLowerCase(Locale.ROOT).toCharArray()[0];
+        System.out.println(convertPOJOToDBType(String.valueOf(cname)));
+        System.out.println(ConfigerUtil.isToday("log.date"));
+    }
+
+    private String convertPOJOToDBType(String property) {
+        char[] seq = property.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (char c : seq) {
+            //如果是该字母是大写字母则变为小写且在前面加入下划线
+            if (Character.isUpperCase(c)) {
+                sb.append("_").append(Character.toLowerCase(c));
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
 
 }
 @Data
