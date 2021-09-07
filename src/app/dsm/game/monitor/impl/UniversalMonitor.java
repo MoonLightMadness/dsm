@@ -79,6 +79,9 @@ public class UniversalMonitor implements Monitor {
         snowFlake = new SnowFlake();
         //初始化进程中存储结构
         processIn = new HashMap<>();
+        //开启自动保存模块
+        AutoSave autoSave = new AutoSave(mapper,processIn);
+        new Thread(autoSave).start();
     }
 
     private void initialRuntimes() {
@@ -180,7 +183,11 @@ public class UniversalMonitor implements Monitor {
                 while (success == -1) {
                     success = Mail.sendMail(customSenderName, customReceiverName, customSubject, customContent);
                 }
+            }else {
+                log.info("自定义开关关闭，不发送邮件");
             }
+        }else {
+            log.info("总开关关闭，不发送邮件");
         }
     }
 
@@ -243,7 +250,11 @@ public class UniversalMonitor implements Monitor {
                 while (success == -1) {
                     success = Mail.sendMail(customSenderName, customReceiverName, customSubject, customContent);
                 }
+            }else {
+                log.info("自定义开关关闭，不发送邮件");
             }
+        }else {
+            log.info("总开关关闭，不发送邮件");
         }
     }
 

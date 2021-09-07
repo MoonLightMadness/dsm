@@ -2,10 +2,13 @@ package app.dsm.config;
 
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
+import org.junit.Test;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Configer {
 
@@ -22,6 +25,8 @@ public class Configer {
      */
     private String[] local_directory;
 
+
+    private Pattern callPattern = Pattern.compile("\\$\\{(.*?)}");
 
     /**
      * 远程url
@@ -81,7 +86,7 @@ public class Configer {
                     String temp;
                     while ((temp = br.readLine())!=null){
                         if(temp.trim().startsWith(propertyName)){
-                            return temp.substring(temp.indexOf("=")+1).trim();
+                            return callReplacer(temp.substring(temp.indexOf("=")+1).trim());
                         }
                     }
                 }
@@ -101,6 +106,28 @@ public class Configer {
         }
         log.error("未找到属性{}的值",propertyName);
         return null;
+    }
+
+    private String callReplacer(String str){
+        String res = null;
+        if(str != null){
+            Matcher matcher = callPattern.matcher(str);
+            while (matcher.find()){
+                String temp = readConfig(matcher.group(1));
+                if(temp != null){
+                    res = str.replace("${"+matcher.group(1)+"}",temp);
+                }
+            }
+            if(res != null){
+                Matcher check = callPattern.matcher(res);
+                if(check.find()){
+                    res = callReplacer(res);
+                }
+            }else {
+                res = str;
+            }
+        }
+        return res;
     }
 
     public String readConfig(String propertyName,String... args) {

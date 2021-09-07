@@ -1,11 +1,13 @@
 package test;
 
+import app.dsm.config.Configer;
 import app.dsm.config.utils.ConfigerUtil;
 import app.dsm.game.monitor.Monitor;
 import app.dsm.game.monitor.impl.GenhinImpactMonitor;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
+import app.utils.special.RTimer;
 import com.sun.xml.internal.ws.protocol.soap.ServerMUTube;
 import lombok.Data;
 import org.junit.Test;
@@ -75,6 +77,18 @@ public class play {
         res = res.split(" ")[0].trim();
         res = SimpleUtils.callShell("taskkill /F /PID "+res,"c",true);
         System.out.println(res);
+    }
+
+    @Test
+    public void test6(){
+        Configer configer = new Configer();
+        RTimer rTimer = new RTimer();
+        rTimer.start();
+        System.out.println(configer.readConfig("notepad++.exe.start.mail.subject"));
+        System.out.println(rTimer.end());
+        rTimer.start();
+        System.out.println(configer.readConfig("notepad++.exe.start.mail.subject"));
+        System.out.println(rTimer.end());
     }
 
 }
