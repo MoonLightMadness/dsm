@@ -8,6 +8,7 @@ import app.log.LogSystem;
 import app.log.LogSystemFactory;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.ListIterator;
 
 /**
@@ -46,26 +47,31 @@ public class AutoSave implements Runnable {
         while (true){
             try {
                 long sleep = parseConfig();
-                log.info("下次保存时间--{}ms",sleep);
-                Thread.sleep(sleep);
-                log.info("自动保存开始");
-                synchronized (HashMap.class){
-                    ListIterator<String> iterator = (ListIterator<String>) processIn.keySet().iterator();
-                    while (iterator.hasNext()){
-                        String id = processIn.get(iterator.next());
-                        TimeVo condition = new TimeVo();
-                        condition.setId(id);
-                        TimeVo timeVo = (TimeVo) mapper.selectOne(new TimeVo(),condition);
-                        TimeVo update = new TimeVo();
-                        if(timeVo.getLastTime()!=null){
-                            update.setLastTime(String.valueOf(Long.parseLong(timeVo.getLastTime())+sleep));
-                        }else {
-                            update.setLastTime(String.valueOf(sleep));
+                if(sleep > 0){
+                    log.info("下次保存时间--{}ms",sleep);
+                    Thread.sleep(sleep);
+                    log.info("自动保存开始");
+                    synchronized (HashMap.class){
+                        Iterator<String> iterator = processIn.keySet().iterator();
+                        while (iterator.hasNext()){
+                            String id = processIn.get(iterator.next());
+                            TimeVo condition = new TimeVo();
+                            condition.setId(id);
+                            TimeVo timeVo = (TimeVo) mapper.selectOne(new TimeVo(),condition);
+                            TimeVo update = new TimeVo();
+                            if(timeVo.getLastTime()!=null){
+                                update.setLastTime(String.valueOf((Long.parseLong(timeVo.getLastTime())+sleep)/1000));
+                            }else {
+                                update.setLastTime(String.valueOf(sleep/1000));
+                            }
+                            mapper.update(update,condition);
+                            log.info("{}已自动保存",timeVo.getProcessName());
                         }
-                        mapper.update(update,condition);
                     }
+                    log.info("自动保存结束");
+                }else {
+                    Thread.sleep(1000);
                 }
-                log.info("自动保存结束");
             }catch (Exception e){
                 log.error("自动保存模块出现错误，原因:{}",e);
             }

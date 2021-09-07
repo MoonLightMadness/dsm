@@ -10,7 +10,6 @@ import app.dsm.mapper.impl.Mapper;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.guid.impl.SnowFlake;
-import jdk.internal.dynalink.linker.LinkerServices;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -61,6 +60,8 @@ public class UniversalMonitor implements Monitor {
      */
     private HashMap<String, String> processIn;
 
+    private DailyReport dailyReport;
+
     @Override
     public void startMonitor() {
         renewRuntimes();
@@ -80,8 +81,12 @@ public class UniversalMonitor implements Monitor {
         //初始化进程中存储结构
         processIn = new HashMap<>();
         //开启自动保存模块
-        AutoSave autoSave = new AutoSave(mapper,processIn);
+        AutoSave autoSave = new AutoSave(mapper, processIn);
         new Thread(autoSave).start();
+        //每日报告模块
+        dailyReport = new DailyReport();
+        dailyReport.init();
+        new Thread(dailyReport).start();
     }
 
     private void initialRuntimes() {
@@ -160,7 +165,7 @@ public class UniversalMonitor implements Monitor {
                 //检查用户是否自定义了该进程启动时的相关配置，如果没有则使用默认值
                 String customMailReceiver = configer.readConfig(progressName + ".start.mail.receiver");
                 String customSenderName = configer.readConfig(progressName + ".start.mail.sender");
-                String customReceiverName = configer.readConfig(progressName + ".start.mail.receiver");
+                String customReceiverName = configer.readConfig(progressName + ".start.mail.receivername");
                 String customSubject = configer.readConfig(progressName + ".start.mail.subject");
                 String customContent = configer.readConfig(progressName + ".start.mail.content");
                 if (customMailReceiver == null) {
@@ -183,10 +188,10 @@ public class UniversalMonitor implements Monitor {
                 while (success == -1) {
                     success = Mail.sendMail(customSenderName, customReceiverName, customSubject, customContent);
                 }
-            }else {
+            } else {
                 log.info("自定义开关关闭，不发送邮件");
             }
-        }else {
+        } else {
             log.info("总开关关闭，不发送邮件");
         }
     }
@@ -195,7 +200,9 @@ public class UniversalMonitor implements Monitor {
         TimeVo timeVo = new TimeVo();
         try {
             timeVo.setId(snowFlake.generateGuid("2"));
-            processIn.put(progressName, timeVo.getId());
+            synchronized (HashMap.class) {
+                processIn.put(progressName, timeVo.getId());
+            }
         } catch (Exception e) {
             log.error("id生成失败，原因:{}", e);
             e.printStackTrace();
@@ -216,10 +223,10 @@ public class UniversalMonitor implements Monitor {
         processIn.remove(progressName);
     }
 
-    private void sendClosedMail(String progressName){
+    private void sendClosedMail(String progressName) {
         //邮件总开关
         boolean mainSwitch = ConfigerUtil.getSwitchOn("monitor.mail.main.switch");
-        if(mainSwitch){
+        if (mainSwitch) {
             //检查是否有用户自定义的配置
             Boolean customConfig = ConfigerUtil.getSwitchOn(progressName + ".close.mail.switch");
             //如果有则发送邮件
@@ -227,7 +234,7 @@ public class UniversalMonitor implements Monitor {
                 //检查用户是否自定义了该进程启动时的相关配置，如果没有则使用默认值
                 String customMailReceiver = configer.readConfig(progressName + ".close.mail.receiver");
                 String customSenderName = configer.readConfig(progressName + ".close.mail.sender");
-                String customReceiverName = configer.readConfig(progressName + ".close.mail.receiver");
+                String customReceiverName = configer.readConfig(progressName + ".close.mail.receivername");
                 String customSubject = configer.readConfig(progressName + ".close.mail.subject");
                 String customContent = configer.readConfig(progressName + ".close.mail.content");
                 if (customMailReceiver == null) {
@@ -250,10 +257,10 @@ public class UniversalMonitor implements Monitor {
                 while (success == -1) {
                     success = Mail.sendMail(customSenderName, customReceiverName, customSubject, customContent);
                 }
-            }else {
+            } else {
                 log.info("自定义开关关闭，不发送邮件");
             }
-        }else {
+        } else {
             log.info("总开关关闭，不发送邮件");
         }
     }
@@ -277,11 +284,13 @@ public class UniversalMonitor implements Monitor {
         return configer.readConfigList("monitor.target");
     }
 
+
+
     public static void main(String[] args) {
         UniversalMonitor universalMonitor = new UniversalMonitor();
         universalMonitor.init();
         try {
-            while (true){
+            while (true) {
                 universalMonitor.startMonitor();
                 Thread.sleep(100);
             }

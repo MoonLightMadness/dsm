@@ -1,9 +1,12 @@
+#本文件路径
+monitor.config.path = ./config/monitor/universal/config.txt
+
 
 monitor.database = Entertainment.db
 
 #自动保存时间，值为0时表示关闭自动保存功能
 #支持s(秒),m(分),h(时),d(天),M(月),y(年)
-monitor.autosave = 1m30s
+monitor.autosave = 0
 
 #邮件功能
 #总开关(on/off)
@@ -25,14 +28,19 @@ monitor.close.mail.default.receivername = phone
 monitor.close.mail.default.subject = aaa
 monitor.close.mail.default.content = bbb
 
+#默认参数(每日报告)
+monitor.mail.default.daily.receiver = 2377459837@qq.com
+monitor.mail.default.daily.sendername = home.pc
+monitor.mail.default.daily.receivername = phone
+
 #统计报告功能参数设置
 monitor.daily.report.switch = on
 monitor.weekly.report.switch = on
-monitor.report.time = 08:00:00
+monitor.daily.report.time = 08:00:00
 
 #监视进程配置
 monitor.target = notepad++.exe
-monitor.target = 2asdasd
+#monitor.target = 2asdasd
 
 #notepad++.exe参数配置
 #自定义邮件开关，默认值关闭

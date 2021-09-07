@@ -7,4 +7,5 @@ public class DailyReportVO {
 
     private String lastTime;
 
+
 }
