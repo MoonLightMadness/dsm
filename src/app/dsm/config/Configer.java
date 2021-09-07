@@ -2,10 +2,13 @@ package app.dsm.config;
 
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
+import org.junit.Test;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Configer {
 
@@ -23,6 +26,8 @@ public class Configer {
     private String[] local_directory;
 
 
+    private Pattern callPattern = Pattern.compile("\\$\\{(.*?)}");
+
     /**
      * 远程url
      */
@@ -32,6 +37,17 @@ public class Configer {
 
     public Configer(){
         this.init("./metaconfig.txt");
+    }
+
+    /**
+     * @param metaPath 元配置文件路径
+     * @return @return {@link  }
+     * @author zhl
+     * @date 2021-09-06 10:13
+     * @version V1.0
+     */
+    public Configer(String metaPath){
+        this.init(metaPath);
     }
 
     /**
@@ -63,16 +79,16 @@ public class Configer {
                 log.error("在指定的路径上找不到该文件--path:{}",path);
                 return null;
             }
+            BufferedReader br = null;
             try {
                 synchronized (Configer.class){
-                    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                   br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
                     String temp;
                     while ((temp = br.readLine())!=null){
                         if(temp.trim().startsWith(propertyName)){
-                            return temp.substring(temp.indexOf("=")+1).trim();
+                            return callReplacer(temp.substring(temp.indexOf("=")+1).trim());
                         }
                     }
-                    br.close();
                 }
             } catch (FileNotFoundException e) {
                 log.error(null,e.getMessage());
@@ -80,9 +96,38 @@ public class Configer {
             } catch (IOException e) {
                 log.error(null,e.getMessage());
                 e.printStackTrace();
+            }finally {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
+        log.error("未找到属性{}的值",propertyName);
         return null;
+    }
+
+    private String callReplacer(String str){
+        String res = null;
+        if(str != null){
+            Matcher matcher = callPattern.matcher(str);
+            while (matcher.find()){
+                String temp = readConfig(matcher.group(1));
+                if(temp != null){
+                    res = str.replace("${"+matcher.group(1)+"}",temp);
+                }
+            }
+            if(res != null){
+                Matcher check = callPattern.matcher(res);
+                if(check.find()){
+                    res = callReplacer(res);
+                }
+            }else {
+                res = str;
+            }
+        }
+        return res;
     }
 
     public String readConfig(String propertyName,String... args) {
@@ -92,16 +137,16 @@ public class Configer {
                 log.error("在指定的路径上找不到该文件--path:{}",path);
                 return null;
             }
+            BufferedReader br = null;
             try {
                 synchronized (Configer.class){
-                    BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                    br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
                     String temp;
                     while ((temp = br.readLine())!=null){
                         if(temp.trim().startsWith(propertyName)){
                             return messageHandler(temp.substring(temp.indexOf("=")+1).trim(),args);
                         }
                     }
-                    br.close();
                 }
             } catch (FileNotFoundException e) {
                 log.error(null,e.getMessage());
@@ -109,9 +154,15 @@ public class Configer {
             } catch (IOException e) {
                 log.error(null,e.getMessage());
                 e.printStackTrace();
+            }finally {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        log.error("找不到属性:{}的值",propertyName);
+        log.error("未找到属性{}的值",propertyName);
         return null;
     }
 
@@ -167,7 +218,19 @@ public class Configer {
         return result;
     }
 
-    public void writeConfig(int mode,String path,String dataType,String brief){
+
+    /**
+     * @param path     路径
+     * @param key
+     * @param value
+     * @param dataType 数据类型 可空
+     * @param brief    注释 可空
+     * @return
+     * @author zhl
+     * @date 2021-09-04 16:16
+     * @version V1.0
+     */
+    public void writeConfig(String path,String key,String value,String dataType,String brief){
         File f = new File(path);
         if(!f.exists()){
             log.error("在指定的路径上找不到该文件");
@@ -181,12 +244,8 @@ public class Configer {
                 bw.newLine();
                 bw.write("# DataType:"+dataType);
                 bw.newLine();
-                if(mode == 1){
-                    bw.write("local_path = ");
-                }else {
-                    bw.write("remote_path = ");
-                }
-                bw.write(path);
+                bw.write(key+" = "+value);
+                bw.newLine();
                 bw.flush();
                 bw.close();
             }
@@ -195,6 +254,48 @@ public class Configer {
             e.printStackTrace();
         }
 
+    }
+
+    public void updateConfig(String key,String newValue,String path){
+        File f = new File(path);
+        if (!f.exists()) {
+            log.error("在指定的路径上找不到该文件--path:{}",path);
+        }
+        try {
+            StringBuilder sb = new StringBuilder();
+            synchronized (Configer.class){
+                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                String temp;
+                while ((temp = br.readLine())!=null){
+                    if(!temp.trim().startsWith(key)){
+                        sb.append(temp).append("\n");
+                    }else {
+                        sb.append(key).append(" = ").append(newValue).append("\n");
+                    }
+                }
+                br.close();
+                write(f, sb.toString());
+            }
+        } catch (FileNotFoundException e) {
+            log.error(null,e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            log.error(null,e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void write(File f,String data){
+        try {
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f,false)));
+            writer.write(data);
+            writer.flush();
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void refreshLocal(File f){

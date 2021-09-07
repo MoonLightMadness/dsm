@@ -25,7 +25,7 @@ public class SnowFlake implements GuidGenerator {
      *
      *============================================================*/
     private long guid=0L;
-    private long startMillis=1420041600000L;
+    private long startMillis=1630847188;
     private long currentMillis=0L;
     private volatile long sameRequest=0L;
     private long lastCurrentMillis=0L;
@@ -36,8 +36,8 @@ public class SnowFlake implements GuidGenerator {
 
     @Override
     public String generateGuid(String... args) throws Exception {
-
-        guid=getMillis()<<22 | Long.parseLong(args[0])<<12 | sameRequest;
+        guid=System.currentTimeMillis()<<22 | Long.parseLong(args[0])<<12 | sameRequest;
+        getMillis();
         return String.valueOf(guid);
     }
 

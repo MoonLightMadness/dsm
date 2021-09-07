@@ -107,8 +107,7 @@ public class ServerBaseServiceImpl implements ServerBaseService {
     }
 
     @Path(value = "/getuser")
-    public List<GetUserInfoRspVO> getUser(String args){
-        GetUserInfoReqVO getUserInfoReqVO = (GetUserInfoReqVO) new JSONParserImpl().parser(args.getBytes(StandardCharsets.UTF_8),GetUserInfoReqVO.class);
+    public List<GetUserInfoRspVO> getUser(GetUserInfoReqVO getUserInfoReqVO){
         mapper.initialize(this.getClass());
         Object[] objects = mapper.selectList(new GetUserInfoRspVO(),getUserInfoReqVO);
         List<GetUserInfoRspVO> result = new ArrayList<>();

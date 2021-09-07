@@ -1,0 +1,63 @@
+#本文件路径
+monitor.config.path = ./config/monitor/universal/config.txt
+
+
+monitor.database = Entertainment.db
+
+#自动保存时间，值为0时表示关闭自动保存功能
+#支持s(秒),m(分),h(时),d(天),M(月),y(年)
+monitor.autosave = 0
+
+#邮件功能
+#总开关(on/off)
+#若此项设置为off,则发送邮件功能关闭
+#所有switch类配置默认为关闭(off)
+monitor.mail.main.switch = on
+
+#默认参数(开启时)
+monitor.start.mail.default.receiver = 2377459837@qq.com
+monitor.start.mail.default.sendername = home.pc
+monitor.start.mail.default.receivername = phone
+monitor.start.mail.default.subject = aaa
+monitor.start.mail.default.content = bbb
+
+#默认参数(关闭时)
+monitor.close.mail.default.receiver = 2377459837@qq.com
+monitor.close.mail.default.sendername = home.pc
+monitor.close.mail.default.receivername = phone
+monitor.close.mail.default.subject = aaa
+monitor.close.mail.default.content = bbb
+
+#默认参数(每日报告)
+monitor.mail.default.daily.receiver = 2377459837@qq.com
+monitor.mail.default.daily.sendername = home.pc
+monitor.mail.default.daily.receivername = phone
+
+#统计报告功能参数设置
+monitor.daily.report.switch = on
+monitor.weekly.report.switch = on
+monitor.daily.report.time = 08:00:00
+
+#监视进程配置
+monitor.target = notepad++.exe
+#monitor.target = 2asdasd
+
+#notepad++.exe参数配置
+#自定义邮件开关，默认值关闭
+notepad++.exe.start.mail.switch = on
+notepad++.exe.close.mail.switch = off
+notepad++.exe.start.mail.subject = ${modify.target} 启动 ${modify.target} and ${aaa}
+    modify.target = ${modify.test} 测试
+    modify.test = ${time} 测试
+notepad++.exe.daily.report.switch = on
+notepad++.exe.weekly.report.switch = on
+notepad++.exe.daily.report.time = 09:00:00
+notepad++.exe.weekly.report.time = 08:00:00
+
+# 内置函数(请勿将大括号内的字段在自定义信息时将其使用到等号左边)
+# ${target.last.time} 获取该进程的执行时间
+# ${time} 获取系统时间 08:00:00
+# ${date} 获取系统时间 2021-01-01
+# ${datetime} 获取系统时间 2021-01-01 08:00:00
+# ${get.report} 立即生成统计报告
+# ${process.name} 获取进程名

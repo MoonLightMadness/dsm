@@ -1,0 +1,15 @@
+
+system.config.path = ./config/system/config.txt
+
+sys.name = dsm
+
+
+
+log.save.path = ./log
+
+# null
+# DataType:null
+log.date = 2021-09-07
+
+
+database = Entertainment.db

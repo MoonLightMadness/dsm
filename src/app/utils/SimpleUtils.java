@@ -757,4 +757,21 @@ public class SimpleUtils {
         return new JSONParserImpl().parser(json,clazz);
     }
 
+    /**
+     * 终结Java服务 <br/>
+     * windows系统使用
+     * @param serviceName 服务名称
+     * @return @return {@link String }
+     * @author zhl
+     * @date 2021-09-06 13:46
+     * @version V1.0
+     */
+    public static String terminateJavaService(String serviceName){
+        String str = "jps | find /I \""+serviceName+"\"";
+        String res = SimpleUtils.callShell(str,"c",true);
+        res = res.split(" ")[0].trim();
+        res = SimpleUtils.callShell("taskkill /F /PID "+res,"c",true);
+        return res;
+    }
+
 }
