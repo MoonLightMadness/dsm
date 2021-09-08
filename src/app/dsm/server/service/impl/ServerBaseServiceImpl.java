@@ -16,11 +16,13 @@ import app.parser.impl.JSONParserImpl;
 import app.utils.SimpleUtils;
 import app.utils.TimeFormatter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 @Path(value = "/server")
 @TableName(value = "auth_user_config")
@@ -116,4 +118,19 @@ public class ServerBaseServiceImpl implements ServerBaseService {
         }
         return result;
     }
+
+    @Path("/upload")
+    public BaseRspVO uploadFile(UploadFileReqVO uploadFileReqVO){
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(new File("./"+uploadFileReqVO.getFileName()));
+            fileOutputStream.write(Base64.getDecoder().decode(uploadFileReqVO.getContent()));
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new BaseRspVO();
+    }
+
 }
