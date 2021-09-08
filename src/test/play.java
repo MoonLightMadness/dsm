@@ -23,6 +23,9 @@ import java.util.Locale;
  * @Author ZhangHL
  */
 public class play {
+
+    private LogSystem log = LogSystemFactory.getLogSystem();
+
     @Test
     public void test1(){
         LocalDateTime localTime = LocalDateTime.now();
@@ -94,7 +97,13 @@ public class play {
 
     @Test
     public void test7(){
-        System.out.println(InnerFunction.getDateTime());
+        System.out.println("1");
+        try {
+            int a = 1/0;
+        }catch (Exception e){
+            log.error("{}",e);
+        }
+        System.out.println("2");
     }
 
 }
