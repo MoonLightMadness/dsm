@@ -6,7 +6,7 @@ monitor.database = Entertainment.db
 
 #自动保存时间，值为0时表示关闭自动保存功能
 #支持s(秒),m(分),h(时),d(天),M(月),y(年)
-monitor.autosave = 0
+monitor.autosave = 5m
 
 #邮件功能
 #总开关(on/off)

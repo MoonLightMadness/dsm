@@ -27,6 +27,20 @@ public class TimeFormatter {
 
     public static final String YEAR_LEVEL = "yyyy";
 
+    public static final String MONTH = "MM";
+
+    public static final String DAY = "dd";
+
+    public static final String HOUR = "HH";
+
+    public static final String MINUTE = "mm";
+
+    public static final String SECOND = "ss";
+
+    public static final String MILLI = "SS";
+
+    public static final String NORMALTIME = "HH:mm:ss";
+
     /**
      * 1000ms = 1s
      */
