@@ -35,7 +35,7 @@ public class Configer {
 
     private LogSystem log = LogSystemFactory.getLogSystem();
 
-    public Configer(){
+    public Configer() {
         this.init("./metaconfig.txt");
     }
 
@@ -46,7 +46,7 @@ public class Configer {
      * @date 2021-09-06 10:13
      * @version V1.0
      */
-    public Configer(String metaPath){
+    public Configer(String metaPath) {
         this.init(metaPath);
     }
 
@@ -67,36 +67,36 @@ public class Configer {
                 f.createNewFile();
             }
         } catch (IOException e) {
-            log.error(null,e.getMessage());
+            log.error(null, e.getMessage());
             e.printStackTrace();
         }
     }
 
     public String readConfig(String propertyName) {
-        for (String path : local_directory){
+        for (String path : local_directory) {
             File f = new File(path);
             if (!f.exists()) {
-                log.error("在指定的路径上找不到该文件--path:{}",path);
+                log.error("在指定的路径上找不到该文件--path:{}", path);
                 return null;
             }
             BufferedReader br = null;
             try {
-                synchronized (Configer.class){
-                   br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                synchronized (Configer.class) {
+                    br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
                     String temp;
-                    while ((temp = br.readLine())!=null){
-                        if(temp.trim().startsWith(propertyName)){
-                            return callReplacer(temp.substring(temp.indexOf("=")+1).trim());
+                    while ((temp = br.readLine()) != null) {
+                        if (temp.trim().startsWith(propertyName)) {
+                            return callReplacer(temp.substring(temp.indexOf("=") + 1).trim());
                         }
                     }
                 }
             } catch (FileNotFoundException e) {
-                log.error(null,e.getMessage());
+                log.error(null, e.getMessage());
                 e.printStackTrace();
             } catch (IOException e) {
-                log.error(null,e.getMessage());
+                log.error(null, e.getMessage());
                 e.printStackTrace();
-            }finally {
+            } finally {
                 try {
                     br.close();
                 } catch (IOException e) {
@@ -104,57 +104,57 @@ public class Configer {
                 }
             }
         }
-        log.error("未找到属性{}的值",propertyName);
+        log.error("未找到属性{}的值", propertyName);
         return null;
     }
 
-    private String callReplacer(String str){
+    private String callReplacer(String str) {
         String res = null;
-        if(str != null){
+        if (str != null) {
             Matcher matcher = callPattern.matcher(str);
-            while (matcher.find()){
+            while (matcher.find()) {
                 String temp = readConfig(matcher.group(1));
-                if(temp != null){
-                    res = str.replace("${"+matcher.group(1)+"}",temp);
+                if (temp != null) {
+                    res = str.replace("${" + matcher.group(1) + "}", temp);
                 }
             }
-            if(res != null){
+            if (res != null) {
                 Matcher check = callPattern.matcher(res);
-                if(check.find()){
+                if (check.find()) {
                     res = callReplacer(res);
                 }
-            }else {
+            } else {
                 res = str;
             }
         }
         return res;
     }
 
-    public String readConfig(String propertyName,String... args) {
-        for (String path : local_directory){
+    public String readConfig(String propertyName, String... args) {
+        for (String path : local_directory) {
             File f = new File(path);
             if (!f.exists()) {
-                log.error("在指定的路径上找不到该文件--path:{}",path);
+                log.error("在指定的路径上找不到该文件--path:{}", path);
                 return null;
             }
             BufferedReader br = null;
             try {
-                synchronized (Configer.class){
+                synchronized (Configer.class) {
                     br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
                     String temp;
-                    while ((temp = br.readLine())!=null){
-                        if(temp.trim().startsWith(propertyName)){
-                            return messageHandler(temp.substring(temp.indexOf("=")+1).trim(),args);
+                    while ((temp = br.readLine()) != null) {
+                        if (temp.trim().startsWith(propertyName)) {
+                            return messageHandler(temp.substring(temp.indexOf("=") + 1).trim(), args);
                         }
                     }
                 }
             } catch (FileNotFoundException e) {
-                log.error(null,e.getMessage());
+                log.error(null, e.getMessage());
                 e.printStackTrace();
             } catch (IOException e) {
-                log.error(null,e.getMessage());
+                log.error(null, e.getMessage());
                 e.printStackTrace();
-            }finally {
+            } finally {
                 try {
                     br.close();
                 } catch (IOException e) {
@@ -162,30 +162,30 @@ public class Configer {
                 }
             }
         }
-        log.error("未找到属性{}的值",propertyName);
+        log.error("未找到属性{}的值", propertyName);
         return null;
     }
 
-    private String messageHandler(String msg,String... args){
-        int argsLen=args.length;
-        StringBuilder sb=new StringBuilder();
-        if(argsLen>0){
-            int pointer=0;
+    private String messageHandler(String msg, String... args) {
+        int argsLen = args.length;
+        StringBuilder sb = new StringBuilder();
+        if (argsLen > 0) {
+            int pointer = 0;
             /*============================================================
              *  算法：
              * 每次循环脱离一对{}
              * 若参数大于占位符数时保留{}
              *============================================================*/
             for (int i = 0; i < argsLen; i++) {
-                pointer=msg.indexOf('{');
-                if(pointer!=-1){
+                pointer = msg.indexOf('{');
+                if (pointer != -1) {
                     sb.append(msg, 0, pointer);
                     sb.append(args[i].toString());
-                    msg=msg.substring(pointer+2);
+                    msg = msg.substring(pointer + 2);
                 }
             }
             sb.append(msg);
-        }else {
+        } else {
             sb.append(msg);
         }
         return sb.toString();
@@ -193,25 +193,25 @@ public class Configer {
 
     public List<String> readConfigList(String propertyName) {
         List<String> result = new ArrayList<>();
-        for (String path : local_directory){
+        for (String path : local_directory) {
             File f = new File(path);
             if (!f.exists()) {
-                log.error("在指定的路径上找不到该文件--path:{}",path);
+                log.error("在指定的路径上找不到该文件--path:{}", path);
                 return null;
             }
             try {
-                synchronized (Configer.class){
+                synchronized (Configer.class) {
                     BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
                     String temp;
-                    while ((temp = br.readLine())!=null){
-                        if(temp.trim().startsWith(propertyName)){
-                            result.add(temp.substring(temp.indexOf("=")+1).trim());
+                    while ((temp = br.readLine()) != null) {
+                        if (temp.trim().startsWith(propertyName)) {
+                            result.add(temp.substring(temp.indexOf("=") + 1).trim());
                         }
                     }
                     br.close();
                 }
             } catch (IOException e) {
-                log.error(null,e.getMessage());
+                log.error(null, e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -230,21 +230,21 @@ public class Configer {
      * @date 2021-09-04 16:16
      * @version V1.0
      */
-    public void writeConfig(String path,String key,String value,String dataType,String brief){
+    public void writeConfig(String path, String key, String value, String dataType, String brief) {
         File f = new File(path);
-        if(!f.exists()){
+        if (!f.exists()) {
             log.error("在指定的路径上找不到该文件");
             return;
         }
         try {
-            synchronized (Configer.class){
-                BufferedWriter bw = new BufferedWriter(new FileWriter(f,true));
+            synchronized (Configer.class) {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(f, true));
                 bw.newLine();
-                bw.write("# "+brief);
+                bw.write("# " + brief);
                 bw.newLine();
-                bw.write("# DataType:"+dataType);
+                bw.write("# DataType:" + dataType);
                 bw.newLine();
-                bw.write(key+" = "+value);
+                bw.write(key + " = " + value);
                 bw.newLine();
                 bw.flush();
                 bw.close();
@@ -256,20 +256,20 @@ public class Configer {
 
     }
 
-    public void updateConfig(String key,String newValue,String path){
+    public void updateConfig(String key, String newValue, String path) {
         File f = new File(path);
         if (!f.exists()) {
-            log.error("在指定的路径上找不到该文件--path:{}",path);
+            log.error("在指定的路径上找不到该文件--path:{}", path);
         }
         try {
             StringBuilder sb = new StringBuilder();
-            synchronized (Configer.class){
+            synchronized (Configer.class) {
                 BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
                 String temp;
-                while ((temp = br.readLine())!=null){
-                    if(!temp.trim().startsWith(key)){
+                while ((temp = br.readLine()) != null) {
+                    if (!temp.trim().startsWith(key)) {
                         sb.append(temp).append("\n");
-                    }else {
+                    } else {
                         sb.append(key).append(" = ").append(newValue).append("\n");
                     }
                 }
@@ -277,17 +277,17 @@ public class Configer {
                 write(f, sb.toString());
             }
         } catch (FileNotFoundException e) {
-            log.error(null,e.getMessage());
+            log.error(null, e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
-            log.error(null,e.getMessage());
+            log.error(null, e.getMessage());
             e.printStackTrace();
         }
     }
 
-    private void write(File f,String data){
+    private void write(File f, String data) {
         try {
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f,false)));
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f, false)));
             writer.write(data);
             writer.flush();
             writer.close();
@@ -298,11 +298,11 @@ public class Configer {
         }
     }
 
-    public void refreshLocal(File f){
+    public void refreshLocal(File f) {
         readLocalPath(f);
     }
 
-    public void refreshRemote(File f){
+    public void refreshRemote(File f) {
         readRemote(f);
     }
 
@@ -312,10 +312,10 @@ public class Configer {
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
             String temp = null;
-            synchronized (Configer.class){
+            synchronized (Configer.class) {
                 while ((temp = br.readLine()) != null) {
                     //跳过注释
-                    if(temp.startsWith("#")){
+                    if (temp.startsWith("#")) {
                         continue;
                     }
                     if (temp.trim().startsWith("local_path")) {
@@ -334,16 +334,60 @@ public class Configer {
         }
     }
 
-    private void readRemote(File f){
+    /**
+     * 从指定路径的文件下读取属性
+     *
+     * @param path 路径
+     * @param key  关键
+     * @return @return {@link String }
+     * @author zhl
+     * @date 2021-09-08 19:51
+     * @version V1.0
+     */
+    public String readConfigBySpecificPath(String path, String key) {
+        File f = new File(path);
+        if (!f.exists()) {
+            log.error("在指定的路径上找不到该文件--path:{}", path);
+            return null;
+        }
+        BufferedReader br = null;
+        try {
+            synchronized (Configer.class) {
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                String temp;
+                while ((temp = br.readLine()) != null) {
+                    if (temp.trim().startsWith(key)) {
+                        return callReplacer(temp.substring(temp.indexOf("=") + 1).trim());
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            log.error(null, e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            log.error(null, e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        log.error("未找到属性{}的值", key);
+        return null;
+    }
+
+    private void readRemote(File f) {
         BufferedReader br = null;
         StringBuilder sb = new StringBuilder();
         try {
             br = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
             String temp = null;
-            synchronized (Configer.class){
+            synchronized (Configer.class) {
                 while ((temp = br.readLine()) != null) {
                     //跳过注释
-                    if(temp.startsWith("#")){
+                    if (temp.startsWith("#")) {
                         continue;
                     }
                     if (temp.trim().startsWith("remote_path")) {
@@ -354,10 +398,10 @@ public class Configer {
             }
             remote_url = sb.toString().split("\n");
         } catch (FileNotFoundException e) {
-            log.error(null,e.getMessage());
+            log.error(null, e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
-            log.error(null,e.getMessage());
+            log.error(null, e.getMessage());
             e.printStackTrace();
         }
     }

@@ -54,13 +54,26 @@ public class Logger {
                 pointer=msg.indexOf('{');
                 if(pointer!=-1){
                     sb.append(msg, 0, pointer);
-                    sb.append(args[i].toString());
+                    if(args[i] instanceof Exception){
+                        sb.append(getStackTrace((Exception) args[i]));
+                    }else {
+                        sb.append(args[i].toString());
+                    }
                     msg=msg.substring(pointer+2);
                 }
             }
             sb.append(msg);
         }else {
             sb.append(msg);
+        }
+        return sb.toString();
+    }
+
+    private String getStackTrace(Exception e){
+        StringBuilder sb = new StringBuilder();
+        sb.append(e.toString()).append("\n");
+        for(StackTraceElement element : e.getStackTrace()){
+            sb.append("\tat ").append(element.toString()).append("\n");
         }
         return sb.toString();
     }

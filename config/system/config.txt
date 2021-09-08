@@ -9,7 +9,7 @@ log.save.path = ./log
 
 # null
 # DataType:null
-log.date = 2021-09-07
+log.date = 2021-09-08
 
 
 database = Entertainment.db

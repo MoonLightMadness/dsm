@@ -6,7 +6,7 @@ monitor.database = Entertainment.db
 
 #自动保存时间，值为0时表示关闭自动保存功能
 #支持s(秒),m(分),h(时),d(天),M(月),y(年)
-monitor.autosave = 0
+monitor.autosave = 5m
 
 #邮件功能
 #总开关(on/off)
@@ -44,7 +44,7 @@ monitor.target = notepad++.exe
 
 #notepad++.exe参数配置
 #自定义邮件开关，默认值关闭
-notepad++.exe.start.mail.switch = on
+notepad++.exe.start.mail.switch = off
 notepad++.exe.close.mail.switch = off
 notepad++.exe.start.mail.subject = ${modify.target} 启动 ${modify.target} and ${aaa}
     modify.target = ${modify.test} 测试

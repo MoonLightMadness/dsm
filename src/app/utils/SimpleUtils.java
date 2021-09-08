@@ -368,6 +368,7 @@ public class SimpleUtils {
                         xb.append(rb);
                     }
                 }
+                buffer.clear();
             } catch (Exception e) {
                 e.printStackTrace();
                 try {

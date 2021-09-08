@@ -38,5 +38,6 @@ public class XByteBuffer {
         int len = bytes.length;
         byte[] newBytes = new byte[len*2];
         System.arraycopy(bytes,0,newBytes,0,len);
+        bytes = newBytes;
     }
 }

@@ -4,6 +4,7 @@ import app.dsm.config.Configer;
 import app.dsm.config.utils.ConfigerUtil;
 import app.dsm.game.monitor.Monitor;
 import app.dsm.game.monitor.impl.GenhinImpactMonitor;
+import app.dsm.game.monitor.inner.InnerFunction;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
 import app.utils.SimpleUtils;
@@ -22,6 +23,9 @@ import java.util.Locale;
  * @Author ZhangHL
  */
 public class play {
+
+    private LogSystem log = LogSystemFactory.getLogSystem();
+
     @Test
     public void test1(){
         LocalDateTime localTime = LocalDateTime.now();
@@ -89,6 +93,17 @@ public class play {
         rTimer.start();
         System.out.println(configer.readConfig("notepad++.exe.start.mail.subject"));
         System.out.println(rTimer.end());
+    }
+
+    @Test
+    public void test7(){
+        System.out.println("1");
+        try {
+            int a = 1/0;
+        }catch (Exception e){
+            log.error("{}",e);
+        }
+        System.out.println("2");
     }
 
 }
