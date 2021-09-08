@@ -1,5 +1,6 @@
 package app.dsm.server.service.impl;
 
+import app.dsm.config.Configer;
 import app.dsm.mapper.annotation.TableName;
 import app.dsm.mapper.impl.Mapper;
 import app.dsm.server.adapter.ListenerAdapter;
@@ -120,17 +121,31 @@ public class ServerBaseServiceImpl implements ServerBaseService {
     }
 
     @Path("/upload")
-    public BaseRspVO uploadFile(UploadFileReqVO uploadFileReqVO){
+    public UploadFileRspVO uploadFile(UploadFileReqVO uploadFileReqVO){
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(new File("./"+uploadFileReqVO.getFileName()));
-            fileOutputStream.write(Base64.getDecoder().decode(uploadFileReqVO.getContent()));
+            fileOutputStream.write(uploadFileReqVO.getContent().getBytes(StandardCharsets.UTF_8));
             fileOutputStream.close();
+            String id = UUID.randomUUID().toString();
+            UploadFileRspVO uploadFileRspVO = new UploadFileRspVO();
+            uploadFileRspVO.setId(id);
+            return uploadFileRspVO;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new BaseRspVO();
+        return (UploadFileRspVO) new BaseRspVO();
+    }
+
+    @Path("/download")
+    public DownLoadRspVO download(DownLoadReqVO downLoadReqVO){
+        Configer configer = new Configer();
+        DownLoadRspVO downLoadRspVO = new DownLoadRspVO();
+        String path = configer.readConfigBySpecificPath("./fs/index.txt", downLoadReqVO.getId());
+        String content = new String(SimpleUtils.readFile(path));
+        downLoadRspVO.setContent(content);
+        return downLoadRspVO;
     }
 
 }

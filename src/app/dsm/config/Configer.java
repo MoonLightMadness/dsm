@@ -130,6 +130,28 @@ public class Configer {
         return res;
     }
 
+    private String callReplacer(String str, String path) {
+        String res = null;
+        if (str != null) {
+            Matcher matcher = callPattern.matcher(str);
+            while (matcher.find()) {
+                String temp = readConfigBySpecificPath(path, matcher.group(1));
+                if (temp != null) {
+                    res = str.replace("${" + matcher.group(1) + "}", temp);
+                }
+            }
+            if (res != null) {
+                Matcher check = callPattern.matcher(res);
+                if (check.find()) {
+                    res = callReplacer(res);
+                }
+            } else {
+                res = str;
+            }
+        }
+        return res;
+    }
+
     public String readConfig(String propertyName, String... args) {
         for (String path : local_directory) {
             File f = new File(path);
@@ -357,7 +379,7 @@ public class Configer {
                 String temp;
                 while ((temp = br.readLine()) != null) {
                     if (temp.trim().startsWith(key)) {
-                        return callReplacer(temp.substring(temp.indexOf("=") + 1).trim());
+                        return callReplacer(temp.substring(temp.indexOf("=") + 1).trim(), path);
                     }
                 }
             }
