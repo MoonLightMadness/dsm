@@ -1,5 +1,8 @@
 package app.dsm.bili;
 
+import app.dsm.config.Configer;
+import org.junit.Test;
+
 import java.net.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +26,7 @@ public class Spider {
             huc.setReadTimeout(10000);
             huc.setInstanceFollowRedirects(false);
             huc.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36");
-
+            huc.setRequestProperty("cookie",new Configer().readConfig("bili.cookie"));
             try {
                 int code = huc.getResponseCode();
                 if (code == STATECODE.NORMAL.getId()) {
@@ -66,4 +69,6 @@ public class Spider {
         }
         return data.toString();
     }
+
+
 }
