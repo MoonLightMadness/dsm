@@ -12,6 +12,7 @@ import app.dsm.server.filter.Filter;
 import app.dsm.server.trigger.PathTrigger;
 import app.log.LogSystem;
 import app.log.LogSystemFactory;
+import app.utils.ThreadUitls;
 import lombok.Data;
 import lombok.SneakyThrows;
 import java.io.IOException;
@@ -45,10 +46,6 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
      */
     private List<SocketChannel> receivingChannels;
 
-    ThreadFactory namedThreadFactory ;
-
-    ExecutorService singleThreadPool ;
-
     private PathTrigger pathTrigger;
 
     @Override
@@ -67,11 +64,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
                 ,Integer.parseInt(configer.readConfig("beat.max")));
         filter = new Filter();
         receivingChannels = new ArrayList<>();
-        namedThreadFactory = Thread::new;
-        singleThreadPool = new ThreadPoolExecutor(4, 8,
-                0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
-        singleThreadPool.submit(beatChecker);
+        ThreadUitls.submit(beatChecker);
     }
 
     @Override
@@ -170,7 +163,7 @@ public class SelectorIOImpl implements SelectorIO,Runnable {
         listenerAdapter.setChannel(((SocketChannel)key.channel()));
         listenerAdapter.setSelectorIO(this);
         log.info("异步接收数据，开始");
-        singleThreadPool.submit(listenerAdapter);
+        ThreadUitls.submit(listenerAdapter);
     }
 
     /**

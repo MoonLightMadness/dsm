@@ -35,7 +35,7 @@ public class Sender {
             channel.write(buffer);
             channel.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            ;
         }
     }
 }

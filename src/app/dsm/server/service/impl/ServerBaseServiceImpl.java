@@ -1,5 +1,6 @@
 package app.dsm.server.service.impl;
 
+import app.dsm.config.Configer;
 import app.dsm.mapper.annotation.TableName;
 import app.dsm.mapper.impl.Mapper;
 import app.dsm.server.adapter.ListenerAdapter;
@@ -16,11 +17,13 @@ import app.parser.impl.JSONParserImpl;
 import app.utils.SimpleUtils;
 import app.utils.TimeFormatter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 @Path(value = "/server")
 @TableName(value = "auth_user_config")
@@ -116,4 +119,33 @@ public class ServerBaseServiceImpl implements ServerBaseService {
         }
         return result;
     }
+
+    @Path("/upload")
+    public UploadFileRspVO uploadFile(UploadFileReqVO uploadFileReqVO){
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(new File("./"+uploadFileReqVO.getFileName()));
+            fileOutputStream.write(uploadFileReqVO.getContent().getBytes(StandardCharsets.UTF_8));
+            fileOutputStream.close();
+            String id = UUID.randomUUID().toString();
+            UploadFileRspVO uploadFileRspVO = new UploadFileRspVO();
+            uploadFileRspVO.setId(id);
+            return uploadFileRspVO;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return (UploadFileRspVO) new BaseRspVO();
+    }
+
+    @Path("/download")
+    public DownLoadRspVO download(DownLoadReqVO downLoadReqVO){
+        Configer configer = new Configer();
+        DownLoadRspVO downLoadRspVO = new DownLoadRspVO();
+        String path = configer.readConfigBySpecificPath("./fs/index.txt", downLoadReqVO.getId());
+        String content = new String(SimpleUtils.readFile(path));
+        downLoadRspVO.setContent(content);
+        return downLoadRspVO;
+    }
+
 }

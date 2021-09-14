@@ -368,6 +368,7 @@ public class SimpleUtils {
                         xb.append(rb);
                     }
                 }
+                buffer.clear();
             } catch (Exception e) {
                 e.printStackTrace();
                 try {
@@ -442,7 +443,7 @@ public class SimpleUtils {
     public static byte[] readFile(String path) {
         File file = new File(path);
         if (!file.exists()) {
-            log.error(null, "can not find {}", path);
+            log.error("can not find {}", path);
             return null;
         }
         try {
@@ -554,7 +555,27 @@ public class SimpleUtils {
         return System.getProperty("file.separator");
     }
 
-
+    public static void copyProperties(Object src,Object tgt){
+        try {
+            Field[] srcFileds = src.getClass().getDeclaredFields();
+            Field[] tgtFileds = tgt.getClass().getDeclaredFields();
+            for (Field field : tgtFileds){
+                boolean isAccess = field.isAccessible();
+                field.setAccessible(true);
+                for (Field sFiled : srcFileds){
+                    boolean sIsAccess = sFiled.isAccessible();
+                    sFiled.setAccessible(true);
+                    if(field.getName().equals(sFiled.getName())){
+                        field.set(tgt,sFiled.get(src));
+                    }
+                    sFiled.setAccessible(sIsAccess);
+                }
+                field.setAccessible(isAccess);
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public Variable getVariable(Object obj) {

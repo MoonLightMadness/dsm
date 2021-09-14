@@ -12,6 +12,8 @@ import app.dsm.server.impl.SelectorIOImpl;
 import app.dsm.server.impl.ServerImpl;
 import app.dsm.server.vo.CalculatorReqVO;
 import app.dsm.server.vo.GetTimeRspVO;
+import app.dsm.server.vo.GetUserInfoReqVO;
+import app.dsm.server.vo.GetUserInfoRspVO;
 import app.utils.SimpleUtils;
 import app.utils.listener.IListener;
 import app.utils.listener.ThreadListener;
@@ -52,10 +54,14 @@ public class server {
     }
     @Test
     public void test3() {
-        float n1 = 4;
-        float n2 = 777777777;
-        System.out.println(invSqrt(n1));
-        System.out.println(invSqrt(n2));
+        GetUserInfoReqVO getUserInfoReqVO = new GetUserInfoReqVO();
+        GetUserInfoRspVO getUserInfoRspVO = new GetUserInfoRspVO();
+        getUserInfoReqVO.setUserId("123");
+        RTimer rTimer = new RTimer();
+        rTimer.start();
+        SimpleUtils.copyProperties(getUserInfoReqVO,getUserInfoRspVO);
+        System.out.println(rTimer.end());
+        System.out.println(getUserInfoRspVO.getUserId());
     }
     //平方根倒数速算
     public static float invSqrt(float x) {
